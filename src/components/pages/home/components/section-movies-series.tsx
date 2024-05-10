@@ -26,14 +26,13 @@ export function SectionMoviesAndSeries({type,page,title,year}:PorpsSectionMovieA
         axios.get(url)
         .then((resp) => {
             setProduction(resp.data.Search)
-            console.log(resp.data)
         });
     }, [])
 
     return (
         <div className="max-w-7xl mx-auto h-fit w-full px-6 m-6">
         <span
-            className="flex justify-between items-center pl-3 border-l-8 border-l-red-600 mb-6"
+            className="flex justify-between items-center pl-3 border-l-8 border-l-red-600 mb-6 rounded-l"
         >
             <h2 className="font-bold text-4xl">{title}</h2>
             <a href="" className="text-gray-600 hover:text-gray-100">More</a>
