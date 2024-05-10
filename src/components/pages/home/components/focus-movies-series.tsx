@@ -21,7 +21,7 @@ export function MoviesInFocus() {
     }, [])
 
     return (
-        <section className="relative bg-focus-movie before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-black before:to-transparent">
+        <div className="relative bg-focus-movie before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-black before:to-transparent">
             {movies &&
                 movies.map((movie) => (
                     <div className={`relative max-w-7xl mx-auto w-full min-h-screen flex items-center flex-col gap-10 justify-end pb-10`}>
@@ -59,6 +59,6 @@ export function MoviesInFocus() {
                     </div>
                 ))
             }
-        </section>
+        </div>
     )
 }
