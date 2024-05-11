@@ -55,11 +55,11 @@ export function MoviesAndSeriesInFocus() {
     }
 
     return (
-        <div className="relative bg-focus-movie before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent">
+        <div className="relative min-h-screen bg-focus-movie before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent">
             {moviesSeries.Response === "True" &&
                 <div
                     key={moviesSeries?.imdbID}
-                    className={`relative max-w-7xl mx-auto w-full min-h-screen flex items-center flex-col gap-10 justify-end pb-10`}
+                    className={`relative max-w-7xl mx-auto w-full h-screen flex items-center flex-col gap-10 justify-end pb-10`}
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
                         <div className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-50">
