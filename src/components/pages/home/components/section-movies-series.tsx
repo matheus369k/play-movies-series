@@ -54,10 +54,10 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PorpsSection
                     >
                         <img
                             src={MovieSeries.Poster}
-                            className="w-44 h-64 object-cover transition opacity-100 group-hover/play:opacity-40"
+                            className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40"
                         />
                         <button
-                            className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition hover:bg-gray-200/10 group-hover/play:visible"
+                            className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
                             type="button">
                             <FaPlay className="size-10 ml-1 -mr-1" />
                         </button>

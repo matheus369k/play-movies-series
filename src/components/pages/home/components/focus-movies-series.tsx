@@ -29,6 +29,7 @@ interface FMoviesSeriesInFocus {
     DVD?: string
     BoxOffice?: string
     Production?: string
+    totalSeasons?: string
     Website?: string
     Response: string
     index: number
@@ -63,15 +64,17 @@ export function MoviesAndSeriesInFocus( ) {
         <div className="relative min-h-screen bg-focus-movie before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent">
             {moviesSeries.Response === "True" &&
                 <div
-                    onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
                     key={moviesSeries?.imdbID}
                     className={`relative max-w-7xl mx-auto w-full h-screen flex items-center flex-col gap-10 justify-end pb-10`}
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
-                        <div className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-50 cursor-pointer">
-                            <img src={moviesSeries?.Poster} className="w-44 h-64 object-cover transition opacity-100 group-hover/play:opacity-40"/>
+                        <div
+                            onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)} 
+                            className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-50 cursor-pointer"
+                        >
+                            <img src={moviesSeries?.Poster} className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40"/>
                             <button
-                                className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition hover:bg-gray-200/10 group-hover/play:visible"
+                                className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
                                 type="button">
                                 <FaPlay className="size-10 ml-1 -mr-1" />
                             </button>
@@ -84,6 +87,7 @@ export function MoviesAndSeriesInFocus( ) {
                         <p className="max-w-[80%] text-center font-normal">{moviesSeries?.Plot}</p>
                     </div>
                     <button
+                        onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
                         className="border border-gray-100 bg-gray-200/20 rounded-full p-4 hover:bg-gray-200/10 cursor-pointer transition-all"
                         type="button">
                         <FaPlay className="size-10 ml-1 -mr-1" />
