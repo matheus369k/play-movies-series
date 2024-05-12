@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useContext, useEffect, useState } from "react"
 import { FaPlay } from "react-icons/fa";
-import { IdContext } from "../../../../app";
+import { IdContext, PageDataContext } from "../../../../app";
 
 interface TMoviesSeries {
     Poster: string
@@ -11,16 +11,17 @@ interface TMoviesSeries {
     imdbID: string
 }
 
-interface PorpsSectionMovieAndSeries {
+interface PropsSectionMovieAndSeries {
     type: string
     page: number
     title: string
     year: number
 }
 
-export function SectionMoviesAndSeries({ type, page, title, year }: PorpsSectionMovieAndSeries) {
+export function SectionMoviesAndSeries({ type, page, title, year }: PropsSectionMovieAndSeries) {
     const [production, setProduction] = useState<TMoviesSeries[]>()
     const { setImdbID } = useContext(IdContext);
+    const {setDataMoviesSeries} = useContext(PageDataContext);
 
     useEffect(() => {
         const url = `https://www.omdbapi.com/?apikey=d074a25e&s=all&plot=full&y=${year}&type=${type}&page=${page}`;
@@ -33,8 +34,12 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PorpsSection
 
     function getIdMoviesOrSeries(id: string | undefined) {
         event?.stopImmediatePropagation();
-        console.log(id)
         if (setImdbID && id) setImdbID(id)
+    }
+
+    function getDataOfMoviesOrSeries() {
+        if (setImdbID) setImdbID("");
+        if (setDataMoviesSeries && production) setDataMoviesSeries({data: production ,title: title})
     }
 
     return (
@@ -43,7 +48,7 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PorpsSection
                 className="flex justify-between items-center pl-3 border-l-8 border-l-red-600 mb-6 rounded-l"
             >
                 <h2 className="font-bold text-4xl">{title}</h2>
-                <a href="" className="text-gray-600 hover:text-gray-100">More</a>
+                <a onClick={() => getDataOfMoviesOrSeries()} className="text-gray-600 hover:text-gray-100 cursor-pointer">More</a>
             </span>
             <ul className="flex gap-6 px-10">
                 {production?.slice(0, 6).map((MovieSeries) => (

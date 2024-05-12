@@ -10,7 +10,7 @@ export function Home() {
     return (
         <section className="flex flex-col gap-6">
             <MoviesAndSeriesInFocus />
-            <SectionMoviesAndSeries year={2023} page={1} title="Lançamentos" type="" />
+            <SectionMoviesAndSeries year={2024} page={1} title="Lançamentos" type="" />
             <SectionMoviesAndSeries year={randowYearNumber()} page={1} title="Recomendados" type="" />
             <SectionMoviesAndSeries year={randowYearNumber()} page={1} title="Filmes" type="movie" />
             <SectionMoviesAndSeries year={randowYearNumber()} page={1} title="Series" type="series" />

@@ -1,22 +1,22 @@
 import { IoSearchOutline } from "react-icons/io5";
-import { IdContext } from "../../app";
+import { IdContext, PageDataContext } from "../../app";
 import { GrPrevious } from "react-icons/gr";
 import { useContext } from "react";
 
 export function Header() {
     const { imdbID, setImdbID } = useContext(IdContext);
+    const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
 
     function clickToBackPage() {
-        if (setImdbID) {
-            setImdbID("");
-        }
+        if (setImdbID) setImdbID("");
+        if (setDataMoviesSeries) setDataMoviesSeries({})
     }
 
     return (
         <header
             className="absolute top-0 left-0 w-full p-6 flex justify-between z-50"
         >
-            {imdbID === ""
+            {imdbID === "" && !dataMoviesSeries?.data
                 ? <h1
                     className="text-gray-100 font-bold text-4xl">
                     <span

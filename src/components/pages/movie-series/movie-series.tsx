@@ -51,7 +51,7 @@ export function MovieOrSeries() {
     }
 
     return (
-        <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto h-fit w-full">
+        <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
             {movieSeriesData?.Response === "True" &&
                 <>
                     <div className="flex flex-col group/screen justify-between bg-video w-screen h-screen max-w-4xl max-h-[530px] m-auto rounded border border-gray-500 p-3">
