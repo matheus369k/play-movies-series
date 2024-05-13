@@ -92,7 +92,9 @@ export function MoviesAndSeriesInFocus() {
                         onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
                         className="border border-gray-100 bg-gray-200/20 rounded-full p-4 hover:bg-gray-200/10 cursor-pointer transition-all"
                         type="button">
-                        <FaPlay className="size-10 ml-1 -mr-1" />
+                        <Link to="/watch">
+                            <FaPlay className="size-10 ml-1 -mr-1" />
+                        </Link>
                     </button>
 
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6">
