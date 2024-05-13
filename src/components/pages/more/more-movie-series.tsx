@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { IdContext, PageDataContext } from "../../../app";
 import { FaPlay } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export function MoreMoviesSeries() {
     const { dataMoviesSeries } = useContext(PageDataContext);
@@ -8,6 +9,7 @@ export function MoreMoviesSeries() {
 
     function getIdMoviesOrSeries(id: string | undefined) {
         event?.stopImmediatePropagation();
+        console.log(id)
         if (setImdbID && id) setImdbID(id)
     }
 
@@ -22,15 +24,17 @@ export function MoreMoviesSeries() {
                             key={dataMoviesSeries?.title + "-id-" + dataMovieSeries.imdbID}
                             className="relative group/play bg-black/50 rounded-md border border-gray-100 z-50 cursor-pointer"
                         >
-                            <img
-                                src={dataMovieSeries.Poster}
-                                className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40"
-                            />
-                            <button
-                                className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
-                                type="button">
-                                <FaPlay className="size-10 ml-1 -mr-1" />
-                            </button>
+                            <Link to="/watch">
+                                <img
+                                    src={dataMovieSeries.Poster}
+                                    className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40"
+                                />
+                                <button
+                                    className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
+                                    type="button">
+                                    <FaPlay className="size-10 ml-1 -mr-1" />
+                                </button>
+                            </Link>
                         </li>
                     ))
                 ))}

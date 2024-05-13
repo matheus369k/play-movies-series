@@ -1,9 +1,6 @@
 import React, { createContext, useState } from "react";
-import { Footer } from "./components/footer/footer";
-import { Header } from "./components/header/header";
-import { Home } from "./components/pages/home/homes";
-import { MovieOrSeries } from "./components/pages/movie-series/movie-series";
-import { MoreMoviesSeries } from "./components/pages/more/more-movie-series";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router/appRouter";
 
 interface IdContext {
   imdbID?: string
@@ -38,14 +35,7 @@ export function App() {
     <div className="bg-gray-950 text-gray-100 min-h-screen font-inter tracking-wider">
       <IdContext.Provider value={{ imdbID, setImdbID }}>
         <PageDataContext.Provider value={{ dataMoviesSeries, setDataMoviesSeries }}>
-          <Header />
-          {imdbID !== "" || dataMoviesSeries?.data
-            ? imdbID === ""
-              ? <MoreMoviesSeries />
-              : <MovieOrSeries />
-            : <Home />
-          }
-          <Footer />
+          <RouterProvider router={router} />
         </PageDataContext.Provider>
       </IdContext.Provider>
     </div>

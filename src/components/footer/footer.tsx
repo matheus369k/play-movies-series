@@ -16,17 +16,17 @@ export function Footer() {
             </h1>
             <div className="flex justify-between items-center">
                 <ul className="flex gap-6">
-                    <li><BsTwitterX className="w-8 h-auto" /></li>
-                    <li><FaInstagramSquare className="w-8 h-auto" /></li>
-                    <li><FaFacebook className="w-8 h-auto" /></li>
-                    <li><FaYoutube className="w-8 h-auto" /></li>
-                    <li><MdEmail className="w-8 h-auto" /></li>
+                    <li><BsTwitterX className="w-8 h-auto cursor-pointer" /></li>
+                    <li><FaInstagramSquare className="w-8 h-auto cursor-pointer" /></li>
+                    <li><FaFacebook className="w-8 h-auto cursor-pointer" /></li>
+                    <li><FaYoutube className="w-8 h-auto cursor-pointer" /></li>
+                    <li><MdEmail className="w-8 h-auto cursor-pointer" /></li>
                 </ul>
                 <nav className="flex gap-6 list-none">
-                    <li><a href="">Lançamentos</a></li>
-                    <li><a href="">Recomendados</a></li>
-                    <li><a href="">Filmes</a></li>
-                    <li><a href="">Series</a></li>
+                    <li><a href="#">Lançamentos</a></li>
+                    <li><a href="#">Recomendados</a></li>
+                    <li><a href="#">Filmes</a></li>
+                    <li><a href="#">Series</a></li>
                 </nav>
             </div>
         </footer>

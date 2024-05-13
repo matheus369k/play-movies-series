@@ -2,6 +2,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import { IdContext, PageDataContext } from "../../app";
 import { GrPrevious } from "react-icons/gr";
 import { useContext } from "react";
+import { Link } from "react-router-dom";
 
 export function Header() {
     const { imdbID, setImdbID } = useContext(IdContext);
@@ -19,18 +20,17 @@ export function Header() {
             {imdbID === "" && !dataMoviesSeries?.data
                 ? <h1
                     className="text-gray-100 font-bold text-4xl">
-                    <span
-                        className="text-red-600">
+                    <span className="text-red-600">
                         Play
                     </span> Filmes e Series
                 </h1>
-                : <button
+                : <Link
+                    to="/"
                     onClick={() => clickToBackPage()}
-                    type="button"
                     title="Volta"
                 >
                     <GrPrevious className="w-11 h-auto" />
-                </button>
+                </Link>
             }
             <form
                 autoComplete="off"

@@ -65,7 +65,7 @@ export function MovieOrSeries() {
                             <i className="cursor-pointer"><TbPlayerTrackPrevFilled className="size-6" /></i>
                             <i className="cursor-pointer"><FaPlay className="size-6" /></i>
                             <i className="cursor-pointer"><TbPlayerTrackNextFilled className="size-6" /></i>
-                            <input value={0} type="range" className="w-full h-4 bg-white" />
+                            <input defaultValue={0} type="range" className="w-full h-4 bg-white" />
                             <span className="select-none">00.00</span>
                             <i className="cursor-pointer"><MdFullscreen className="size-6" /></i>
                         </div>

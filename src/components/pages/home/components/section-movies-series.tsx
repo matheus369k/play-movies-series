@@ -2,6 +2,7 @@ import axios from "axios"
 import { useContext, useEffect, useState } from "react"
 import { FaPlay } from "react-icons/fa";
 import { IdContext, PageDataContext } from "../../../../app";
+import { Link } from "react-router-dom";
 
 interface TMoviesSeries {
     Poster: string
@@ -21,7 +22,7 @@ interface PropsSectionMovieAndSeries {
 export function SectionMoviesAndSeries({ type, page, title, year }: PropsSectionMovieAndSeries) {
     const [production, setProduction] = useState<TMoviesSeries[]>()
     const { setImdbID } = useContext(IdContext);
-    const {setDataMoviesSeries} = useContext(PageDataContext);
+    const { setDataMoviesSeries } = useContext(PageDataContext);
 
     useEffect(() => {
         const url = `https://www.omdbapi.com/?apikey=d074a25e&s=all&plot=full&y=${year}&type=${type}&page=${page}`;
@@ -39,7 +40,7 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
 
     function getDataOfMoviesOrSeries() {
         if (setImdbID) setImdbID("");
-        if (setDataMoviesSeries && production) setDataMoviesSeries({data: production ,title: title})
+        if (setDataMoviesSeries && production) setDataMoviesSeries({ data: production, title: title })
     }
 
     return (
@@ -48,7 +49,13 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
                 className="flex justify-between items-center pl-3 border-l-8 border-l-red-600 mb-6 rounded-l"
             >
                 <h2 className="font-bold text-4xl">{title}</h2>
-                <a onClick={() => getDataOfMoviesOrSeries()} className="text-gray-600 hover:text-gray-100 cursor-pointer">More</a>
+                <Link
+                    to="/more"
+                    onClick={() => getDataOfMoviesOrSeries()}
+                    className="text-gray-600 hover:text-gray-100 cursor-pointer"
+                >
+                    More
+                </Link>
             </span>
             <ul className="flex gap-6 px-10">
                 {production?.slice(0, 6).map((MovieSeries) => (
@@ -57,15 +64,17 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
                         key={"release-id-" + MovieSeries.imdbID}
                         className="relative group/play bg-black/50 rounded-md border border-gray-100 w-max h-max z-50 cursor-pointer"
                     >
-                        <img
-                            src={MovieSeries.Poster}
-                            className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40"
-                        />
-                        <button
-                            className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
-                            type="button">
-                            <FaPlay className="size-10 ml-1 -mr-1" />
-                        </button>
+                        <Link to="/watch">
+                            <img
+                                src={MovieSeries.Poster}
+                                className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40"
+                            />
+                            <button
+                                className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
+                                type="button">
+                                <FaPlay className="size-10 ml-1 -mr-1" />
+                            </button>
+                    </Link>
                     </li>
                 ))
                 }
