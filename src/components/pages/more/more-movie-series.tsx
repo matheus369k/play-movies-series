@@ -9,13 +9,13 @@ export function MoreMoviesSeries() {
 
     function getIdMoviesOrSeries(id: string | undefined) {
         event?.stopImmediatePropagation();
-        console.log(id)
+
         if (setImdbID && id) setImdbID(id)
     }
 
     return (
         <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
-            <h2 className="font-bold text-4xl text-center">{dataMoviesSeries?.title}</h2>
+            <h2 className="font-bold text-4xl text-center mb-10">{dataMoviesSeries?.title}</h2>
             <ul className="flex flex-wrap gap-6 px-10">
                 {Array.from({ length: 6 }).map(() => (
                     dataMoviesSeries?.data?.map(dataMovieSeries => (

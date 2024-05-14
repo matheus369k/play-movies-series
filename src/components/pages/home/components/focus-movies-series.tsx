@@ -71,7 +71,7 @@ export function MoviesAndSeriesInFocus() {
                             <Link
                                 to="/watch"
                                 onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
-                                className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-50 cursor-pointer"
+                                className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
                             >
                                 <img src={moviesSeries?.Poster} className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40" />
                                 <button

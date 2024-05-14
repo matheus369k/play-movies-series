@@ -62,7 +62,7 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
                     <li
                         onClick={() => getIdMoviesOrSeries(MovieSeries.imdbID)}
                         key={"release-id-" + MovieSeries.imdbID}
-                        className="relative group/play bg-black/50 rounded-md border border-gray-100 w-max h-max z-50 cursor-pointer"
+                        className="relative group/play bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
                     >
                         <Link to="/watch">
                             <img
