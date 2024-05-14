@@ -35,12 +35,25 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
 
     function getIdMoviesOrSeries(id: string | undefined) {
         event?.stopImmediatePropagation();
-        if (setImdbID && id) setImdbID(id)
+
+        if (setImdbID && id) setImdbID(id);
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth"
+        });
     }
 
     function getDataOfMoviesOrSeries() {
         if (setImdbID) setImdbID("");
-        if (setDataMoviesSeries && production) setDataMoviesSeries({ data: production, title: title })
+        if (setDataMoviesSeries && production) setDataMoviesSeries({ data: production, title: title });
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth"
+        });
     }
 
     return (
@@ -70,11 +83,12 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
                                 className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40"
                             />
                             <button
+                                onClick={() => getIdMoviesOrSeries(MovieSeries?.imdbID)}
                                 className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
                                 type="button">
                                 <FaPlay className="size-10 ml-1 -mr-1" />
                             </button>
-                    </Link>
+                        </Link>
                     </li>
                 ))
                 }

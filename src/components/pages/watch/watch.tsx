@@ -54,14 +54,14 @@ export function MovieOrSeries() {
         <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
             {movieSeriesData?.Response === "True" &&
                 <>
-                    <div className="flex flex-col group/screen justify-between bg-video w-screen h-screen max-w-4xl max-h-[530px] m-auto rounded border border-gray-500 p-3">
-                        <h2 className="font-bold text-base transition-all invisible group-hover/screen:visible">{movieSeriesData.Title}</h2>
+                    <div className="relative flex flex-col justify-between bg-video w-screen h-screen max-w-4xl max-h-[530px] m-auto rounded border border-gray-500 p-3">
+                        <h2 className="font-bold text-base transition-all">{movieSeriesData.Title}</h2>
                         <button
-                            className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/screen:visible"
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10"
                             type="button">
                             <FaPlay className="size-10 ml-1 -mr-1" />
                         </button>
-                        <div className="flex items-center gap-2 transition-all invisible group-hover/screen:visible">
+                        <div className="flex items-center gap-2 transition-all">
                             <i className="cursor-pointer"><TbPlayerTrackPrevFilled className="size-6" /></i>
                             <i className="cursor-pointer"><FaPlay className="size-6" /></i>
                             <i className="cursor-pointer"><TbPlayerTrackNextFilled className="size-6" /></i>

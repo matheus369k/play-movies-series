@@ -20,9 +20,15 @@ export function Search() {
     function getIdMoviesOrSeries(id: string | undefined) {
         event?.stopImmediatePropagation();
 
-       (document.querySelector("[name='search']") as HTMLFormElement).value = "";
+        (document.querySelector("[name='search']") as HTMLFormElement).value = "";
 
-        if (setImdbID && id) setImdbID(id)
+        if (setImdbID && id) setImdbID(id);
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth"
+        });
     }
 
     return (

@@ -13,8 +13,6 @@ export function Header() {
 
         if (setImdbID) setImdbID("");
         if (setDataMoviesSeries) setDataMoviesSeries({})
-
-        window.history.back();
     }
 
     function handleSubimtForm() {
@@ -24,6 +22,11 @@ export function Header() {
         if (setDataMoviesSeries) setDataMoviesSeries({...dataMoviesSeries, title: inputSearch.value});
 
         inputSearch.value = "";
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth"
+        })
     }
 
     return (
@@ -37,13 +40,13 @@ export function Header() {
                         Play
                     </span> Filmes e Series
                 </h1>
-                : <button
+                : <Link
+                    to="/"
                     onClick={() => clickToBackPage()}
-                    type="button"
                     title="Volta"
                 >
                     <GrPrevious className="w-11 h-auto" />
-                </button>
+                </Link>
             }
             <form
                 onSubmit={handleSubimtForm}

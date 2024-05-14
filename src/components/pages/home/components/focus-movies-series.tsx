@@ -58,6 +58,12 @@ export function MoviesAndSeriesInFocus() {
 
     function getIdMoviesOrSeries(id: string | undefined) {
         if (setImdbID && id) setImdbID(id)
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth"
+        })
     }
 
     return (
@@ -68,19 +74,20 @@ export function MoviesAndSeriesInFocus() {
                     className={`relative max-w-7xl mx-auto w-full h-screen flex items-center flex-col gap-10 justify-end pb-10`}
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
-                            <Link
-                                to="/watch"
+                        <Link
+                            to="/watch"
+                            onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
+                            className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
+                        >
+                            <img src={moviesSeries?.Poster} className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40" />
+                            <button
                                 onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
-                                className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
+                                className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
+                                type="button"
                             >
-                                <img src={moviesSeries?.Poster} className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40" />
-                                <button
-                                    className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
-                                    type="button"
-                                >
-                                    <FaPlay className="size-10 ml-1 -mr-1" />
-                                </button>
-                            </Link>
+                                <FaPlay className="size-10 ml-1 -mr-1" />
+                            </button>
+                        </Link>
                         <p className="select-none font-bold">
                             <span className="text-gray-200">Genero: </span>{moviesSeries?.Genre}
                             <span className="text-gray-200"> - Lançamento: </span>{moviesSeries?.Released}
