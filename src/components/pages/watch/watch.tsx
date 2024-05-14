@@ -41,8 +41,15 @@ export function MovieOrSeries() {
     const [movieSeriesData, setMovieSeriesData] = useState<FMoviesSeriesInFocus>();
 
     useEffect(() => {
-        const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${imdbID}`;
-        axios.get(url).then(resp => setMovieSeriesData(resp.data))
+        const urlFeatch = `https://www.omdbapi.com/?apikey=d074a25e&i=${imdbID}`;
+        axios.get(urlFeatch).then(resp => setMovieSeriesData(resp.data))
+        
+        if (imdbID === undefined || imdbID === null) return;
+
+        const newUrl = new URL(window.location.toString());
+        newUrl.searchParams.set("id", imdbID);
+
+        window.history.pushState({}, "", newUrl);
     }, [imdbID])
 
     function randowYearNumber() {

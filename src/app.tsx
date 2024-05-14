@@ -3,13 +3,13 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./router/appRouter";
 
 interface IdContext {
-  imdbID?: string
-  setImdbID?: React.Dispatch<React.SetStateAction<string>>
+  imdbID?: string | null
+  setImdbID?: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 interface TPageDataContext {
   dataMoviesSeries?: TStateDataMoviesSeries
-  setDataMoviesSeries?: React.Dispatch<React.SetStateAction<TStateDataMoviesSeries | undefined>>
+  setDataMoviesSeries?: React.Dispatch<React.SetStateAction<TStateDataMoviesSeries>>
 }
 interface TMoviesSeries {
   Poster: string
@@ -28,8 +28,15 @@ export const IdContext = createContext<IdContext>({});
 export const PageDataContext = createContext<TPageDataContext>({});
 
 export function App() {
-  const [imdbID, setImdbID] = useState("");
-  const [dataMoviesSeries, setDataMoviesSeries] = useState<TStateDataMoviesSeries>();
+  const [imdbID, setImdbID] = useState(() => {
+    const url = new URL(window.location.toString());
+
+    if (url.searchParams.has("id")) {
+      return url.searchParams.get("id");
+    }
+    return "";
+  });
+  const [dataMoviesSeries, setDataMoviesSeries] = useState<TStateDataMoviesSeries>({});
 
   return (
     <div className="bg-gray-950 text-gray-100 min-h-screen font-inter tracking-wider">
