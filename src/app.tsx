@@ -36,7 +36,17 @@ export function App() {
     }
     return "";
   });
-  const [dataMoviesSeries, setDataMoviesSeries] = useState<TStateDataMoviesSeries>({});
+  const [dataMoviesSeries, setDataMoviesSeries] = useState<TStateDataMoviesSeries>(()=>{
+    const url = new URL(window.location.toString());
+
+    if (url.searchParams.has("search")) {
+        return {
+          data: undefined ,
+          title: url.searchParams.get("search")?.split("=")[0].replace("+", " ")
+        };
+    }
+    return {data: undefined, title: ""};
+  });
 
   return (
     <div className="bg-gray-950 text-gray-100 min-h-screen font-inter tracking-wider">

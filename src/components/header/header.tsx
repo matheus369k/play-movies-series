@@ -19,7 +19,7 @@ export function Header() {
         event?.preventDefault();
 
         const inputSearch = (document.querySelector("[name='search']") as HTMLFormElement);
-        if (setDataMoviesSeries) setDataMoviesSeries({...dataMoviesSeries, title: inputSearch.value});
+        if (setDataMoviesSeries) setDataMoviesSeries({ ...dataMoviesSeries, title: inputSearch.value });
 
         inputSearch.value = "";
         window.scrollTo({
@@ -48,13 +48,13 @@ export function Header() {
                     <GrPrevious className="w-11 h-auto" />
                 </Link>
             }
-            <form
-                onSubmit={handleSubimtForm}
-                autoComplete="off"
-                method="get"
-                className="relative text-gray-500"
-            >
-                <Link to="search">
+            <Link to="/search">
+                <form
+                    onSubmit={handleSubimtForm}
+                    autoComplete="off"
+                    method="get"
+                    className="relative text-gray-500"
+                >
                     <label
                         htmlFor="search">
                         <IoSearchOutline className="absolute top-1/2 left-2 -translate-y-1/2 size-8 z-10" />
@@ -66,8 +66,8 @@ export function Header() {
                         id="search"
                         placeholder="Pesquisar..."
                     />
-                </Link>
-            </form>
+                </form>
+            </Link>
         </header>
     )
 }
