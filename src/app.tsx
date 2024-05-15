@@ -22,6 +22,10 @@ interface TMoviesSeries {
 interface TStateDataMoviesSeries {
   data?: TMoviesSeries[]
   title?: string
+  totalPages?: number
+  currentPage?: number
+  type?: string
+  year?: number
 }
 
 export const IdContext = createContext<IdContext>({});
@@ -42,10 +46,12 @@ export function App() {
     if (url.searchParams.has("search")) {
         return {
           data: undefined ,
-          title: url.searchParams.get("search")?.split("=")[0].replace("+", " ")
+          title: url.searchParams.get("search")?.split("=")[0].replace("+", " "),
+          totalPages: 1,
+          currentPage: 1
         };
     }
-    return {data: undefined, title: ""};
+    return {data: undefined, title: "", totalPages: 1, currentPage: 1};
   });
 
   return (

@@ -42,7 +42,15 @@ export function MovieOrSeries() {
 
     useEffect(() => {
         const urlFeatch = `https://www.omdbapi.com/?apikey=d074a25e&i=${imdbID}`;
-        axios.get(urlFeatch).then(resp => setMovieSeriesData(resp.data))
+        axios.get(urlFeatch).then(resp => {
+            if (resp.data === undefined) {
+                throw new Error("Error from connection")
+            };
+
+            setMovieSeriesData(resp.data)
+        }).catch(()=>{
+            window.location.href = "/"
+        });
         
         if (imdbID === undefined || imdbID === null) return;
 

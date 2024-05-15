@@ -30,6 +30,8 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
         axios.get(url)
             .then((resp) => {
                 setProduction(resp.data.Search)
+            }).catch(()=>{
+                window.location.href = "/"
             });
     }, [])
 
@@ -47,7 +49,16 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
 
     function getDataOfMoviesOrSeries() {
         if (setImdbID) setImdbID("");
-        if (setDataMoviesSeries && production) setDataMoviesSeries({ data: production, title: title });
+        if (setDataMoviesSeries && production) {
+            setDataMoviesSeries({ 
+                data: production, 
+                title: title, 
+                type: type,
+                year: year,
+                currentPage: page,
+                totalPages: 1 
+            });
+    }
 
         window.scrollTo({
             top: 0,
