@@ -2,17 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    --bg-url: url(../../public/focus-bg-images/transformers.webp);
-}
-
-@layer {/* 
-    .bg-focus-movie {
-        background-image: linear-gradient(0deg, hsl(0, 0%, 0%, .8), hsl(0, 0%, 0%, .8)), var(--bg-url);
-        background-position: top center;
-        background-repeat: no-repeat;
-        background-size: cover;
-    } */
+@layer {
     .bg-video {
         background-image: linear-gradient(0deg, hsl(0, 0%, 0%, .8), hsl(0, 0%, 0%, .8)), url(./src/assets/bg-play.jpg);
         background-position: top center;
