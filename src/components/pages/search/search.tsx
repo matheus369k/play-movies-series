@@ -13,7 +13,7 @@ export function Search() {
     const { setImdbID } = useContext(IdContext);
 
     useEffect(() => {
-        const url = `https://www.omdbapi.com/?apikey=d074a25e&s=${dataMoviesSeries?.title}&page=${dataMoviesSeries?.currentPage}`;
+        const url = `https://www.omdbapi.com/?apikey=d074a25e&s=${dataMoviesSeries?.title || "all"}&page=${dataMoviesSeries?.currentPage}`;
         axios.get(url).then(resp => {
             if (setDataMoviesSeries) {
                 setDataMoviesSeries({
@@ -24,7 +24,7 @@ export function Search() {
             }
         });
 
-        if (dataMoviesSeries?.title === undefined) return;
+        if (dataMoviesSeries?.title === undefined || dataMoviesSeries?.title === "") return;
 
         const newUrl = new URL(window.location.toString());
         const searchConversionURLType = new URLSearchParams(dataMoviesSeries?.title).toString();

@@ -2,9 +2,10 @@ import axios from "axios"
 import { FaPlay } from "react-icons/fa";
 import { GrNext } from "react-icons/gr";
 import { GrPrevious } from "react-icons/gr";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { IdContext } from "../../../../app";
 import { Link } from "react-router-dom";
+import { dbFocusDatas } from "../../../../data/focus-bg-id";
 
 interface FMoviesSeriesInFocus {
     Title?: string
@@ -38,15 +39,15 @@ interface FMoviesSeriesInFocus {
 
 export function MoviesAndSeriesInFocus() {
     const [moviesSeries, setMoviesSeries] = useState<FMoviesSeriesInFocus>({ index: 0, Response: "False" });
-    const MoviesSeriesId = ["tt5090568", "tt14539740", "tt0944947", "tt1190634", "tt6718170", "tt3794354"];
+    const focusProduction = dbFocusDatas[moviesSeries.index];
     const { setImdbID } = useContext(IdContext);
 
     useEffect(() => {
-        const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${MoviesSeriesId[moviesSeries.index]}`;
+        const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${focusProduction.imdbid}`;
         axios.get(url).then(response => {
-            setMoviesSeries({ ...response.data, index: moviesSeries.index })
-        })
-    }, [moviesSeries?.index])
+            setMoviesSeries({ ...response.data, index: moviesSeries.index})
+        });
+    }, [moviesSeries.index])
 
     function passToNextMovieSeries() {
         setMoviesSeries({ ...moviesSeries, index: Number(moviesSeries.index) + 1 });
@@ -66,12 +67,14 @@ export function MoviesAndSeriesInFocus() {
         })
     }
 
+    console.log("re-render");
+
     return (
-        <div className="relative min-h-screen bg-focus-movie before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent">
+        <div className={`relative min-h-screen after:bg-[url('../assets/bg-play.jpg')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
             {moviesSeries.Response === "True" &&
                 <div
                     key={moviesSeries?.imdbID}
-                    className={`relative max-w-7xl mx-auto w-full h-screen flex items-center flex-col gap-10 justify-end pb-10`}
+                    className={`relative max-w-7xl mx-auto w-full h-screen flex items-center flex-col gap-10 justify-end pb-10 z-40`}
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
                         <Link

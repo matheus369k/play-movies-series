@@ -52,7 +52,7 @@ export function MovieOrSeries() {
             window.location.href = "/"
         });
         
-        if (imdbID === undefined || imdbID === null) return;
+        if (imdbID === undefined || imdbID === null || imdbID === "") return;
 
         const newUrl = new URL(window.location.toString());
         newUrl.searchParams.set("id", imdbID);
