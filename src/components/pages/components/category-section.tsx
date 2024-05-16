@@ -1,8 +1,9 @@
 import axios from "axios"
 import { useContext, useEffect, useState } from "react"
 import { FaPlay } from "react-icons/fa";
-import { IdContext, PageDataContext } from "../../../../app";
+import { IdContext, PageDataContext } from "../../../app";
 import { Link } from "react-router-dom";
+import { ButtonPlay } from "./button-play";
 
 interface TMoviesSeries {
     Poster: string
@@ -19,7 +20,7 @@ interface PropsSectionMovieAndSeries {
     year: number
 }
 
-export function SectionMoviesAndSeries({ type, page, title, year }: PropsSectionMovieAndSeries) {
+export function CategorySection({ type, page, title, year }: PropsSectionMovieAndSeries) {
     const [production, setProduction] = useState<TMoviesSeries[]>()
     const { setImdbID } = useContext(IdContext);
     const { setDataMoviesSeries } = useContext(PageDataContext);
@@ -30,7 +31,7 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
         axios.get(url)
             .then((resp) => {
                 setProduction(resp.data.Search)
-            }).catch(()=>{
+            }).catch(() => {
                 window.location.href = "/"
             });
     }, [])
@@ -50,15 +51,15 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
     function getDataOfMoviesOrSeries() {
         if (setImdbID) setImdbID("");
         if (setDataMoviesSeries && production) {
-            setDataMoviesSeries({ 
-                data: production, 
-                title: title, 
+            setDataMoviesSeries({
+                data: production,
+                title: title,
                 type: type,
                 year: year,
                 currentPage: page,
-                totalPages: 1 
+                totalPages: 1
             });
-    }
+        }
 
         window.scrollTo({
             top: 0,
@@ -93,12 +94,7 @@ export function SectionMoviesAndSeries({ type, page, title, year }: PropsSection
                                 src={MovieSeries.Poster}
                                 className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40"
                             />
-                            <button
-                                onClick={() => getIdMoviesOrSeries(MovieSeries?.imdbID)}
-                                className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
-                                type="button">
-                                <FaPlay className="size-10 ml-1 -mr-1" />
-                            </button>
+                            <ButtonPlay />
                         </Link>
                     </li>
                 ))
