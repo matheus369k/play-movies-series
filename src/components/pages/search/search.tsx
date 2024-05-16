@@ -3,10 +3,8 @@ import { useContext, useEffect } from "react";
 import { IdContext, PageDataContext } from "../../../app";
 import { FaPlay } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { GrCaretNext } from "react-icons/gr";
-import { GrChapterNext } from "react-icons/gr";
-import { GrChapterPrevious } from "react-icons/gr";
-import { GrCaretPrevious } from "react-icons/gr";
+import { Pagination } from "../components/pagination";
+import { ButtonPlay } from "../components/button-play";
 
 export function Search() {
     const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
@@ -47,30 +45,6 @@ export function Search() {
         });
     }
 
-    function passToNextPage() {
-        if (setDataMoviesSeries) {
-            setDataMoviesSeries({ ...dataMoviesSeries, currentPage: (dataMoviesSeries?.currentPage || 1) + 1 })
-        }
-    }
-
-    function passToEndPage() {
-        if (setDataMoviesSeries) {
-            setDataMoviesSeries({ ...dataMoviesSeries, currentPage: (dataMoviesSeries?.totalPages || 1) })
-        }
-    }
-
-    function passToPreviousPage() {
-        if (setDataMoviesSeries) {
-            setDataMoviesSeries({ ...dataMoviesSeries, currentPage: (dataMoviesSeries?.currentPage || 1) - 1 })
-        }
-    }
-
-    function passToStartPage() {
-        if (setDataMoviesSeries) {
-            setDataMoviesSeries({ ...dataMoviesSeries, currentPage: 1 })
-        }
-    }
-
     return (
         <section className="flex flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">
             <h2 className="font-bold text-4xl text-center mb-10">Resultado</h2>
@@ -91,11 +65,7 @@ export function Search() {
                                     src={dataSearch.Poster}
                                     className="w-44 h-64 rounded transition-all opacity-100 group-hover/play:opacity-40"
                                 />
-                                <button
-                                    className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
-                                    type="button">
-                                    <FaPlay className="size-10 ml-1 -mr-1" />
-                                </button>
+                                <ButtonPlay />
                             </Link>
                             <h3 className="text-center">{dataSearch.Title}</h3>
                             <p className="text-center">
@@ -105,42 +75,8 @@ export function Search() {
                         </li>
                     ))}
                 </ul>
-
             }
-            <div className="mx-auto flex items-center gap-3">
-                <button 
-                    disabled={dataMoviesSeries?.currentPage === 1}
-                    onClick={() => passToStartPage()} 
-                    className="size-10 bg-black rounded flex items-center justify-center text-gray-100" 
-                    type="button">
-                        <GrChapterPrevious />
-                    </button>
-                <button 
-                    disabled={dataMoviesSeries?.currentPage === 1}
-                    onClick={() => passToPreviousPage()} 
-                    className="size-10 bg-black rounded flex items-center justify-center text-gray-100" 
-                    type="button">
-                        <GrCaretPrevious />
-                    </button>
-                <p>
-                    <span>{dataMoviesSeries?.currentPage || 1} </span>/
-                    <span> {dataMoviesSeries?.totalPages || 1}</span>
-                </p>
-                <button 
-                    disabled={dataMoviesSeries?.currentPage === dataMoviesSeries?.totalPages}
-                    onClick={() => passToNextPage()} 
-                    className="size-10 bg-black rounded flex items-center justify-center text-gray-100" 
-                    type="button">
-                        <GrCaretNext />
-                    </button>
-                <button 
-                    disabled={dataMoviesSeries?.currentPage === dataMoviesSeries?.totalPages}
-                    onClick={() => passToEndPage()} 
-                    className="size-10 bg-black rounded flex items-center justify-center text-gray-100" 
-                    type="button">
-                        <GrChapterNext />
-                    </button>
-            </div>
+            <Pagination />
         </section>
     )
 }

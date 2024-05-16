@@ -1,5 +1,5 @@
-import { MoviesAndSeriesInFocus } from "./components/focus-movies-series";
-import { SectionMoviesAndSeries } from "./components/section-movies-series";
+import { Emphasis } from "./components/emphasis";
+import { CategorySection } from "../components/category-section";
 
 export function Home() {
     function randowYearNumber() {
@@ -9,11 +9,11 @@ export function Home() {
 
     return (
         <section className="flex flex-col gap-6">
-            <MoviesAndSeriesInFocus />
-            <SectionMoviesAndSeries year={2024} page={1} title="Lançamentos" type="" />
-            <SectionMoviesAndSeries year={randowYearNumber()} page={1} title="Recomendados" type="" />
-            <SectionMoviesAndSeries year={randowYearNumber()} page={1} title="Filmes" type="movie" />
-            <SectionMoviesAndSeries year={randowYearNumber()} page={1} title="Series" type="series" />
+            <Emphasis />
+            <CategorySection year={2024} page={1} title="Lançamentos" type="" />
+            <CategorySection year={randowYearNumber()} page={1} title="Recomendados" type="" />
+            <CategorySection year={randowYearNumber()} page={1} title="Filmes" type="movie" />
+            <CategorySection year={randowYearNumber()} page={1} title="Series" type="series" />
         </section>
     )
 }

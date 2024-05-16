@@ -5,7 +5,8 @@ import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import { TbPlayerTrackPrevFilled } from "react-icons/tb";
 import { MdFullscreen } from "react-icons/md";
 import axios from "axios";
-import { SectionMoviesAndSeries } from "../home/components/section-movies-series";
+import { CategorySection } from "../components/category-section";
+import { ButtonPlay } from "../components/button-play";
 
 interface FMoviesSeriesInFocus {
     Title?: string
@@ -48,10 +49,10 @@ export function MovieOrSeries() {
             };
 
             setMovieSeriesData(resp.data)
-        }).catch(()=>{
+        }).catch(() => {
             window.location.href = "/"
         });
-        
+
         if (imdbID === undefined || imdbID === null || imdbID === "") return;
 
         const newUrl = new URL(window.location.toString());
@@ -71,11 +72,7 @@ export function MovieOrSeries() {
                 <>
                     <div className="relative flex flex-col justify-between bg-video w-screen h-screen max-w-4xl max-h-[530px] m-auto rounded border border-gray-500 p-3">
                         <h2 className="font-bold text-base transition-all">{movieSeriesData.Title}</h2>
-                        <button
-                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10"
-                            type="button">
-                            <FaPlay className="size-10 ml-1 -mr-1" />
-                        </button>
+                        <ButtonPlay visible />
                         <div className="flex items-center gap-2 transition-all">
                             <i className="cursor-pointer"><TbPlayerTrackPrevFilled className="size-6" /></i>
                             <i className="cursor-pointer"><FaPlay className="size-6" /></i>
@@ -105,7 +102,7 @@ export function MovieOrSeries() {
                 </>
 
             }
-            <SectionMoviesAndSeries year={randowYearNumber()} page={1} title="Veja também" type="" />
+            <CategorySection year={randowYearNumber()} page={1} title="Veja também" type="" />
         </section>
     )
 }

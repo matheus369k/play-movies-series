@@ -29,8 +29,6 @@ export function Header() {
         })
     }
 
-    console.log()
-
     return (
         <header
             className="absolute top-0 left-0 w-full p-6 flex justify-between z-50"
