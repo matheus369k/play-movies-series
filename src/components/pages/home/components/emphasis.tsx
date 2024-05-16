@@ -2,10 +2,11 @@ import axios from "axios"
 import { FaPlay } from "react-icons/fa";
 import { GrNext } from "react-icons/gr";
 import { GrPrevious } from "react-icons/gr";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { IdContext } from "../../../../app";
 import { Link } from "react-router-dom";
 import { dbFocusDatas } from "../../../../data/focus-bg-id";
+import { ButtonPlay } from "../../components/button-play";
 
 interface FMoviesSeriesInFocus {
     Title?: string
@@ -37,7 +38,7 @@ interface FMoviesSeriesInFocus {
     index: number
 }
 
-export function MoviesAndSeriesInFocus() {
+export function Emphasis() {
     const [moviesSeries, setMoviesSeries] = useState<FMoviesSeriesInFocus>({ index: 0, Response: "False" });
     const focusProduction = dbFocusDatas[moviesSeries.index];
     const { setImdbID } = useContext(IdContext);
@@ -45,7 +46,7 @@ export function MoviesAndSeriesInFocus() {
     useEffect(() => {
         const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${focusProduction.imdbid}`;
         axios.get(url).then(response => {
-            setMoviesSeries({ ...response.data, index: moviesSeries.index})
+            setMoviesSeries({ ...response.data, index: moviesSeries.index })
         });
     }, [moviesSeries.index])
 
@@ -67,8 +68,6 @@ export function MoviesAndSeriesInFocus() {
         })
     }
 
-    console.log("re-render");
-
     return (
         <div className={`relative min-h-screen after:bg-[url('../assets/bg-play.jpg')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
             {moviesSeries.Response === "True" &&
@@ -83,13 +82,7 @@ export function MoviesAndSeriesInFocus() {
                             className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
                         >
                             <img src={moviesSeries?.Poster} className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40" />
-                            <button
-                                onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
-                                className="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 group-hover/play:visible"
-                                type="button"
-                            >
-                                <FaPlay className="size-10 ml-1 -mr-1" />
-                            </button>
+                            <ButtonPlay />
                         </Link>
                         <p className="select-none font-bold">
                             <span className="text-gray-200">Genero: </span>{moviesSeries?.Genre}
@@ -98,14 +91,12 @@ export function MoviesAndSeriesInFocus() {
                         </p>
                         <p className="max-w-[80%] text-center font-normal">{moviesSeries?.Plot}</p>
                     </div>
-                    <button
+                    <Link
+                        to="/watch"
                         onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
-                        className="border border-gray-100 bg-gray-200/20 rounded-full p-4 hover:bg-gray-200/10 cursor-pointer transition-all"
-                        type="button">
-                        <Link to="/watch">
-                            <FaPlay className="size-10 ml-1 -mr-1" />
-                        </Link>
-                    </button>
+                    >
+                        <ButtonPlay visible fluxDefault />
+                    </Link>
 
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6">
                         <button disabled={moviesSeries?.index === 0} onClick={() => passToPreviousMovieSeries()} className="transition-all hover:scale-105" type="button" title="Volta">
