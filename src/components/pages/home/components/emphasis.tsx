@@ -1,10 +1,9 @@
 import axios from "axios"
-import { FaPlay } from "react-icons/fa";
 import { GrNext } from "react-icons/gr";
 import { GrPrevious } from "react-icons/gr";
 import { useContext, useEffect, useState } from "react";
 import { IdContext } from "../../../../app";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { dbFocusDatas } from "../../../../data/focus-bg-id";
 import { ButtonPlay } from "../../components/button-play";
 
@@ -42,6 +41,7 @@ export function Emphasis() {
     const [moviesSeries, setMoviesSeries] = useState<FMoviesSeriesInFocus>({ index: 0, Response: "False" });
     const focusProduction = dbFocusDatas[moviesSeries.index];
     const { setImdbID } = useContext(IdContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${focusProduction.imdbid}`;
@@ -66,6 +66,8 @@ export function Emphasis() {
             left: 0,
             behavior: "smooth"
         })
+
+        navigate("/watch")
     }
 
     return (
@@ -76,14 +78,13 @@ export function Emphasis() {
                     className={`relative max-w-7xl mx-auto w-full h-screen flex items-center flex-col gap-10 justify-end pb-10 z-40`}
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
-                        <Link
-                            to="/watch"
+                        <div
                             onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
                             className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
                         >
                             <img src={moviesSeries?.Poster} className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40" />
                             <ButtonPlay />
-                        </Link>
+                        </div>
                         <p className="select-none font-bold">
                             <span className="text-gray-200">Genero: </span>{moviesSeries?.Genre}
                             <span className="text-gray-200"> - Lançamento: </span>{moviesSeries?.Released}
@@ -91,12 +92,11 @@ export function Emphasis() {
                         </p>
                         <p className="max-w-[80%] text-center font-normal">{moviesSeries?.Plot}</p>
                     </div>
-                    <Link
-                        to="/watch"
+                    <div
                         onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
                     >
                         <ButtonPlay visible fluxDefault />
-                    </Link>
+                    </div>
 
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6">
                         <button disabled={moviesSeries?.index === 0} onClick={() => passToPreviousMovieSeries()} className="transition-all hover:scale-105" type="button" title="Volta">

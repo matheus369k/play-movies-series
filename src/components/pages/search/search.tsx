@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect } from "react";
 import { IdContext, PageDataContext } from "../../../app";
-import { FaPlay } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Pagination } from "../components/pagination";
 import { ButtonPlay } from "../components/button-play";
@@ -25,7 +24,7 @@ export function Search() {
         if (dataMoviesSeries?.title === undefined || dataMoviesSeries?.title === "") return;
 
         const newUrl = new URL(window.location.toString());
-        const searchConversionURLType = new URLSearchParams(dataMoviesSeries?.title).toString();
+        const searchConversionURLType = new URLSearchParams(dataMoviesSeries.title).toString();
 
         newUrl.searchParams.set("search", searchConversionURLType);
         window.history.pushState({}, "", newUrl);
