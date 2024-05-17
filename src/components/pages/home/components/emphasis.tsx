@@ -6,40 +6,12 @@ import { IdContext } from "../../../../app";
 import { useNavigate } from "react-router";
 import { dbFocusDatas } from "../../../../data/focus-bg-id";
 import { ButtonPlay } from "../../components/button-play";
-
-interface FMoviesSeriesInFocus {
-    Title?: string
-    Year?: string
-    Rated?: string
-    Released?: string
-    Runtime?: string
-    Genre?: string
-    Director?: string
-    Writer?: string
-    Actors?: string
-    Plot?: string
-    Language?: string
-    Country?: string
-    Awards?: string
-    Poster?: string
-    Ratings?: { Source: string, Value: string }[]
-    Metascore?: string
-    imdbRating?: string
-    imdbVotes?: string
-    imdbID?: string
-    Type?: string
-    DVD?: string
-    BoxOffice?: string
-    Production?: string
-    totalSeasons?: string
-    Website?: string
-    Response: string
-    index: number
-}
+import { getIdMoviesOrSeries } from "../../functions/get-id-movies-series";
+import { FMoviesSeriesInFocus } from "../../../../types";
 
 export function Emphasis() {
     const [moviesSeries, setMoviesSeries] = useState<FMoviesSeriesInFocus>({ index: 0, Response: "False" });
-    const focusProduction = dbFocusDatas[moviesSeries.index];
+    const focusProduction = dbFocusDatas[moviesSeries?.index || 0];
     const { setImdbID } = useContext(IdContext);
     const navigate = useNavigate();
 
@@ -58,18 +30,6 @@ export function Emphasis() {
         setMoviesSeries({ ...moviesSeries, index: Number(moviesSeries.index) - 1 });
     }
 
-    function getIdMoviesOrSeries(id: string | undefined) {
-        if (setImdbID && id) setImdbID(id)
-
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth"
-        })
-
-        navigate("/watch")
-    }
-
     return (
         <div className={`relative min-h-screen after:bg-[url('../assets/bg-play.jpg')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
             {moviesSeries.Response === "True" &&
@@ -79,7 +39,7 @@ export function Emphasis() {
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
                         <div
-                            onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
+                            onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID, setImdbID, navigate)}
                             className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
                         >
                             <img src={moviesSeries?.Poster} className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40" />
@@ -93,7 +53,7 @@ export function Emphasis() {
                         <p className="max-w-[80%] text-center font-normal">{moviesSeries?.Plot}</p>
                     </div>
                     <div
-                        onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID)}
+                        onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID, setImdbID, navigate)}
                     >
                         <ButtonPlay visible fluxDefault />
                     </div>

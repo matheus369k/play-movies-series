@@ -1,19 +1,4 @@
-interface TMoviesSeries {
-    Poster: string
-    Title: string
-    Type: string
-    Year: string
-    imdbID: string
-}
-
-interface TStateDataMoviesSeries {
-    data?: TMoviesSeries[]
-    title?: string
-    totalPages?: number
-    currentPage?: number
-    type?: string
-    year?: number
-}
+import { TStateDataMoviesSeries } from "../../../types"
 
 interface TPageDataContext {
     dataMoviesSeries?: TStateDataMoviesSeries

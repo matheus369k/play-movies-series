@@ -1,13 +1,15 @@
 import axios from "axios";
 import { useContext, useEffect } from "react";
 import { IdContext, PageDataContext } from "../../../app";
-import { Link } from "react-router-dom";
 import { Pagination } from "../components/pagination";
 import { ButtonPlay } from "../components/button-play";
+import { getIdMoviesOrSeries } from "../functions/get-id-movies-series";
+import { useNavigate } from "react-router";
 
 export function Search() {
     const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
     const { setImdbID } = useContext(IdContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const url = `https://www.omdbapi.com/?apikey=d074a25e&s=${dataMoviesSeries?.title || "all"}&page=${dataMoviesSeries?.currentPage}`;
@@ -30,20 +32,6 @@ export function Search() {
         window.history.pushState({}, "", newUrl);
     }, [dataMoviesSeries?.title, dataMoviesSeries?.currentPage])
 
-    function getIdMoviesOrSeries(id: string | undefined) {
-        event?.stopImmediatePropagation();
-
-        (document.querySelector("[name='search']") as HTMLFormElement).value = "";
-
-        if (setImdbID && id) setImdbID(id);
-
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth"
-        });
-    }
-
     return (
         <section className="flex flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">
             <h2 className="font-bold text-4xl text-center mb-10">Resultado</h2>
@@ -51,13 +39,12 @@ export function Search() {
                 <ul className="grid grid-cols-5 gap-3 p-6 rounded-lg">
                     {dataMoviesSeries.data.map(dataSearch => (
                         <li
-                            onClick={() => getIdMoviesOrSeries(dataSearch.imdbID)}
+                            onClick={() => getIdMoviesOrSeries(dataSearch.imdbID, setImdbID, navigate)}
                             key={dataMoviesSeries?.title + "-id-" + dataSearch.imdbID}
                             className="flex flex-col items-center"
 
                         >
-                            <Link
-                                to="/watch"
+                            <div
                                 className="relative group/play bg-black/50 z-50 cursor-pointer"
                             >
                                 <img
@@ -65,7 +52,7 @@ export function Search() {
                                     className="w-44 h-64 rounded transition-all opacity-100 group-hover/play:opacity-40"
                                 />
                                 <ButtonPlay />
-                            </Link>
+                            </div>
                             <h3 className="text-center">{dataSearch.Title}</h3>
                             <p className="text-center">
                                 <span>{dataSearch.Type} </span>-

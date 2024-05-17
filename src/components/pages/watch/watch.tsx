@@ -7,35 +7,10 @@ import { MdFullscreen } from "react-icons/md";
 import axios from "axios";
 import { CategorySection } from "../components/category-section";
 import { ButtonPlay } from "../components/button-play";
-
-interface FMoviesSeriesInFocus {
-    Title?: string
-    Year?: string
-    Rated?: string
-    Released?: string
-    Runtime?: string
-    Genre?: string
-    Director?: string
-    Writer?: string
-    Actors?: string
-    Plot?: string
-    Language?: string
-    Country?: string
-    Awards?: string
-    Poster?: string
-    Ratings?: { Source: string, Value: string }[]
-    Metascore?: string
-    imdbRating?: string
-    imdbVotes?: string
-    imdbID?: string
-    Type?: string
-    DVD?: string
-    BoxOffice?: string
-    Production?: string
-    totalSeasons?: string
-    Website?: string
-    Response?: string
-}
+import { Cell } from "./components/cell";
+import { Icon } from "./components/icon";
+import { randomYearNumber } from "../functions/random-year";
+import { FMoviesSeriesInFocus } from "../../../types";
 
 export function MovieOrSeries() {
     const { imdbID } = useContext(IdContext);
@@ -61,11 +36,6 @@ export function MovieOrSeries() {
         window.history.pushState({}, "", newUrl);
     }, [imdbID])
 
-    function randowYearNumber() {
-        const page = Math.floor(Math.random() * 25);
-        return 2000 + page;
-    }
-
     return (
         <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
             {movieSeriesData?.Response === "True" &&
@@ -74,35 +44,35 @@ export function MovieOrSeries() {
                         <h2 className="font-bold text-base transition-all">{movieSeriesData.Title}</h2>
                         <ButtonPlay visible />
                         <div className="flex items-center gap-2 transition-all">
-                            <i className="cursor-pointer"><TbPlayerTrackPrevFilled className="size-6" /></i>
-                            <i className="cursor-pointer"><FaPlay className="size-6" /></i>
-                            <i className="cursor-pointer"><TbPlayerTrackNextFilled className="size-6" /></i>
-                            <input defaultValue={0} type="range" className="w-full h-4 bg-white" />
+                            <Icon><TbPlayerTrackPrevFilled /></Icon>
+                            <Icon><FaPlay /></Icon>
+                            <Icon><TbPlayerTrackNextFilled /></Icon>
+                            <input defaultValue={0} type="range" className="w-full h-4 bg-red" />
                             <span className="select-none">00.00</span>
-                            <i className="cursor-pointer"><MdFullscreen className="size-6" /></i>
+                            <Icon><MdFullscreen /></Icon>
                         </div>
                     </div>
                     <div className="flex gap-6 text-gray-500 m-6">
                         <img className="h-[400px] w-[290px] rounded border border-gray-500" src={movieSeriesData.Poster} />
                         <ul className="flex flex-col gap-2">
-                            <li><span className="text-gray-100">Titulo: </span>{movieSeriesData.Title}</li>
-                            <li><span className="text-gray-100">Lançamento: </span>{movieSeriesData.Released}</li>
-                            <li><span className="text-gray-100">Diretor: </span>{movieSeriesData.Director}</li>
-                            <li><span className="text-gray-100">Tipo: </span>{movieSeriesData.Type}</li>
-                            <li><span className="text-gray-100">Duração: </span>{movieSeriesData.Runtime}</li>
-                            <li><span className="text-gray-100">Nota: </span>{movieSeriesData.imdbRating}</li>
-                            <li><span className="text-gray-100">Genero: </span>{movieSeriesData.Genre}</li>
-                            <li><span className="text-gray-100">Autor: </span>{movieSeriesData.Writer}</li>
-                            <li><span className="text-gray-100">Atores: </span>{movieSeriesData.Actors}</li>
-                            <li><span className="text-gray-100">Temporadas: </span>{movieSeriesData.totalSeasons || "N/A"}</li>
-                            <li><span className="text-gray-100">Premios: </span>{movieSeriesData.Awards}</li>
-                            <li><span className="text-gray-100">Descrição: </span>{movieSeriesData.Plot}</li>
+                            <Cell title="Titulo" value={movieSeriesData.Title} />
+                            <Cell title="Lançamento" value={movieSeriesData.Released} />
+                            <Cell title="Diretor" value={movieSeriesData.Director} />
+                            <Cell title="Tipo" value={movieSeriesData.Type} />
+                            <Cell title="Duração" value={movieSeriesData.Runtime} />
+                            <Cell title="Nota" value={movieSeriesData.imdbRating} />
+                            <Cell title="Genero" value={movieSeriesData.Genre} />
+                            <Cell title="Autor" value={movieSeriesData.Writer} />
+                            <Cell title="Atores" value={movieSeriesData.Actors} />
+                            <Cell title="Temporadas" value={movieSeriesData.totalSeasons || "N/A"} />
+                            <Cell title="Premios" value={movieSeriesData.Awards} />
+                            <Cell title="Descrição" value={movieSeriesData.Plot} />
                         </ul>
                     </div>
                 </>
 
             }
-            <CategorySection year={randowYearNumber()} page={1} title="Veja também" type="" />
+            <CategorySection year={randomYearNumber()} page={1} title="Veja também" type="" />
         </section>
     )
 }

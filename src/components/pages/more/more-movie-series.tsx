@@ -4,6 +4,7 @@ import axios from "axios";
 import { Pagination } from "../components/pagination";
 import { ButtonPlay } from "../components/button-play";
 import { useNavigate } from "react-router";
+import { getIdMoviesOrSeries } from "../functions/get-id-movies-series";
 
 export function MoreMoviesSeries() {
     const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
@@ -32,19 +33,6 @@ export function MoreMoviesSeries() {
 
     }, [dataMoviesSeries?.title, dataMoviesSeries?.currentPage])
 
-    function getIdMoviesOrSeries(id: string | undefined) {
-        event?.stopImmediatePropagation();
-
-        if (setImdbID && id) setImdbID(id);
-
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth"
-        });
-        navigate("/watch");
-    }
-
     return (
         <section className="flex flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
             <h2 className="font-bold text-4xl text-center mb-10">{dataMoviesSeries?.title}</h2>
@@ -52,7 +40,7 @@ export function MoreMoviesSeries() {
                 {dataMoviesSeries?.data &&
                     dataMoviesSeries?.data.map(dataMore => (
                         <li
-                            onClick={() => getIdMoviesOrSeries(dataMore.imdbID)}
+                            onClick={() => getIdMoviesOrSeries(dataMore.imdbID, setImdbID, navigate)}
                             key={dataMoviesSeries?.title + "-id-" + dataMore.imdbID}
                             className="flex flex-col items-center"
                         >

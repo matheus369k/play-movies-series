@@ -1,6 +1,7 @@
 import React, { createContext, useState } from "react";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router/appRouter";
+import { TStateDataMoviesSeries } from "./types";
 
 interface IdContext {
   imdbID?: string | null
@@ -10,22 +11,6 @@ interface IdContext {
 interface TPageDataContext {
   dataMoviesSeries?: TStateDataMoviesSeries
   setDataMoviesSeries?: React.Dispatch<React.SetStateAction<TStateDataMoviesSeries>>
-}
-interface TMoviesSeries {
-  Poster: string
-  Title: string
-  Type: string
-  Year: string
-  imdbID: string
-}
-
-interface TStateDataMoviesSeries {
-  data?: TMoviesSeries[]
-  title?: string
-  totalPages?: number
-  currentPage?: number
-  type?: string
-  year?: number
 }
 
 export const IdContext = createContext<IdContext>({});
