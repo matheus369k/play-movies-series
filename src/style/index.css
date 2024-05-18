@@ -9,4 +9,8 @@
         background-repeat: no-repeat;
         background-size: cover;
     }
+
+    .remove-scroll::-webkit-scrollbar{
+        display: none;
+    }
 }

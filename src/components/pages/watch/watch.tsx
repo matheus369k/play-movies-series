@@ -11,10 +11,14 @@ import { Cell } from "./components/cell";
 import { Icon } from "./components/icon";
 import { randomYearNumber } from "../functions/random-year";
 import { FMoviesSeriesInFocus } from "../../../types";
+import { TbLoader2 } from "react-icons/tb";
+import { TbPlayerPauseFilled } from "react-icons/tb";
+import { BiExitFullscreen } from "react-icons/bi";
 
 export function MovieOrSeries() {
     const { imdbID } = useContext(IdContext);
     const [movieSeriesData, setMovieSeriesData] = useState<FMoviesSeriesInFocus>();
+    const [watchAction, setwatchAction] = useState({ isLoading: false, isFullScreen: false });
 
     useEffect(() => {
         const urlFeatch = `https://www.omdbapi.com/?apikey=d074a25e&i=${imdbID}`;
@@ -36,20 +40,61 @@ export function MovieOrSeries() {
         window.history.pushState({}, "", newUrl);
     }, [imdbID])
 
+    function handleClickFullScreen() {
+        setwatchAction({
+            ...watchAction,
+            isFullScreen: !watchAction.isFullScreen
+        });
+
+        document.body.classList.toggle("remove-scroll")
+
+        if (watchAction.isFullScreen) {
+            document.exitFullscreen().catch((err) => {
+                console.error("Error attempting to exit full-screen mode:", err);
+            });
+            return;
+        }
+
+        document.body.requestFullscreen().catch((err) => {
+            console.error("Error attempting to enable full-screen mode:", err);
+        });
+    }
+
     return (
-        <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
+        <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen">
             {movieSeriesData?.Response === "True" &&
                 <>
-                    <div className="relative flex flex-col justify-between bg-video w-screen h-screen max-w-4xl max-h-[530px] m-auto rounded border border-gray-500 p-3">
+                    <div className={`flex flex-col justify-between bg-black w-screen h-screen m-auto rounded border border-gray-500 p-4 group/watch z-50 ${watchAction.isFullScreen ? "fixed top-0 left-0 overflow-hidden border-none" : "relative max-w-4xl max-h-[530px]"}`}>
                         <h2 className="font-bold text-base transition-all">{movieSeriesData.Title}</h2>
-                        <ButtonPlay visible />
+                        <div className={`w-max mx-auto transition-all ${watchAction.isLoading ? "animate-spin" : ""}`}>
+                            {watchAction.isLoading
+                                ? <TbLoader2 className="size-16" />
+                                : <ButtonPlay
+                                    visible
+                                    fluxDefault
+                                    onClick={() => { setwatchAction({ ...watchAction, isLoading: true }) }}
+                                />
+                            }
+                        </div>
                         <div className="flex items-center gap-2 transition-all">
                             <Icon><TbPlayerTrackPrevFilled /></Icon>
-                            <Icon><FaPlay /></Icon>
+                            <Icon onClick={() => { setwatchAction({ ...watchAction, isLoading: !watchAction.isLoading }) }}>
+                                {watchAction.isLoading
+                                    ? <TbPlayerPauseFilled />
+                                    : <FaPlay />
+                                }
+                            </Icon>
                             <Icon><TbPlayerTrackNextFilled /></Icon>
                             <input defaultValue={0} type="range" className="w-full h-4 bg-red" />
                             <span className="select-none">00.00</span>
-                            <Icon><MdFullscreen /></Icon>
+                            <Icon
+                                onClick={() => handleClickFullScreen()}
+                            >
+                                {watchAction.isFullScreen
+                                    ? <BiExitFullscreen />
+                                    : <MdFullscreen />
+                                }
+                            </Icon>
                         </div>
                     </div>
                     <div className="flex gap-6 text-gray-500 m-6">
