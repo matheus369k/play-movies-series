@@ -8,6 +8,7 @@ import { ButtonPlay } from "../../components/button-play";
 import { getIdMoviesOrSeries } from "../../functions/get-id-movies-series";
 import { FMoviesSeriesInFocus } from "../../../../types";
 import { FeatchApiOneData } from "../../hooks/fetch-api";
+import { ButtonSwitch } from "./button-switch";
 
 export function Emphasis() {
     const [moviesSeries, setMoviesSeries] = useState<FMoviesSeriesInFocus>({ index: 0, Response: "False" });
@@ -54,12 +55,18 @@ export function Emphasis() {
                     </div>
 
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6">
-                        <button disabled={moviesSeries?.index === 0} onClick={() => passToPreviousMovieSeries()} className="transition-all hover:scale-105" type="button" title="Volta">
+                        <ButtonSwitch 
+                            disabled={moviesSeries?.index === 0} 
+                            onClick={() => passToPreviousMovieSeries()} title="Volta"
+                            >
                             <GrPrevious className="w-11 h-auto" />
-                        </button>
-                        <button disabled={moviesSeries?.index === 5} onClick={() => passToNextMovieSeries()} className="transition-all hover:scale-105" type="button" title="Avançar">
+                        </ButtonSwitch>
+                        <ButtonSwitch 
+                            disabled={moviesSeries?.index === 5} 
+                            onClick={() => passToNextMovieSeries()} title="Avançar"
+                            >
                             <GrNext className="w-11 h-auto" />
-                        </button>
+                        </ButtonSwitch>
                     </div>
                 </div>
             }
