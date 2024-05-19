@@ -1,14 +1,9 @@
-import React, { createContext, useState } from "react";
+import { createContext, useState } from "react";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router/appRouter";
-import { TPageDataContext, TStateDataMoviesSeries } from "./types";
+import { TIdContext, TPageDataContext, TStateDataMoviesSeries } from "./types";
 
-interface IdContext {
-  imdbID?: string | null
-  setImdbID?: React.Dispatch<React.SetStateAction<string | null>>
-}
-
-export const IdContext = createContext<IdContext>({});
+export const IdContext = createContext<TIdContext>({});
 export const PageDataContext = createContext<TPageDataContext>({});
 
 export function App() {

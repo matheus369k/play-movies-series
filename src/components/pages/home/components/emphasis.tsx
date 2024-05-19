@@ -6,12 +6,12 @@ import { useNavigate } from "react-router";
 import { dbFocusDatas } from "../../../../data/focus-bg-id";
 import { ButtonPlay } from "../../components/button-play";
 import { getIdMoviesOrSeries } from "../../functions/get-id-movies-series";
-import { FMoviesSeriesInFocus } from "../../../../types";
+import { TMoviesSeriesInFocus } from "../../../../types";
 import { FeatchApiOneData } from "../../hooks/fetch-api";
 import { ButtonSwitch } from "./button-switch";
 
 export function Emphasis() {
-    const [moviesSeries, setMoviesSeries] = useState<FMoviesSeriesInFocus>({ index: 0, Response: "False" });
+    const [moviesSeries, setMoviesSeries] = useState<TMoviesSeriesInFocus>({ index: 0, Response: "False" });
     const focusProduction = dbFocusDatas[moviesSeries?.index || 0];
     const { setImdbID } = useContext(IdContext);
     const navigate = useNavigate();

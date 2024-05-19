@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { FMoviesSeriesInFocus, TStateDataMoviesSeries } from "../../../types";
+import { TMoviesSeriesInFocus, TStateDataMoviesSeries } from "../../../types";
 
 export function FeatchApiPagination(
     state: TStateDataMoviesSeries | undefined,
@@ -34,8 +34,8 @@ export function FeatchApiPagination(
 }
 
 export function FeatchApiOneData(
-    state: FMoviesSeriesInFocus | undefined,
-    setState: React.Dispatch<React.SetStateAction<FMoviesSeriesInFocus>>,
+    state: TMoviesSeriesInFocus | undefined,
+    setState: React.Dispatch<React.SetStateAction<TMoviesSeriesInFocus>>,
     imdbID: string | null | undefined,
     paramsName?: string
 ){

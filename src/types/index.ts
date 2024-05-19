@@ -1,4 +1,4 @@
-export interface FMoviesSeriesInFocus {
+export interface TMoviesSeriesInFocus {
     Title?: string
     Year?: string
     Rated?: string
@@ -48,4 +48,9 @@ export interface TStateDataMoviesSeries {
 export interface TPageDataContext {
   dataMoviesSeries?: TStateDataMoviesSeries
   setDataMoviesSeries?: React.Dispatch<React.SetStateAction<TStateDataMoviesSeries>>
+}
+
+export interface TIdContext {
+  imdbID?: string | null
+  setImdbID?: React.Dispatch<React.SetStateAction<string | null>>
 }

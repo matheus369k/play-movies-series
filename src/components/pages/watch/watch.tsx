@@ -9,14 +9,14 @@ import { ButtonPlay } from "../components/button-play";
 import { Cell } from "./components/cell";
 import { Icon } from "./components/icon";
 import { randomYearNumber } from "../functions/random-year";
-import { FMoviesSeriesInFocus } from "../../../types";
+import { TMoviesSeriesInFocus } from "../../../types";
 import { TbLoader2 } from "react-icons/tb";
 import { TbPlayerPauseFilled } from "react-icons/tb";
 import { BiExitFullscreen } from "react-icons/bi";
 import { FeatchApiOneData } from "../hooks/fetch-api";
 
 export function MovieOrSeries() {
-    const [movieSeriesData, setMovieSeriesData] = useState<FMoviesSeriesInFocus>({ index: 0, Response: "False" });
+    const [movieSeriesData, setMovieSeriesData] = useState<TMoviesSeriesInFocus>({ index: 0, Response: "False" });
     const [watchAction, setwatchAction] = useState({ isLoading: false, isFullScreen: false });
     const { imdbID } = useContext(IdContext);
 
