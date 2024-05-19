@@ -1,10 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { IdContext } from "../../../app";
 import { FaPlay } from "react-icons/fa";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import { TbPlayerTrackPrevFilled } from "react-icons/tb";
 import { MdFullscreen } from "react-icons/md";
-import axios from "axios";
 import { CategorySection } from "../components/category-section";
 import { ButtonPlay } from "../components/button-play";
 import { Cell } from "./components/cell";

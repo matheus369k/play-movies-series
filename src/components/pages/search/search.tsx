@@ -1,5 +1,4 @@
-import axios from "axios";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { IdContext, PageDataContext } from "../../../app";
 import { Pagination } from "../components/pagination";
 import { ButtonPlay } from "../components/button-play";
