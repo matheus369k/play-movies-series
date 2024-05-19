@@ -82,17 +82,17 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                     More
                 </Link>
             </span>
-            <ul className="flex gap-6 px-10">
+            <ul className="flex gap-6 px-10 w-full">
                 {production?.slice(0, 6).map((MovieSeries) => (
                     <li
                         onClick={() => getIdMoviesOrSeries(MovieSeries.imdbID)}
                         key={"release-id-" + MovieSeries.imdbID}
-                        className="relative group/play bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
+                        className="relative bg-black/50 rounded-md border border-gray-100 w-max z-40 cursor-pointer group/play"
                     >
                         <Link to="/watch">
                             <img
                                 src={MovieSeries.Poster}
-                                className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40"
+                                className="w-full h-full max-h-64 max-w-44 object-cover transition-all opacity-100 group-hover/play:opacity-40"
                             />
                             <ButtonPlay />
                         </Link>
