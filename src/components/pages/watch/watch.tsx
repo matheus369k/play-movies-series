@@ -14,31 +14,14 @@ import { FMoviesSeriesInFocus } from "../../../types";
 import { TbLoader2 } from "react-icons/tb";
 import { TbPlayerPauseFilled } from "react-icons/tb";
 import { BiExitFullscreen } from "react-icons/bi";
+import { FeatchApiOneData } from "../hooks/fetch-api";
 
 export function MovieOrSeries() {
-    const { imdbID } = useContext(IdContext);
-    const [movieSeriesData, setMovieSeriesData] = useState<FMoviesSeriesInFocus>();
+    const [movieSeriesData, setMovieSeriesData] = useState<FMoviesSeriesInFocus>({ index: 0, Response: "False" });
     const [watchAction, setwatchAction] = useState({ isLoading: false, isFullScreen: false });
+    const { imdbID } = useContext(IdContext);
 
-    useEffect(() => {
-        const urlFeatch = `https://www.omdbapi.com/?apikey=d074a25e&i=${imdbID}`;
-        axios.get(urlFeatch).then(resp => {
-            if (resp.data === undefined) {
-                throw new Error("Error from connection")
-            };
-
-            setMovieSeriesData(resp.data)
-        }).catch(() => {
-            window.location.href = "/"
-        });
-
-        if (imdbID === undefined || imdbID === null || imdbID === "") return;
-
-        const newUrl = new URL(window.location.toString());
-        newUrl.searchParams.set("id", imdbID);
-
-        window.history.pushState({}, "", newUrl);
-    }, [imdbID])
+    FeatchApiOneData(movieSeriesData, setMovieSeriesData, imdbID, "id");
 
     function handleClickFullScreen() {
         setwatchAction({

@@ -1,13 +1,13 @@
-import axios from "axios"
 import { GrNext } from "react-icons/gr";
 import { GrPrevious } from "react-icons/gr";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { IdContext } from "../../../../app";
 import { useNavigate } from "react-router";
 import { dbFocusDatas } from "../../../../data/focus-bg-id";
 import { ButtonPlay } from "../../components/button-play";
 import { getIdMoviesOrSeries } from "../../functions/get-id-movies-series";
 import { FMoviesSeriesInFocus } from "../../../../types";
+import { FeatchApiOneData } from "../../hooks/fetch-api";
 
 export function Emphasis() {
     const [moviesSeries, setMoviesSeries] = useState<FMoviesSeriesInFocus>({ index: 0, Response: "False" });
@@ -15,12 +15,7 @@ export function Emphasis() {
     const { setImdbID } = useContext(IdContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${focusProduction.imdbid}`;
-        axios.get(url).then(response => {
-            setMoviesSeries({ ...response.data, index: moviesSeries.index })
-        });
-    }, [moviesSeries.index])
+    FeatchApiOneData(moviesSeries, setMoviesSeries, focusProduction.imdbid);
 
     function passToNextMovieSeries() {
         setMoviesSeries({ ...moviesSeries, index: Number(moviesSeries.index) + 1 });

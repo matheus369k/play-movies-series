@@ -1,37 +1,20 @@
-import { useContext, useEffect } from "react";
-import { IdContext, PageDataContext } from "../../../app";
-import axios from "axios";
+import { useContext } from "react";
+import { IdContext, PageDataContext } from "../../../app"
 import { Pagination } from "../components/pagination";
 import { ButtonPlay } from "../components/button-play";
 import { useNavigate } from "react-router";
 import { getIdMoviesOrSeries } from "../functions/get-id-movies-series";
+import { FeatchApiPagination } from "../hooks/fetch-api";
 
 export function MoreMoviesSeries() {
     const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
     const { setImdbID } = useContext(IdContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const url = `https://www.omdbapi.com/?apikey=d074a25e&s=all&type=${dataMoviesSeries?.type}&y=${dataMoviesSeries?.year}&page=${dataMoviesSeries?.currentPage}`;
+    const urlParams = `&s=all&type=${dataMoviesSeries?.type}&y=${dataMoviesSeries?.year}&page=${dataMoviesSeries?.currentPage}`;
+    const url = "https://www.omdbapi.com/?apikey=d074a25e"+urlParams;
 
-        axios.get(url).then(resp => {
-            if (resp.data.Search === undefined) {
-                throw new Error("Error from connection")
-            };
-
-            if (setDataMoviesSeries) {
-                setDataMoviesSeries({
-                    ...dataMoviesSeries,
-                    data: resp.data.Search,
-                    totalPages: Math.round(parseInt(resp.data.totalResults) / 10)
-                })
-            }
-        }).catch(() => {
-            window.location.href = "/"
-
-        });
-
-    }, [dataMoviesSeries?.title, dataMoviesSeries?.currentPage])
+    FeatchApiPagination(dataMoviesSeries, setDataMoviesSeries, url);
 
     return (
         <section className="flex flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">

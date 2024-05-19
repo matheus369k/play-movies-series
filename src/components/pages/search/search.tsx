@@ -5,32 +5,17 @@ import { Pagination } from "../components/pagination";
 import { ButtonPlay } from "../components/button-play";
 import { getIdMoviesOrSeries } from "../functions/get-id-movies-series";
 import { useNavigate } from "react-router";
+import { FeatchApiPagination } from "../hooks/fetch-api";
 
 export function Search() {
     const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
     const { setImdbID } = useContext(IdContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const url = `https://www.omdbapi.com/?apikey=d074a25e&s=${dataMoviesSeries?.title || "all"}&page=${dataMoviesSeries?.currentPage}`;
-        axios.get(url).then(resp => {
-            if (setDataMoviesSeries) {
-                setDataMoviesSeries({
-                    ...dataMoviesSeries,
-                    data: resp.data.Search,
-                    totalPages: Math.round(parseInt(resp.data.totalResults) / 10)
-                })
-            }
-        });
+    const urlParams = `&s=${dataMoviesSeries?.title || "all"}&page=${dataMoviesSeries?.currentPage}`;
+    const url = "https://www.omdbapi.com/?apikey=d074a25e"+urlParams;
 
-        if (dataMoviesSeries?.title === undefined || dataMoviesSeries?.title === "") return;
-
-        const newUrl = new URL(window.location.toString());
-        const searchConversionURLType = new URLSearchParams(dataMoviesSeries.title).toString();
-
-        newUrl.searchParams.set("search", searchConversionURLType);
-        window.history.pushState({}, "", newUrl);
-    }, [dataMoviesSeries?.title, dataMoviesSeries?.currentPage])
+    FeatchApiPagination(dataMoviesSeries, setDataMoviesSeries, url, "search");
 
     return (
         <section className="flex flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">

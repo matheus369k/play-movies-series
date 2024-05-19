@@ -44,3 +44,8 @@ export interface TStateDataMoviesSeries {
     type?: string
     year?: number
 }
+
+export interface TPageDataContext {
+  dataMoviesSeries?: TStateDataMoviesSeries
+  setDataMoviesSeries?: React.Dispatch<React.SetStateAction<TStateDataMoviesSeries>>
+}
