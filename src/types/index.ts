@@ -36,13 +36,13 @@ export interface TMoviesSeries {
     imdbID: string
 }
 
-export interface TStateDataMoviesSeries {
-    data?: TMoviesSeries[]
-    title?: string
-    totalPages?: number
-    currentPage?: number
-    type?: string
-    year?: number
+export interface TStateDataMoviesSeries extends TResponse{
+  data?: TMoviesSeries[]
+  title?: string
+  totalPages?: number
+  currentPage?: number
+  type?: string
+  year?: number
 }
 
 export interface TPageDataContext {
@@ -53,4 +53,9 @@ export interface TPageDataContext {
 export interface TIdContext {
   imdbID?: string | null
   setImdbID?: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+export interface TResponse{
+  data?: TMoviesSeries[]
+  loading: "loading" | "finnish" | "error"
 }
