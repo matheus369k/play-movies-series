@@ -9,9 +9,11 @@ import { getIdMoviesOrSeries } from "../../functions/get-id-movies-series";
 import { TMoviesSeriesInFocus } from "../../../../types";
 import { FeatchApiOneData } from "../../hooks/fetch-api";
 import { ButtonSwitch } from "./button-switch";
+import { Loading } from "../../components/loading";
+import { Error } from "../../components/error";
 
 export function Emphasis() {
-    const [moviesSeries, setMoviesSeries] = useState<TMoviesSeriesInFocus>({ index: 0, Response: "False" });
+    const [moviesSeries, setMoviesSeries] = useState<TMoviesSeriesInFocus>({ index: 0, Response: "False", loading: "loading" });
     const focusProduction = dbFocusDatas[moviesSeries?.index || 0];
     const { setImdbID } = useContext(IdContext);
     const navigate = useNavigate();
@@ -19,16 +21,16 @@ export function Emphasis() {
     FeatchApiOneData(moviesSeries, setMoviesSeries, focusProduction.imdbid);
 
     function passToNextMovieSeries() {
-        setMoviesSeries({ ...moviesSeries, index: Number(moviesSeries.index) + 1 });
+        setMoviesSeries({ ...moviesSeries, loading: "loading" , index: Number(moviesSeries.index) + 1 });
     }
 
     function passToPreviousMovieSeries() {
-        setMoviesSeries({ ...moviesSeries, index: Number(moviesSeries.index) - 1 });
+        setMoviesSeries({ ...moviesSeries, loading: "loading" , index: Number(moviesSeries.index) - 1 });
     }
 
     return (
         <div className={`relative min-h-screen after:bg-[url('../assets/bg-play.jpg')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
-            {moviesSeries.Response === "True" &&
+            {moviesSeries.loading === "finnish" &&
                 <div
                     key={moviesSeries?.imdbID}
                     className={`relative max-w-7xl mx-auto w-full h-screen flex items-center flex-col gap-10 justify-end pb-10 z-40`}
@@ -69,6 +71,18 @@ export function Emphasis() {
                         </ButtonSwitch>
                     </div>
                 </div>
+            }
+            {moviesSeries?.loading === "loading"
+                && <Loading
+                    message="Carregando"
+                    styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                />
+            }
+            {moviesSeries?.loading === "error"
+                && <Error
+                    message="Erro ao tentar carregar"
+                    styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                />
             }
         </div>
     )

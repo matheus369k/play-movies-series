@@ -21,7 +21,7 @@ export function Header() {
         event?.preventDefault();
 
         const inputSearch = (document.querySelector("[name='search']") as HTMLFormElement);
-        if (setDataMoviesSeries) setDataMoviesSeries({ ...dataMoviesSeries, title: inputSearch.value, loading: "loading"});
+        if (setDataMoviesSeries) setDataMoviesSeries({ ...dataMoviesSeries, currentPage: 1 ,title: inputSearch.value, loading: "loading"});
 
         inputSearch.value = "";
         window.scrollTo({

@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router/appRouter";
-import { TIdContext, TPageDataContext, TResponse, TStateDataMoviesSeries } from "./types";
+import { TIdContext, TPageDataContext, TStateDataMoviesSeries } from "./types";
 
 export const IdContext = createContext<TIdContext>({});
 export const PageDataContext = createContext<TPageDataContext>({});

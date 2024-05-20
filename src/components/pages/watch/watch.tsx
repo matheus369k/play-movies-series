@@ -14,9 +14,11 @@ import { TbLoader2 } from "react-icons/tb";
 import { TbPlayerPauseFilled } from "react-icons/tb";
 import { BiExitFullscreen } from "react-icons/bi";
 import { FeatchApiOneData } from "../hooks/fetch-api";
+import { Loading } from "../components/loading";
+import { Error } from "../components/error";
 
 export function MovieOrSeries() {
-    const [movieSeriesData, setMovieSeriesData] = useState<TMoviesSeriesInFocus>({ index: 0, Response: "False" });
+    const [movieSeriesData, setMovieSeriesData] = useState<TMoviesSeriesInFocus>({ index: 0, Response: "False", loading: "loading" });
     const [watchAction, setwatchAction] = useState({ isLoading: false, isFullScreen: false });
     const { imdbID } = useContext(IdContext);
 
@@ -96,10 +98,22 @@ export function MovieOrSeries() {
                             <Cell title="Descrição" value={movieSeriesData.Plot} />
                         </ul>
                     </div>
+                    <CategorySection year={randomYearNumber()} page={1} title="Veja também" type="" />
                 </>
 
             }
-            <CategorySection year={randomYearNumber()} page={1} title="Veja também" type="" />
+            {movieSeriesData?.loading === "loading"
+                && <Loading
+                    message="Carregando"
+                    styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                />
+            }
+            {movieSeriesData?.loading === "error"
+                && <Error
+                    message="Erro ao tentar carregar"
+                    styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                />
+            }
         </section>
     )
 }

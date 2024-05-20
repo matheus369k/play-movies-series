@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react"
 import { IdContext, PageDataContext } from "../../../app";
 import { Link } from "react-router-dom";
 import { ButtonPlay } from "./button-play";
-import { TMoviesSeries, TResponse } from "../../../types";
+import { TResponse } from "../../../types";
 import { Loading } from "./loading";
 import { Error } from "./error";
 
@@ -34,6 +34,12 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
         event?.stopImmediatePropagation();
 
         if (setImdbID && id) setImdbID(id);
+        if (setDataMoviesSeries) {
+            setDataMoviesSeries({
+                ...response,
+                loading: "loading"
+            });
+        }
 
         window.scrollTo({
             top: 0,

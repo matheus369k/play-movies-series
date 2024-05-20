@@ -1,4 +1,4 @@
-export interface TMoviesSeriesInFocus {
+export interface TMoviesSeriesInFocus extends TResponse {
     Title?: string
     Year?: string
     Rated?: string

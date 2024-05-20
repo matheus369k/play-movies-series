@@ -9,29 +9,25 @@ export function FeatchApiPagination(
     paramsName?: string
 ) {
     useEffect(() => {
-        try {
-            if (setState === undefined) throw new Error("State not found")
+        if (setState === undefined) throw new Error("State not found")
 
-            axios.get(url).then(resp => {
-                if (resp.data.Search === undefined) {
-                    throw new Error("database not found")
-                };
+        axios.get(url).then(resp => {
+            if (resp.data.Search === undefined) {
+                throw new Error("database not found")
+            };
 
-                setState({
-                    ...state,
-                    data: resp.data.Search,
-                    totalPages: Math.round(parseInt(resp.data.totalResults) / 10),
-                    loading: "finnish"
-                })
-            }).catch(() => {
-                setState({
-                    ...state,
-                    loading: "error"
-                })
-            });
-        } catch(error){
-            console.log("Error: "+error)
-        }
+            setState({
+                ...state,
+                data: resp.data.Search,
+                totalPages: Math.round(parseInt(resp.data.totalResults) / 10),
+                loading: "finnish"
+            })
+        }).catch(() => {
+            setState({
+                ...state,
+                loading: "error"
+            })
+        });
 
         if (state?.title === undefined || state?.title === "" || paramsName === undefined) return;
 
@@ -51,14 +47,17 @@ export function FeatchApiOneData(
 ) {
     useEffect(() => {
         const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${imdbID}`;
+
+        if (setState === undefined) throw new Error("state not found");
+
         axios.get(url).then(resp => {
             if (resp.data.Response === "False") throw new Error("databese not found");
-            if (setState === undefined) throw new Error("state not found");
 
-            setState({ ...resp.data, index: state?.index || 0 })
+
+            setState({ ...resp.data, loading: "finnish", index: state?.index || 0 })
 
         }).catch(() => {
-            window.location.href = "/"
+            setState({ ...state, loading: "error" })
         });
 
         if (imdbID === undefined || imdbID === "" || imdbID === null || paramsName === undefined) return;
