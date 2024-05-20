@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router/appRouter";
-import { TIdContext, TPageDataContext, TStateDataMoviesSeries } from "./types";
+import { TIdContext, TPageDataContext, TResponse, TStateDataMoviesSeries } from "./types";
 
 export const IdContext = createContext<TIdContext>({});
 export const PageDataContext = createContext<TPageDataContext>({});
@@ -15,18 +15,25 @@ export function App() {
     }
     return "";
   });
-  const [dataMoviesSeries, setDataMoviesSeries] = useState<TStateDataMoviesSeries>(()=>{
+  const [dataMoviesSeries, setDataMoviesSeries] = useState<TStateDataMoviesSeries>(() => {
     const url = new URL(window.location.toString());
 
     if (url.searchParams.has("search")) {
-        return {
-          data: undefined ,
-          title: url.searchParams.get("search")?.split("=")[0].replace("+", " "),
-          totalPages: 1,
-          currentPage: 1
-        };
+      return {
+        data: undefined,
+        title: url.searchParams.get("search")?.split("=")[0].replace("+", " "),
+        totalPages: 1,
+        currentPage: 1,
+        loading: "loading"
+      };
     }
-    return {data: undefined, title: "", totalPages: 1, currentPage: 1};
+    return {
+      data: undefined,
+      title: "",
+      totalPages: 1,
+      currentPage: 1,
+      loading: "loading"
+    };
   });
 
   return (

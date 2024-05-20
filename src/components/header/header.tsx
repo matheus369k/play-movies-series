@@ -14,14 +14,14 @@ export function Header() {
         (document.querySelector("[name='search']") as HTMLFormElement).value = "";
 
         if (setImdbID) setImdbID("");
-        if (setDataMoviesSeries) setDataMoviesSeries({})
+        if (setDataMoviesSeries) setDataMoviesSeries({loading: "loading"})
     }
 
     function handleSubimtForm() {
         event?.preventDefault();
 
         const inputSearch = (document.querySelector("[name='search']") as HTMLFormElement);
-        if (setDataMoviesSeries) setDataMoviesSeries({ ...dataMoviesSeries, title: inputSearch.value });
+        if (setDataMoviesSeries) setDataMoviesSeries({ ...dataMoviesSeries, title: inputSearch.value, loading: "loading"});
 
         inputSearch.value = "";
         window.scrollTo({

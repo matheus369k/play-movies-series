@@ -1,17 +1,11 @@
 import axios from "axios"
 import { useContext, useEffect, useState } from "react"
-import { FaPlay } from "react-icons/fa";
 import { IdContext, PageDataContext } from "../../../app";
 import { Link } from "react-router-dom";
 import { ButtonPlay } from "./button-play";
-
-interface TMoviesSeries {
-    Poster: string
-    Title: string
-    Type: string
-    Year: string
-    imdbID: string
-}
+import { TMoviesSeries, TResponse } from "../../../types";
+import { Loading } from "./loading";
+import { Error } from "./error";
 
 interface PropsSectionMovieAndSeries {
     type: string
@@ -21,7 +15,7 @@ interface PropsSectionMovieAndSeries {
 }
 
 export function CategorySection({ type, page, title, year }: PropsSectionMovieAndSeries) {
-    const [production, setProduction] = useState<TMoviesSeries[]>()
+    const [response, setResponse] = useState<TResponse>({ loading: "loading" })
     const { setImdbID } = useContext(IdContext);
     const { setDataMoviesSeries } = useContext(PageDataContext);
 
@@ -30,9 +24,9 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
 
         axios.get(url)
             .then((resp) => {
-                setProduction(resp.data.Search)
+                setResponse({ loading: "finnish", data: resp.data.Search })
             }).catch(() => {
-                window.location.href = "/"
+                setResponse({ ...response, loading: "error" })
             });
     }, [])
 
@@ -50,14 +44,15 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
 
     function getDataOfMoviesOrSeries() {
         if (setImdbID) setImdbID("");
-        if (setDataMoviesSeries && production) {
+        if (setDataMoviesSeries && response.data) {
             setDataMoviesSeries({
-                data: production,
+                ...response,
+                data: response.data,
                 title: title,
                 type: type,
                 year: year,
                 currentPage: page,
-                totalPages: 1
+                totalPages: 1,
             });
         }
 
@@ -82,24 +77,28 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                     More
                 </Link>
             </span>
-            <ul className="flex gap-6 px-10 w-full">
-                {production?.slice(0, 6).map((MovieSeries) => (
-                    <li
-                        onClick={() => getIdMoviesOrSeries(MovieSeries.imdbID)}
-                        key={"release-id-" + MovieSeries.imdbID}
-                        className="relative bg-black/50 rounded-md border border-gray-100 w-max z-40 cursor-pointer group/play"
-                    >
-                        <Link to="/watch">
-                            <img
-                                src={MovieSeries.Poster}
-                                className="w-full h-full max-h-64 max-w-44 object-cover transition-all opacity-100 group-hover/play:opacity-40"
-                            />
-                            <ButtonPlay />
-                        </Link>
-                    </li>
-                ))
-                }
-            </ul>
+            {response.loading === "finnish" &&
+                <ul className="flex gap-6 px-10 w-full">
+                    {response.data?.slice(0, 6).map((MovieSeries) => (
+                        <li
+                            onClick={() => getIdMoviesOrSeries(MovieSeries.imdbID)}
+                            key={"release-id-" + MovieSeries.imdbID}
+                            className="relative bg-black/50 rounded-md border border-gray-100 w-max z-40 cursor-pointer group/play"
+                        >
+                            <Link to="/watch">
+                                <img
+                                    src={MovieSeries.Poster}
+                                    className="w-full h-full max-h-64 max-w-44 object-cover transition-all opacity-100 group-hover/play:opacity-40"
+                                />
+                                <ButtonPlay />
+                            </Link>
+                        </li>
+                    ))
+                    }
+                </ul>
+            }
+            {response.loading === "loading" && <Loading message="Carregando" styles="my-16"/>}
+            {response.loading === "error" && <Error message="Erro ao tentar carregar" styles="my-16"/>}
         </div>
     )
 }
