@@ -37,6 +37,7 @@ export function MoreMoviesSeries() {
                                         <img
                                             src={dataMore.Poster}
                                             className="w-44 h-64 rounded transition-all opacity-100 group-hover/play:opacity-40"
+                                            alt={dataMore.Type+": "+dataMore.Title}
                                         />
                                         <ButtonPlay />
                                     </div>

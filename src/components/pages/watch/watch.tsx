@@ -82,7 +82,11 @@ export function MovieOrSeries() {
                         </div>
                     </div>
                     <div className="flex gap-6 text-gray-500 m-6">
-                        <img className="h-[400px] w-[290px] rounded border border-gray-500" src={movieSeriesData.Poster} />
+                        <img 
+                            className="h-[400px] w-[290px] rounded border border-gray-500" 
+                            src={movieSeriesData.Poster} 
+                            alt={movieSeriesData.Type+": "+movieSeriesData.Title}
+                        />
                         <ul className="flex flex-col gap-2">
                             <Cell title="Titulo" value={movieSeriesData.Title} />
                             <Cell title="Lançamento" value={movieSeriesData.Released} />

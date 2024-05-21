@@ -40,7 +40,11 @@ export function Emphasis() {
                             onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID, setImdbID, navigate)}
                             className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
                         >
-                            <img src={moviesSeries?.Poster} className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40" />
+                            <img 
+                                src={moviesSeries?.Poster} 
+                                className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40" 
+                                alt={moviesSeries.Type+": "+moviesSeries.Title}
+                            />
                             <ButtonPlay />
                         </div>
                         <p className="select-none font-bold">
@@ -59,13 +63,15 @@ export function Emphasis() {
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6">
                         <ButtonSwitch 
                             disabled={moviesSeries?.index === 0} 
-                            onClick={() => passToPreviousMovieSeries()} title="Volta"
+                            onClick={() => passToPreviousMovieSeries()} 
+                            title="Volta"
                             >
                             <GrPrevious className="w-11 h-auto" />
                         </ButtonSwitch>
                         <ButtonSwitch 
                             disabled={moviesSeries?.index === 5} 
-                            onClick={() => passToNextMovieSeries()} title="Avançar"
+                            onClick={() => passToNextMovieSeries()} 
+                            title="Avançar"
                             >
                             <GrNext className="w-11 h-auto" />
                         </ButtonSwitch>

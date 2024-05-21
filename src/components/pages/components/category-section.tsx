@@ -95,6 +95,7 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                                 <img
                                     src={MovieSeries.Poster}
                                     className="w-full h-full max-h-64 max-w-44 object-cover transition-all opacity-100 group-hover/play:opacity-40"
+                                    alt={MovieSeries.Type+": "+MovieSeries.Title}
                                 />
                                 <ButtonPlay />
                             </Link>

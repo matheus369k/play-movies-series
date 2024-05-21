@@ -37,6 +37,7 @@ export function Search() {
                                     <img
                                         src={dataSearch.Poster}
                                         className="w-44 h-64 rounded transition-all opacity-100 group-hover/play:opacity-40"
+                                        alt={dataSearch.Type+": "+dataSearch.Title}
                                     />
                                     <ButtonPlay />
                                 </div>
