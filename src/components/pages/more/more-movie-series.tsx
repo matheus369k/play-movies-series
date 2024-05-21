@@ -19,30 +19,30 @@ export function MoreMoviesSeries() {
     FeatchApiPagination(dataMoviesSeries, setDataMoviesSeries, url);
 
     return (
-        <section className="flex flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
+        <section className="flex flex-col justify-between px-2 gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
             <h2 className="font-bold text-4xl text-center mb-10">{dataMoviesSeries?.title}</h2>
             {dataMoviesSeries?.loading === "finnish" &&
                 <>
-                    <ul className="grid grid-cols-5 gap-3 p-6 rounded-lg">
+                    <ul className="flex flex-wrap pb-6 w-auto max-sm:gap-y-6">
                         {dataMoviesSeries?.data &&
                             dataMoviesSeries?.data.map(dataMore => (
                                 <li
                                     onClick={() => getIdMoviesOrSeries(dataMore.imdbID, setImdbID, navigate)}
                                     key={dataMoviesSeries?.title + "-id-" + dataMore.imdbID}
-                                    className="flex flex-col items-center"
+                                    className="flex flex-col items-center w-1/5 max-xl:w-1/4 max-md:w-1/3"
                                 >
                                     <div
                                         className="relative group/play bg-black/50 z-50 cursor-pointer"
                                     >
                                         <img
                                             src={dataMore.Poster}
-                                            className="w-44 h-64 rounded transition-all opacity-100 group-hover/play:opacity-40"
+                                            className="w-44 h-64 rounded transition-all opacity-100 group-hover/play:opacity-40 max-sm:w-28 max-sm:h-40"
                                             alt={dataMore.Type+": "+dataMore.Title}
                                         />
                                         <ButtonPlay />
                                     </div>
-                                    <h3 className="text-center">{dataMore.Title}</h3>
-                                    <p className="text-center">
+                                    <h3 className="text-center text-sm max-sm:hidden">{dataMore.Title}</h3>
+                                    <p className="text-center text-sm max-sm:hidden">
                                         <span>{dataMore.Type} </span>-
                                         <span> {dataMore.Year}</span>
                                     </p>

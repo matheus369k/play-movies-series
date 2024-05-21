@@ -16,8 +16,8 @@ interface PropsSectionMovieAndSeries {
 
 export function CategorySection({ type, page, title, year }: PropsSectionMovieAndSeries) {
     const [response, setResponse] = useState<TResponse>({ loading: "loading" })
-    const { setImdbID } = useContext(IdContext);
     const { setDataMoviesSeries } = useContext(PageDataContext);
+    const { setImdbID } = useContext(IdContext);
 
     useEffect(() => {
         const url = `https://www.omdbapi.com/?apikey=d074a25e&s=all&plot=full&y=${year}&type=${type}&page=${page}`;
@@ -70,32 +70,36 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
     }
 
     return (
-        <div className="max-w-7xl mx-auto h-fit w-full px-6 m-6">
+        <div className="max-w-7xl mx-auto h-fit w-full px-6 m-6 max-lg:m-0 max-xl:px-2">
             <span
                 className="flex justify-between items-center pl-3 border-l-8 border-l-red-600 mb-6 rounded-l"
             >
-                <h2 className="font-bold text-4xl">{title}</h2>
+                <h2 className="font-bold text-4xl max-lg:text-2xl">{title}</h2>
                 <Link
                     to="/more"
                     onClick={() => getDataOfMoviesOrSeries()}
-                    className="text-gray-600 hover:text-gray-100 cursor-pointer"
+                    className="text-gray-600 hover:text-gray-100 cursor-pointer max-lg:text-sm"
                 >
                     More
                 </Link>
             </span>
             {response.loading === "finnish" &&
-                <ul className="flex gap-6 px-10 w-full">
-                    {response.data?.slice(0, 6).map((MovieSeries) => (
+                <ul className="flex gap-6 px-10 w-full max-xl:gap-2 max-xl:px-5 max-sm:px-2">
+                    {response.data?.slice(0, 6).map((MovieSeries, index) => (
                         <li
                             onClick={() => getIdMoviesOrSeries(MovieSeries.imdbID)}
                             key={"release-id-" + MovieSeries.imdbID}
-                            className="relative bg-black/50 rounded-md border border-gray-100 w-max z-40 cursor-pointer group/play"
+                            className={`relative bg-black/50 rounded-md border border-gray-100 w-max z-40 cursor-pointer group/play ${
+                                index === 3 && "max-sm:hidden"
+                            } ${
+                                index === 4 && "max-lg:hidden"
+                            }`}
                         >
                             <Link to="/watch">
                                 <img
                                     src={MovieSeries.Poster}
                                     className="w-full h-full max-h-64 max-w-44 object-cover transition-all opacity-100 group-hover/play:opacity-40"
-                                    alt={MovieSeries.Type+": "+MovieSeries.Title}
+                                    alt={MovieSeries.Type + ": " + MovieSeries.Title}
                                 />
                                 <ButtonPlay />
                             </Link>
@@ -104,8 +108,8 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                     }
                 </ul>
             }
-            {response.loading === "loading" && <Loading message="Carregando" styles="my-16"/>}
-            {response.loading === "error" && <Error message="Erro ao tentar carregar" styles="my-16"/>}
+            {response.loading === "loading" && <Loading message="Carregando" styles="my-16" />}
+            {response.loading === "error" && <Error message="Erro ao tentar carregar" styles="my-16" />}
         </div>
     )
 }

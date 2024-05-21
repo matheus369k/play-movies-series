@@ -45,14 +45,14 @@ export function MovieOrSeries() {
     }
 
     return (
-        <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen">
+        <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen max-lg:px-6 max-sm:px-1">
             {movieSeriesData?.Response === "True" &&
                 <>
-                    <div className={`flex flex-col justify-between bg-black w-screen h-screen m-auto rounded border border-gray-500 p-4 group/watch z-50 ${watchAction.isFullScreen ? "fixed top-0 left-0 overflow-hidden border-none" : "relative max-w-4xl max-h-[530px]"}`}>
+                    <div className={`flex flex-col justify-between bg-black w-full h-screen m-auto rounded border border-gray-500 p-4 group/watch z-50 max-sm:p-2 ${watchAction.isFullScreen ? "fixed top-0 left-0 overflow-hidden border-none" : "relative max-w-4xl max-h-[530px] max-lg:max-h-[56vw]"}`}>
                         <h2 className="font-bold text-base transition-all">{movieSeriesData.Title}</h2>
                         <div className={`w-max mx-auto transition-all ${watchAction.isLoading ? "animate-spin" : ""}`}>
                             {watchAction.isLoading
-                                ? <TbLoader2 className="size-16" />
+                                ? <TbLoader2 className="size-16 max-sm:size-8" />
                                 : <ButtonPlay
                                     visible
                                     fluxDefault
@@ -69,7 +69,7 @@ export function MovieOrSeries() {
                                 }
                             </Icon>
                             <Icon><TbPlayerTrackNextFilled /></Icon>
-                            <input defaultValue={0} type="range" className="w-full h-4 bg-red" />
+                            <input defaultValue={0} type="range" className="w-full h-4 bg-red max-sm:h-2" />
                             <span className="select-none">00.00</span>
                             <Icon
                                 onClick={() => handleClickFullScreen()}
@@ -81,9 +81,9 @@ export function MovieOrSeries() {
                             </Icon>
                         </div>
                     </div>
-                    <div className="flex gap-6 text-gray-500 m-6">
+                    <div className="flex gap-6 text-gray-500 m-6 max-lg:flex-col max-sm:mx-2">
                         <img 
-                            className="h-[400px] w-[290px] rounded border border-gray-500" 
+                            className="h-[400px] w-[290px] rounded border border-gray-500 max-lg:mx-auto" 
                             src={movieSeriesData.Poster} 
                             alt={movieSeriesData.Type+": "+movieSeriesData.Title}
                         />

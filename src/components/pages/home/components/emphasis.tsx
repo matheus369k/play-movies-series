@@ -29,7 +29,7 @@ export function Emphasis() {
     }
 
     return (
-        <div className={`relative min-h-screen after:bg-[url('../assets/bg-play.jpg')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
+        <div className={`relative min-h-screen p-1 after:bg-[url('../assets/bg-play.jpg')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
             {moviesSeries.loading === "finnish" &&
                 <div
                     key={moviesSeries?.imdbID}
@@ -42,17 +42,17 @@ export function Emphasis() {
                         >
                             <img 
                                 src={moviesSeries?.Poster} 
-                                className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40" 
+                                className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40 max-sm:w-32 max-sm:h-48" 
                                 alt={moviesSeries.Type+": "+moviesSeries.Title}
                             />
                             <ButtonPlay />
                         </div>
-                        <p className="select-none font-bold">
+                        <p className="select-none font-bold text-center max-sm:text-sm">
                             <span className="text-gray-200">Genero: </span>{moviesSeries?.Genre}
                             <span className="text-gray-200"> - Lançamento: </span>{moviesSeries?.Released}
                             <span className="text-gray-200"> - Nota: </span>{moviesSeries?.imdbRating}
                         </p>
-                        <p className="max-w-[80%] text-center font-normal">{moviesSeries?.Plot}</p>
+                        <p className="max-w-[80%] text-center font-normal w-full max-md:max-w-full max-sm:text-sm">{moviesSeries?.Plot}</p>
                     </div>
                     <div
                         onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID, setImdbID, navigate)}
@@ -60,20 +60,20 @@ export function Emphasis() {
                         <ButtonPlay visible fluxDefault />
                     </div>
 
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6">
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6 max-lg:px-2">
                         <ButtonSwitch 
                             disabled={moviesSeries?.index === 0} 
                             onClick={() => passToPreviousMovieSeries()} 
                             title="Volta"
                             >
-                            <GrPrevious className="w-11 h-auto" />
+                            <GrPrevious className="w-11 h-auto max-sm:size-8" />
                         </ButtonSwitch>
                         <ButtonSwitch 
                             disabled={moviesSeries?.index === 5} 
                             onClick={() => passToNextMovieSeries()} 
                             title="Avançar"
                             >
-                            <GrNext className="w-11 h-auto" />
+                            <GrNext className="w-11 h-auto max-sm:size-8" />
                         </ButtonSwitch>
                     </div>
                 </div>

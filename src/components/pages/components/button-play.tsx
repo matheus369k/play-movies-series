@@ -19,7 +19,7 @@ export function ButtonPlay({ visible, fluxDefault, ...props }: PropsButtonPlay) 
             type="button"
             title="Play"
         >
-            <FaPlay className="size-10 ml-1 -mr-1" />
+            <FaPlay className="size-10 ml-1 -mr-1 max-lg:size-8" />
         </button>
     )
 }

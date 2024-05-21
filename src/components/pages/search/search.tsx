@@ -19,16 +19,16 @@ export function Search() {
     FeatchApiPagination(dataMoviesSeries, setDataMoviesSeries, url, "search");
 
     return (
-        <section className="flex flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">
-            <h2 className="font-bold text-4xl text-center mb-10">Resultado de " {dataMoviesSeries?.title} "</h2>
+        <section className="flex px-2 flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">
+            <h2 className="font-bold text-4xl text-center mb-10 max-md:text-2xl">Resultado de " {dataMoviesSeries?.title} "</h2>
             {dataMoviesSeries?.loading === "finnish" &&
                 <>
-                    <ul className="grid grid-cols-5 gap-3 p-6 rounded-lg">
+                    <ul className="flex flex-wrap pb-6 w-auto max-sm:gap-y-6">
                         {dataMoviesSeries.data?.map(dataSearch => (
                             <li
                                 onClick={() => getIdMoviesOrSeries(dataSearch.imdbID, setImdbID, navigate)}
                                 key={dataMoviesSeries?.title + "-id-" + dataSearch.imdbID}
-                                className="flex flex-col items-center"
+                                className="flex flex-col items-center w-1/5 max-xl:w-1/4 max-md:w-1/3"
 
                             >
                                 <div
@@ -36,13 +36,13 @@ export function Search() {
                                 >
                                     <img
                                         src={dataSearch.Poster}
-                                        className="w-44 h-64 rounded transition-all opacity-100 group-hover/play:opacity-40"
+                                        className="w-44 h-64 rounded transition-all opacity-100 group-hover/play:opacity-40 max-sm:w-28 max-sm:h-40"
                                         alt={dataSearch.Type+": "+dataSearch.Title}
                                     />
                                     <ButtonPlay />
                                 </div>
-                                <h3 className="text-center">{dataSearch.Title}</h3>
-                                <p className="text-center">
+                                <h3 className="text-center text-sm max-sm:hidden">{dataSearch.Title}</h3>
+                                <p className="text-center text-sm max-sm:hidden">
                                     <span>{dataSearch.Type} </span>-
                                     <span> {dataSearch.Year}</span>
                                 </p>
