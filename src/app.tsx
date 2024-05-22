@@ -38,7 +38,7 @@ export function App() {
   function reloadUrlStateWithMoreParams(url: URL): TStateDataMoviesSeries {
     return {
       data: undefined,
-      title: url.searchParams.get("title") || "all",
+      title: url.searchParams.get("title")?.replace("+", " ") || "Todos",
       currentPage: parseInt(url.searchParams.get("page") || "1"),
       type: url.searchParams.get("type") || "",
       year: parseInt(url.searchParams.get("year") || "1999"),
@@ -51,7 +51,7 @@ export function App() {
       data: undefined,
       title: url.searchParams.get("search")?.replace("+", " ") || "all",
       totalPages: 1,
-      currentPage: 1,
+      currentPage: parseInt(url.searchParams.get("page") || "1"),
       loading: "loading",
     };
   }
