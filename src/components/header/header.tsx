@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
 import { useNavigate } from "react-router"
+import { resetScroll } from "../functions/reset-scroll";
 
 export function Header() {
     const { setImdbID } = useContext(IdContext);
@@ -24,11 +25,8 @@ export function Header() {
         if (setDataMoviesSeries) setDataMoviesSeries({ ...dataMoviesSeries, currentPage: 1 ,title: inputSearch.value, loading: "loading"});
 
         inputSearch.value = "";
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth"
-        })
+        
+        resetScroll();
 
         navigate("/search")
     }

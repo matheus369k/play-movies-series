@@ -7,6 +7,7 @@ import { TResponse } from "../../../types";
 import { Loading } from "./loading";
 import { Error } from "./error";
 import { addParamsToUrl } from "../functions/add-url-params";
+import { resetScroll } from "../../functions/reset-scroll";
 
 interface PropsSectionMovieAndSeries {
     type: string
@@ -67,14 +68,6 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
         addParamsToUrl("type", type || "");
         addParamsToUrl("year", year || 1999);
         addParamsToUrl("page", page || 1);
-    }
-
-    function resetScroll() {
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth"
-        });
     }
 
     return (
