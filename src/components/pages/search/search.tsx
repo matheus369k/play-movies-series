@@ -20,7 +20,7 @@ export function Search() {
 
     return (
         <section className="flex px-2 flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">
-            <h2 className="font-bold text-4xl text-center mb-10 max-md:text-2xl">Resultado de " {dataMoviesSeries?.title} "</h2>
+            <h2 className="font-bold text-4xl text-center mb-10 max-md:text-2xl">Resultado de "{dataMoviesSeries?.title}"</h2>
             {dataMoviesSeries?.loading === "finnish" &&
                 <>
                     <ul className="flex flex-wrap pb-6 w-auto max-sm:gap-y-6">

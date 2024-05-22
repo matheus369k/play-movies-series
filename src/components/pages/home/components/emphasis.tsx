@@ -29,11 +29,11 @@ export function Emphasis() {
     }
 
     return (
-        <div className={`relative min-h-screen p-1 after:bg-[url('../assets/bg-play.jpg')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
+        <div className={`relative h-screen max-h-[769px] p-1 after:bg-[url('../assets/bg-play.jpg')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
             {moviesSeries.loading === "finnish" &&
                 <div
                     key={moviesSeries?.imdbID}
-                    className={`relative max-w-7xl mx-auto w-full h-screen flex items-center flex-col gap-10 justify-end pb-10 z-40`}
+                    className={`relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 pb-10 z-40 justify-center mt-28`}
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
                         <div
@@ -60,7 +60,7 @@ export function Emphasis() {
                         <ButtonPlay visible fluxDefault />
                     </div>
 
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6 max-lg:px-2">
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6 max-lg:px-2 max-sm:top-1/3">
                         <ButtonSwitch 
                             disabled={moviesSeries?.index === 0} 
                             onClick={() => passToPreviousMovieSeries()} 
