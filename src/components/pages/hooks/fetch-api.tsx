@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { TMoviesSeriesInFocus, TResponse, TStateDataMoviesSeries } from "../../../types";
+import { addParamsToUrl } from "../../../function/addParamsToUrl";
 
 export function FeatchApiPagination(
     state: TStateDataMoviesSeries & TResponse | undefined,
@@ -22,6 +23,8 @@ export function FeatchApiPagination(
                 totalPages: Math.round(parseInt(resp.data.totalResults) / 10),
                 loading: "finnish"
             })
+
+            addParamsToUrl("page", state?.currentPage || 1);
         }).catch(() => {
             setState({
                 ...state,
@@ -31,11 +34,7 @@ export function FeatchApiPagination(
 
         if (state?.title === undefined || state?.title === "" || paramsName === undefined) return;
 
-        const newUrl = new URL(window.location.toString());
-        const searchConversionURLType = new URLSearchParams(state?.title).toString();
-
-        newUrl.searchParams.set(paramsName, searchConversionURLType);
-        window.history.pushState({}, "", newUrl);
+        addParamsToUrl(paramsName, state.title)
     }, [state?.title, state?.currentPage]);
 }
 

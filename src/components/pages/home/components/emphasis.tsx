@@ -29,11 +29,11 @@ export function Emphasis() {
     }
 
     return (
-        <div className={`relative h-screen max-h-[769px] p-1 after:bg-[url('../assets/bg-play.jpg')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
+        <div className={`relative h-screen max-h-[769px] p-1 after:bg-[url('../assets/bg-play-movies.webp')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
             {moviesSeries.loading === "finnish" &&
                 <div
                     key={moviesSeries?.imdbID}
-                    className={`relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 pb-10 z-40 justify-center mt-28`}
+                    className={`relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 z-40 justify-center pt-28`}
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
                         <div

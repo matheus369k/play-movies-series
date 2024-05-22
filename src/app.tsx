@@ -17,24 +17,45 @@ export function App() {
   });
   const [dataMoviesSeries, setDataMoviesSeries] = useState<TStateDataMoviesSeries>(() => {
     const url = new URL(window.location.toString());
+    const pathName = window.location.pathname;
+    console.log(pathName)
 
-    if (url.searchParams.has("search")) {
-      return {
-        data: undefined,
-        title: url.searchParams.get("search")?.split("=")[0].replace("+", " "),
-        totalPages: 1,
-        currentPage: 1,
-        loading: "loading"
-      };
-    }
+    if (pathName === "/search" && url.searchParams.has("search")){ 
+      return reloadUrlStateWithSearchParams(url)
+    };
+    if (pathName === "/more"){ 
+      return reloadUrlStateWithMoreParams(url)
+    };
+
     return {
       data: undefined,
-      title: "",
+      title: "all",
       totalPages: 1,
       currentPage: 1,
       loading: "loading"
     };
   });
+
+  function reloadUrlStateWithMoreParams(url: URL): TStateDataMoviesSeries {
+    return {
+      data: undefined,
+      title: url.searchParams.get("title") || "all",
+      currentPage: parseInt(url.searchParams.get("page") || "1"),
+      type: url.searchParams.get("type") || "",
+      year: parseInt(url.searchParams.get("year") || "1999"),
+      loading: "loading"
+    }
+  }
+
+  function reloadUrlStateWithSearchParams(url: URL):TStateDataMoviesSeries {
+    return {
+      data: undefined,
+      title: url.searchParams.get("search")?.replace("+", " ") || "all",
+      totalPages: 1,
+      currentPage: 1,
+      loading: "loading",
+    };
+  }
 
   return (
     <div className="bg-gray-950 text-gray-100 min-h-screen font-inter tracking-wider">

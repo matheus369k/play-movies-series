@@ -1,11 +1,12 @@
 import axios from "axios"
 import { useContext, useEffect, useState } from "react"
 import { IdContext, PageDataContext } from "../../../app";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ButtonPlay } from "./button-play";
 import { TResponse } from "../../../types";
 import { Loading } from "./loading";
 import { Error } from "./error";
+import { addParamsToUrl } from "../../../function/addParamsToUrl";
 
 interface PropsSectionMovieAndSeries {
     type: string
@@ -18,6 +19,7 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
     const [response, setResponse] = useState<TResponse>({ loading: "loading" })
     const { setDataMoviesSeries } = useContext(PageDataContext);
     const { setImdbID } = useContext(IdContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const url = `https://www.omdbapi.com/?apikey=d074a25e&s=all&plot=full&y=${year}&type=${type}&page=${page}`;
@@ -41,11 +43,7 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
             });
         }
 
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth"
-        });
+        resetScroll();
     }
 
     function getDataOfMoviesOrSeries() {
@@ -62,6 +60,16 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
             });
         }
 
+        resetScroll();
+        navigate("/more");
+
+        addParamsToUrl("title", title || "");
+        addParamsToUrl("type", type || "");
+        addParamsToUrl("year", year || 1999);
+        addParamsToUrl("page", page || 1);
+    }
+
+    function resetScroll() {
         window.scrollTo({
             top: 0,
             left: 0,
@@ -74,14 +82,13 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
             <span
                 className="flex justify-between items-center pl-3 border-l-8 border-l-red-600 mb-6 rounded-l"
             >
-                <h2 className="font-bold text-4xl max-lg:text-2xl">{title}</h2>
-                <Link
-                    to="/more"
+                <h2 className="font-bold text-4xl max-lg:text-2xl capitalize">{title}</h2>
+                <span
                     onClick={() => getDataOfMoviesOrSeries()}
                     className="text-gray-600 hover:text-gray-100 cursor-pointer max-lg:text-sm"
                 >
                     More
-                </Link>
+                </span>
             </span>
             {response.loading === "finnish" &&
                 <ul className="flex gap-6 px-10 w-full max-xl:gap-2 max-xl:px-5 max-sm:px-2">
