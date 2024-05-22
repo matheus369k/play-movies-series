@@ -61,10 +61,7 @@ export function FeatchApiOneData(
 
         if (imdbID === undefined || imdbID === "" || imdbID === null || paramsName === undefined) return;
 
-        const newUrl = new URL(window.location.toString());
-        newUrl.searchParams.set("id", imdbID || "");
-
-        window.history.pushState({}, "", newUrl);
+        addParamsToUrl(paramsName, imdbID);
     }, [imdbID])
 
 }
