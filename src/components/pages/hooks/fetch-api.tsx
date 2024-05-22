@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { TMoviesSeriesInFocus, TResponse, TStateDataMoviesSeries } from "../../../types";
-import { addParamsToUrl } from "../../../function/addParamsToUrl";
+import { addParamsToUrl } from "../functions/add-url-params";
 
 export function FeatchApiPagination(
     state: TStateDataMoviesSeries & TResponse | undefined,

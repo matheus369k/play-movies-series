@@ -18,7 +18,6 @@ export function App() {
   const [dataMoviesSeries, setDataMoviesSeries] = useState<TStateDataMoviesSeries>(() => {
     const url = new URL(window.location.toString());
     const pathName = window.location.pathname;
-    console.log(pathName)
 
     if (pathName === "/search" && url.searchParams.has("search")){ 
       return reloadUrlStateWithSearchParams(url)

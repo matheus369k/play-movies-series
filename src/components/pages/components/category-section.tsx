@@ -6,7 +6,7 @@ import { ButtonPlay } from "./button-play";
 import { TResponse } from "../../../types";
 import { Loading } from "./loading";
 import { Error } from "./error";
-import { addParamsToUrl } from "../../../function/addParamsToUrl";
+import { addParamsToUrl } from "../functions/add-url-params";
 
 interface PropsSectionMovieAndSeries {
     type: string
@@ -96,11 +96,9 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                         <li
                             onClick={() => getIdMoviesOrSeries(MovieSeries.imdbID)}
                             key={"release-id-" + MovieSeries.imdbID}
-                            className={`relative bg-black/50 rounded-md border border-gray-100 w-max z-40 cursor-pointer group/play ${
-                                index === 3 && "max-sm:hidden"
-                            } ${
-                                index === 4 && "max-lg:hidden"
-                            }`}
+                            className={`relative bg-black/50 rounded-md border border-gray-100 w-max z-40 cursor-pointer group/play ${index === 3 && "max-sm:hidden"
+                                } ${index === 4 && "max-lg:hidden"
+                                }`}
                         >
                             <Link to="/watch">
                                 <img
