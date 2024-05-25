@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { TMoviesSeriesInFocus, TResponse, TStateDataMoviesSeries } from "../../../types";
-import { addParamsToUrl } from "../functions/add-url-params";
+import { setParamsAtUrl } from "../functions/add-url-params";
 
 export function FeatchApiPagination(
     state: TStateDataMoviesSeries & TResponse | undefined,
@@ -24,7 +24,7 @@ export function FeatchApiPagination(
                 loading: "finnish"
             })
 
-            addParamsToUrl("page", state?.currentPage || 1);
+            setParamsAtUrl("page", state?.currentPage || 1);
         }).catch(() => {
             setState({
                 ...state,
@@ -34,7 +34,7 @@ export function FeatchApiPagination(
 
         if (state?.title === undefined || state?.title === "" || paramsName === undefined) return;
 
-        addParamsToUrl(paramsName, state.title)
+        setParamsAtUrl(paramsName, state.title)
     }, [state?.title, state?.currentPage]);
 }
 
@@ -61,7 +61,7 @@ export function FeatchApiOneData(
 
         if (imdbID === undefined || imdbID === "" || imdbID === null || paramsName === undefined) return;
 
-        addParamsToUrl(paramsName, imdbID);
+        setParamsAtUrl(paramsName, imdbID);
     }, [imdbID])
 
 }

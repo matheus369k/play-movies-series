@@ -24,7 +24,7 @@ export function MovieOrSeries() {
 
     FeatchApiOneData(movieSeriesData, setMovieSeriesData, imdbID, "id");
 
-    function handleClickFullScreen() {
+    function handleFullScreen() {
         setwatchAction({
             ...watchAction,
             isFullScreen: !watchAction.isFullScreen
@@ -72,7 +72,7 @@ export function MovieOrSeries() {
                             <input defaultValue={0} type="range" className="w-full h-4 bg-red max-sm:h-2" />
                             <span className="select-none">00.00</span>
                             <Icon
-                                onClick={() => handleClickFullScreen()}
+                                onClick={() => handleFullScreen()}
                             >
                                 {watchAction.isFullScreen
                                     ? <BiExitFullscreen />

@@ -6,8 +6,9 @@ import { ButtonPlay } from "./button-play";
 import { TResponse } from "../../../types";
 import { Loading } from "./loading";
 import { Error } from "./error";
-import { addParamsToUrl } from "../functions/add-url-params";
+import { setParamsAtUrl } from "../functions/add-url-params";
 import { resetScroll } from "../../functions/reset-scroll";
+import { handleGetIdMovie } from "../functions/get-id-movies";
 
 interface PropsSectionMovieAndSeries {
     type: string
@@ -31,23 +32,17 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
             }).catch(() => {
                 setResponse({ ...response, loading: "error" })
             });
-    }, [])
+    }, [])/* 
 
-    function getIdMoviesOrSeries(id: string | undefined) {
+    function handleGetIdMovies(id: string | undefined) {
         event?.stopImmediatePropagation();
 
         if (setImdbID && id) setImdbID(id);
-        if (setDataMoviesSeries) {
-            setDataMoviesSeries({
-                ...response,
-                loading: "loading"
-            });
-        }
 
         resetScroll();
-    }
+    } */
 
-    function getDataOfMoviesOrSeries() {
+    function handleGetDataOfMovie() {
         if (setImdbID) setImdbID("");
         if (setDataMoviesSeries && response.data) {
             setDataMoviesSeries({
@@ -64,10 +59,10 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
         resetScroll();
         navigate("/more");
 
-        addParamsToUrl("title", title || "");
-        addParamsToUrl("type", type || "");
-        addParamsToUrl("year", year || 1999);
-        addParamsToUrl("page", page || 1);
+        setParamsAtUrl("title", title || "");
+        setParamsAtUrl("type", type || "");
+        setParamsAtUrl("year", year || 1999);
+        setParamsAtUrl("page", page || 1);
     }
 
     return (
@@ -77,7 +72,7 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
             >
                 <h2 className="font-bold text-4xl max-lg:text-2xl capitalize">{title}</h2>
                 <span
-                    onClick={() => getDataOfMoviesOrSeries()}
+                    onClick={() => handleGetDataOfMovie()}
                     className="text-gray-600 hover:text-gray-100 cursor-pointer max-lg:text-sm"
                 >
                     More
@@ -87,7 +82,13 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                 <ul className="flex gap-6 px-10 w-full max-xl:gap-2 max-xl:px-5 max-sm:px-2">
                     {response.data?.slice(0, 6).map((MovieSeries, index) => (
                         <li
-                            onClick={() => getIdMoviesOrSeries(MovieSeries.imdbID)}
+                            onClick={() => handleGetIdMovie(
+                                MovieSeries.imdbID,
+                                setImdbID,
+                                navigate,
+                                setDataMoviesSeries,
+                                response
+                            )}
                             key={"release-id-" + MovieSeries.imdbID}
                             className={`relative bg-black/50 rounded-md border border-gray-100 w-max z-40 cursor-pointer group/play ${index === 3 && "max-sm:hidden"
                                 } ${index === 4 && "max-lg:hidden"

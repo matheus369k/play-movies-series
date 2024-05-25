@@ -5,7 +5,7 @@ import { IdContext } from "../../../../app";
 import { useNavigate } from "react-router";
 import { dbFocusDatas } from "../../../../data/focus-bg-id";
 import { ButtonPlay } from "../../components/button-play";
-import { getIdMoviesOrSeries } from "../../functions/get-id-movies-series";
+import { handleGetIdMovie } from "../../functions/get-id-movies";
 import { TMoviesSeriesInFocus } from "../../../../types";
 import { FeatchApiOneData } from "../../hooks/fetch-api";
 import { ButtonSwitch } from "./button-switch";
@@ -21,11 +21,11 @@ export function Emphasis() {
     FeatchApiOneData(moviesSeries, setMoviesSeries, focusProduction.imdbid);
 
     function passToNextMovieSeries() {
-        setMoviesSeries({ ...moviesSeries, loading: "loading" , index: Number(moviesSeries.index) + 1 });
+        setMoviesSeries({ ...moviesSeries, loading: "loading", index: Number(moviesSeries.index) + 1 });
     }
 
     function passToPreviousMovieSeries() {
-        setMoviesSeries({ ...moviesSeries, loading: "loading" , index: Number(moviesSeries.index) - 1 });
+        setMoviesSeries({ ...moviesSeries, loading: "loading", index: Number(moviesSeries.index) - 1 });
     }
 
     return (
@@ -37,13 +37,13 @@ export function Emphasis() {
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
                         <div
-                            onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID, setImdbID, navigate)}
+                            onClick={() => handleGetIdMovie(moviesSeries?.imdbID, setImdbID, navigate)}
                             className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
                         >
-                            <img 
-                                src={moviesSeries?.Poster} 
-                                className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40 max-sm:w-32 max-sm:h-48" 
-                                alt={moviesSeries.Type+": "+moviesSeries.Title}
+                            <img
+                                src={moviesSeries?.Poster}
+                                className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40 max-sm:w-32 max-sm:h-48"
+                                alt={moviesSeries.Type + ": " + moviesSeries.Title}
                             />
                             <ButtonPlay />
                         </div>
@@ -55,24 +55,24 @@ export function Emphasis() {
                         <p className="max-w-[80%] text-center font-normal w-full max-md:max-w-full max-sm:text-sm">{moviesSeries?.Plot}</p>
                     </div>
                     <div
-                        onClick={() => getIdMoviesOrSeries(moviesSeries?.imdbID, setImdbID, navigate)}
+                        onClick={() => handleGetIdMovie(moviesSeries?.imdbID, setImdbID, navigate)}
                     >
                         <ButtonPlay visible fluxDefault />
                     </div>
 
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6 max-lg:px-2 max-sm:top-1/3">
-                        <ButtonSwitch 
-                            disabled={moviesSeries?.index === 0} 
-                            onClick={() => passToPreviousMovieSeries()} 
+                        <ButtonSwitch
+                            disabled={moviesSeries?.index === 0}
+                            onClick={() => passToPreviousMovieSeries()}
                             title="Volta"
-                            >
+                        >
                             <GrPrevious className="w-11 h-auto max-sm:size-8" />
                         </ButtonSwitch>
-                        <ButtonSwitch 
-                            disabled={moviesSeries?.index === 5} 
-                            onClick={() => passToNextMovieSeries()} 
+                        <ButtonSwitch
+                            disabled={moviesSeries?.index === 5}
+                            onClick={() => passToNextMovieSeries()}
                             title="Avançar"
-                            >
+                        >
                             <GrNext className="w-11 h-auto max-sm:size-8" />
                         </ButtonSwitch>
                     </div>

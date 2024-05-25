@@ -3,7 +3,7 @@ import { IdContext, PageDataContext } from "../../../app"
 import { Pagination } from "../components/pagination";
 import { ButtonPlay } from "../components/button-play";
 import { useNavigate } from "react-router";
-import { getIdMoviesOrSeries } from "../functions/get-id-movies-series";
+import { handleGetIdMovie } from "../functions/get-id-movies";
 import { FeatchApiPagination } from "../hooks/fetch-api";
 import { Loading } from "../components/loading";
 import { Error } from "../components/error";
@@ -27,7 +27,11 @@ export function MoreMoviesSeries() {
                         {dataMoviesSeries?.data &&
                             dataMoviesSeries?.data.map(dataMore => (
                                 <li
-                                    onClick={() => getIdMoviesOrSeries(dataMore.imdbID, setImdbID, navigate)}
+                                    onClick={() => handleGetIdMovie(
+                                        dataMore.imdbID, 
+                                        setImdbID, 
+                                        navigate
+                                    )}
                                     key={dataMoviesSeries?.title + "-id-" + dataMore.imdbID}
                                     className="flex flex-col items-center w-1/5 max-xl:w-1/4 max-md:w-1/3"
                                 >
@@ -37,7 +41,7 @@ export function MoreMoviesSeries() {
                                         <img
                                             src={dataMore.Poster}
                                             className="w-44 h-64 rounded transition-all opacity-100 group-hover/play:opacity-40 max-sm:w-28 max-sm:h-40"
-                                            alt={dataMore.Type+": "+dataMore.Title}
+                                            alt={dataMore.Type + ": " + dataMore.Title}
                                         />
                                         <ButtonPlay />
                                     </div>

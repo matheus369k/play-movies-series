@@ -1,7 +1,6 @@
 import { IdContext, PageDataContext } from "../../app";
 import { GrPrevious } from "react-icons/gr";
 import { useContext } from "react";
-import { Link } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
 import { useNavigate } from "react-router"
 import { resetScroll } from "../functions/reset-scroll";
@@ -11,14 +10,16 @@ export function Header() {
     const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
     const navigate = useNavigate();
 
-    function clickToBackPage() {
+    function handleToBackPage() {
         (document.querySelector("[name='search']") as HTMLFormElement).value = "";
 
         if (setImdbID) setImdbID("");
         if (setDataMoviesSeries) setDataMoviesSeries({loading: "loading"})
+
+        navigate("/")
     }
 
-    function handleSubimtForm() {
+    function handleSubmitForm() {
         event?.preventDefault();
 
         const inputSearch = (document.querySelector("[name='search']") as HTMLFormElement);
@@ -42,16 +43,16 @@ export function Header() {
                         Play
                     </span> Filmes e Series
                 </h1>
-                : <Link
-                    to="/"
-                    onClick={() => clickToBackPage()}
+                : <button
+                    onClick={handleToBackPage}
+                    type="button"
                     title="Volta"
                 >
                     <GrPrevious className="w-11 h-auto max-sm:w-8" />
-                </Link>
+                </button>
             }
             <form
-                onSubmit={handleSubimtForm}
+                onSubmit={handleSubmitForm}
                 autoComplete="off"
                 method="get"
                 className={`relative text-gray-400 backdrop-blur-sm ${window.location.pathname === "/" && "max-md:mx-auto"}`}
