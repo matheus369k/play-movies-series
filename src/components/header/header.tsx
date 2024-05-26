@@ -39,11 +39,10 @@ export function Header() {
             {window.location.pathname === "/"
                 ? <h1
                     className="text-gray-100 font-bold text-4xl max-lg:text-3xl">
-                    <span className="text-red-600">
-                        Play
-                    </span> Filmes e Series
+                    <span className="text-red-600">Play</span> Filmes e Series
                 </h1>
                 : <button
+                    data-testid="btn-back"
                     onClick={handleToBackPage}
                     type="button"
                     title="Volta"
@@ -52,6 +51,7 @@ export function Header() {
                 </button>
             }
             <form
+                data-testid="search-form"
                 onSubmit={handleSubmitForm}
                 autoComplete="off"
                 method="get"
