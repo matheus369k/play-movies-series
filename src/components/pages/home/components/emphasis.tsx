@@ -38,6 +38,7 @@ export function Emphasis() {
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
                         <div
+                            data-testid="emphasis-play-movie"
                             onClick={() => handleGetIdMovie(moviesSeries?.imdbID, setImdbID, navigate)}
                             className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
                         >

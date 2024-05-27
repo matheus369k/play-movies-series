@@ -8,6 +8,9 @@ import "@testing-library/jest-dom";
 const mockState = jest.spyOn(React, "useState");
 const mockNavigate = jest.fn();
 const mockFeatchApiOneData = jest.fn();
+const mockHandleGetIdMovie = jest.fn();
+
+mockHandleGetIdMovie.mockReturnValue(true);
 
 jest.mock("react-router", ()=> ({
     ...jest.requireActual("react-router"),
@@ -15,8 +18,14 @@ jest.mock("react-router", ()=> ({
 }));
 
 jest.mock("../../hooks/fetch-api", ()=> ({
-    FeatchApiOneData: () => mockFeatchApiOneData
+    ...jest.requireActual("../../hooks/fetch-api"),
+    FeatchApiOneData: () =>  mockFeatchApiOneData
 }))
+
+jest.mock("../../functions/get-id-movies", ()=>({
+    handleGetIdMovie: () => mockHandleGetIdMovie
+}))
+
 describe("Emphasis", () => {
     it("should render loading display", () => {
         const moviesSeries = { index: 0, Response: "False", loading: "loading" };
@@ -137,5 +146,30 @@ describe("Emphasis", () => {
 
         expect(setState).toHaveBeenCalled(); 
         expect(setState.mock.lastCall[0]).toHaveProperty("index", 0);
+    })
+
+    it("clicking to play movie", () =>{
+        const moviesSeries = {index: 0, Response: "False", loading: "finnish"};
+        let imdbID, dataMoviesSeries;
+
+        const setState = jest.fn();
+        const setImdbID = jest.fn();
+        const setDataMoviesSeries = jest.fn();
+
+        mockState.mockImplementation(()=> [moviesSeries, setState])
+
+        render(
+            <IdContext.Provider value={{ imdbID, setImdbID }}>
+                <PageDataContext.Provider value={{ dataMoviesSeries, setDataMoviesSeries }}>
+                    <Emphasis />
+                </PageDataContext.Provider>
+            </IdContext.Provider>
+        );
+
+        const moviePlay = screen.getByTestId("emphasis-play-movie");
+
+        fireEvent.click(moviePlay)
+
+        expect(mockHandleGetIdMovie()).toBeTruthy();
     })
 })
