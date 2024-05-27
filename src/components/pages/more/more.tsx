@@ -23,10 +23,11 @@ export function MoreMoviesSeries() {
             <h2 className="font-bold text-4xl text-center mb-10">{dataMoviesSeries?.title}</h2>
             {dataMoviesSeries?.loading === "finnish" &&
                 <>
-                    <ul className="flex flex-wrap pb-6 w-auto max-sm:gap-y-6">
+                    <ul data-testid="more-movies" className="flex flex-wrap pb-6 w-auto max-sm:gap-y-6">
                         {dataMoviesSeries?.data &&
                             dataMoviesSeries?.data.map(dataMore => (
                                 <li
+                                    data-testid="more-movie-play"
                                     onClick={() => handleGetIdMovie(
                                         dataMore.imdbID, 
                                         setImdbID, 

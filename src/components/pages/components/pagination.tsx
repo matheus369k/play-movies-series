@@ -11,7 +11,10 @@ export function Pagination() {
     const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
 
     return (
-        <div className="mx-auto flex items-center gap-3">
+        <div 
+            data-testid="btn-switch-page" 
+            className="mx-auto flex items-center gap-3"
+        >
             <ButtonSwitchPage
                 disabled={(dataMoviesSeries?.currentPage || 1) === 1}
                 onClick={() => handlePassToStartPage({setDataMoviesSeries, dataMoviesSeries})}>
