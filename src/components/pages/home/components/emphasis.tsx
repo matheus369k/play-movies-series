@@ -20,11 +20,11 @@ export function Emphasis() {
 
     FeatchApiOneData(moviesSeries, setMoviesSeries, focusProduction.imdbid);
 
-    function passToNextMovieSeries() {
+    function handlePassToNextMovieSeries() {
         setMoviesSeries({ ...moviesSeries, loading: "loading", index: Number(moviesSeries.index) + 1 });
     }
 
-    function passToPreviousMovieSeries() {
+    function handlePassToPreviousMovieSeries() {
         setMoviesSeries({ ...moviesSeries, loading: "loading", index: Number(moviesSeries.index) - 1 });
     }
 
@@ -34,6 +34,7 @@ export function Emphasis() {
                 <div
                     key={moviesSeries?.imdbID}
                     className={`relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 z-40 justify-center pt-28`}
+                    data-testid="movie-emphasis"
                 >
                     <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
                         <div
@@ -62,15 +63,17 @@ export function Emphasis() {
 
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 flex justify-between w-full px-6 max-lg:px-2 max-sm:top-1/3">
                         <ButtonSwitch
+                            data-testid="btn-previous"
                             disabled={moviesSeries?.index === 0}
-                            onClick={() => passToPreviousMovieSeries()}
+                            onClick={handlePassToPreviousMovieSeries}
                             title="Volta"
                         >
                             <GrPrevious className="w-11 h-auto max-sm:size-8" />
                         </ButtonSwitch>
                         <ButtonSwitch
+                            data-testid="btn-next"
                             disabled={moviesSeries?.index === 5}
-                            onClick={() => passToNextMovieSeries()}
+                            onClick={handlePassToNextMovieSeries}
                             title="Avançar"
                         >
                             <GrNext className="w-11 h-auto max-sm:size-8" />
