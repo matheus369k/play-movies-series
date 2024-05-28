@@ -7,8 +7,7 @@ import "@testing-library/jest-dom";
 
 const mockNavigate = jest.fn();
 const mockHandleGetIdMovie = jest.fn();
-
-mockHandleGetIdMovie.mockReturnValue(true)
+const mockFeatchApiPagination = jest.fn();
 
 jest.mock("react-router", () => ({
     ...jest.requireActual("react-router"),
@@ -17,12 +16,12 @@ jest.mock("react-router", () => ({
 
 jest.mock("../hooks/fetch-api", () => ({
     ...jest.requireActual("../hooks/fetch-api"),
-    FeatchApiPagination: () => jest.fn()
+    FeatchApiPagination: () => mockFeatchApiPagination.mockReturnValue(true)
 }));
 
 jest.mock("../functions/get-id-movies", () => ({
     ...jest.requireActual("../functions/get-id-movies"),
-    handleGetIdMovie: () => mockHandleGetIdMovie
+    handleGetIdMovie: () => mockHandleGetIdMovie.mockReturnValue(() => true)
 }))
 
 describe("More", () => {
@@ -110,5 +109,22 @@ describe("More", () => {
         fireEvent.click(moviePlay);
 
         expect(mockHandleGetIdMovie()).toBeTruthy();
+    })
+
+    it("Call to hook function FeatchApiPagination", () => {
+        let imdbID, dataMoviesSeries;
+
+        const setImdbID = jest.fn();
+        const setDataMoviesSeries = jest.fn();
+
+        render(
+            <IdContext.Provider value={{ imdbID, setImdbID }}>
+                <PageDataContext.Provider value={{ dataMoviesSeries, setDataMoviesSeries }}>
+                    <MoreMoviesSeries />
+                </PageDataContext.Provider>
+            </IdContext.Provider>
+        );
+
+        expect(mockFeatchApiPagination()).toBeTruthy();
     })
 })
