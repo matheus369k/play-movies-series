@@ -24,7 +24,7 @@ jest.mock("../functions/get-id-movies", () => ({
     handleGetIdMovie: () => mockHandleGetIdMovie.mockReturnValue(() => true)
 }))
 
-describe("More", () => {
+describe("MoreMoviesSeries", () => {
     it("should render loading display", () => {
         const dataMoviesSeries: TStateDataMoviesSeries = { loading: "loading" }
         let imdbID;
