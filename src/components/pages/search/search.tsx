@@ -25,9 +25,13 @@ export function Search() {
             <h2 className="font-bold text-4xl text-center mb-10 max-md:text-2xl">Resultado de "{dataMoviesSeries?.title}"</h2>
             {dataMoviesSeries?.loading === "finnish" &&
                 <>
-                    <ul className="flex flex-wrap pb-6 w-auto max-sm:gap-y-6">
+                    <ul 
+                        data-testid="search-movies"
+                        className="flex flex-wrap pb-6 w-auto max-sm:gap-y-6"
+                    >
                         {dataMoviesSeries.data?.map(dataSearch => (
                             <li
+                                data-testid="search-play-movie"
                                 onClick={() => handleGetIdMovie(
                                     dataSearch.imdbID, 
                                     setImdbID, 
