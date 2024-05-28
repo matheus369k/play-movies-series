@@ -17,7 +17,7 @@ import { FeatchApiOneData } from "../hooks/fetch-api";
 import { Loading } from "../components/loading";
 import { Error } from "../components/error";
 
-export function MovieOrSeries() {
+export function WatchMovieSeries() {
     const [movieSeriesData, setMovieSeriesData] = useState<TMoviesSeriesInFocus>({ index: 0, Response: "False", loading: "loading" });
     const [watchAction, setwatchAction] = useState({ isLoading: false, isFullScreen: false });
     const { imdbID } = useContext(IdContext);
@@ -46,9 +46,12 @@ export function MovieOrSeries() {
 
     return (
         <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen max-lg:px-6 max-sm:px-1">
-            {movieSeriesData?.Response === "True" &&
+            {movieSeriesData?.loading === "finnish" &&
                 <>
-                    <div className={`flex flex-col justify-between bg-black w-full h-screen m-auto rounded border border-gray-500 p-4 group/watch z-50 max-sm:p-2 ${watchAction.isFullScreen ? "fixed top-0 left-0 overflow-hidden border-none" : "relative max-w-4xl max-h-[530px] max-lg:max-h-[56vw]"}`}>
+                    <div 
+                        data-testid="watch-screen-movie"
+                        className={`flex flex-col justify-between bg-black w-full h-screen m-auto rounded border border-gray-500 p-4 group/watch z-50 max-sm:p-2 ${watchAction.isFullScreen ? "fixed top-0 left-0 overflow-hidden border-none" : "relative max-w-4xl max-h-[530px] max-lg:max-h-[56vw]"}`}
+                    >
                         <h2 className="font-bold text-base transition-all">{movieSeriesData.Title}</h2>
                         <div className={`w-max mx-auto transition-all ${watchAction.isLoading ? "animate-spin" : ""}`}>
                             {watchAction.isLoading
@@ -56,13 +59,14 @@ export function MovieOrSeries() {
                                 : <ButtonPlay
                                     visible
                                     fluxDefault
+                                    data-testid="watch-play-movie"
                                     onClick={() => { setwatchAction({ ...watchAction, isLoading: true }) }}
                                 />
                             }
                         </div>
                         <div className="flex items-center gap-2 transition-all">
                             <Icon><TbPlayerTrackPrevFilled /></Icon>
-                            <Icon onClick={() => { setwatchAction({ ...watchAction, isLoading: !watchAction.isLoading }) }}>
+                            <Icon data-testid="watch-play-pause-movie" onClick={() => { setwatchAction({ ...watchAction, isLoading: !watchAction.isLoading }) }}>
                                 {watchAction.isLoading
                                     ? <TbPlayerPauseFilled />
                                     : <FaPlay />
@@ -72,6 +76,7 @@ export function MovieOrSeries() {
                             <input defaultValue={0} type="range" className="w-full h-4 bg-red max-sm:h-2" />
                             <span className="select-none">00.00</span>
                             <Icon
+                                data-testid="watch-btn-fullScreen"
                                 onClick={() => handleFullScreen()}
                             >
                                 {watchAction.isFullScreen
@@ -81,7 +86,7 @@ export function MovieOrSeries() {
                             </Icon>
                         </div>
                     </div>
-                    <div className="flex gap-6 text-gray-500 m-6 max-lg:flex-col max-sm:mx-2">
+                    <div data-testid="watch-post-infor-movie" className="flex gap-6 text-gray-500 m-6 max-lg:flex-col max-sm:mx-2">
                         <img 
                             className="h-[400px] w-[290px] rounded border border-gray-500 max-lg:mx-auto" 
                             src={movieSeriesData.Poster} 
