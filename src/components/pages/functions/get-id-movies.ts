@@ -12,7 +12,9 @@ export function handleGetIdMovie(
 ) {
     event?.stopImmediatePropagation();
 
-    (document.querySelector("[name='search']") as HTMLFormElement).value = "";
+    const input = (document.querySelector("[name='search']") as HTMLFormElement);
+
+    if (input) input.value = "";
 
     if (setImdbID && id) setImdbID(id);
 
