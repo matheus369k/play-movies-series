@@ -1,9 +1,10 @@
 import { setParamsAtUrl } from "../add-url-params"
 
 const params = {name: "id", value: "896537"};
+const mockSetParamsAtUrl = jest.fn(setParamsAtUrl);
 
 it("add-url-params module", ()=> {
-    setParamsAtUrl(params.name, params.value);
+    mockSetParamsAtUrl(params.name, params.value);
 
     const url = new URL(window.location.toString());
 
