@@ -2,6 +2,7 @@ import { TResponse } from "../../../../types";
 import { handleGetIdMovie } from "../get-id-movies";
 
 const mockScrollTo = jest.fn()
+const mockHandleGetIdMovie = jest.fn(handleGetIdMovie);
 
 jest.mock("../../../functions/reset-scroll", ()=> ({
     resetScroll: () => mockScrollTo.mockReturnValue(true)
@@ -19,7 +20,7 @@ describe("get-id-movies module", () => {
         const navigate = jest.fn();
         const setDataMoviesSeries = jest.fn();
 
-        handleGetIdMovie(id, setImdbID, navigate, setDataMoviesSeries, oldData);
+        mockHandleGetIdMovie(id, setImdbID, navigate, setDataMoviesSeries, oldData);
 
         expect(setImdbID.mock.lastCall[0]).toBe(id);
         expect(navigate.mock.lastCall[0]).toBe("/watch");
@@ -43,7 +44,7 @@ describe("get-id-movies module", () => {
         const navigate = jest.fn();
         const setDataMoviesSeries = jest.fn();
 
-        handleGetIdMovie(id, setImdbID, navigate, setDataMoviesSeries, oldData);
+        mockHandleGetIdMovie(id, setImdbID, navigate, setDataMoviesSeries, oldData);
 
 
         expect(setDataMoviesSeries.mock.lastCall[0]).toHaveProperty("loading", "loading");
