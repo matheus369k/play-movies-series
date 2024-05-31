@@ -11,18 +11,20 @@ export function Pagination() {
     const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
 
     return (
-        <div 
-            data-testid="btn-switch-page" 
+        <div
+            data-testid="btn-switch-page"
             className="mx-auto flex items-center gap-3"
         >
             <ButtonSwitchPage
+                data-testid="btn-switch-initial-page"
                 disabled={(dataMoviesSeries?.currentPage || 1) === 1}
-                onClick={() => handlePassToStartPage({setDataMoviesSeries, dataMoviesSeries})}>
+                onClick={() => handlePassToStartPage({ setDataMoviesSeries, dataMoviesSeries })}>
                 <GrChapterPrevious />
             </ButtonSwitchPage>
             <ButtonSwitchPage
+                data-testid="btn-switch-previous-page"
                 disabled={(dataMoviesSeries?.currentPage || 1) === 1}
-                onClick={() => handlePassToPreviousPage({setDataMoviesSeries, dataMoviesSeries})}>
+                onClick={() => handlePassToPreviousPage({ setDataMoviesSeries, dataMoviesSeries })}>
                 <GrCaretPrevious />
             </ButtonSwitchPage>
             <p>
@@ -30,13 +32,15 @@ export function Pagination() {
                 <span> {dataMoviesSeries?.totalPages || 1}</span>
             </p>
             <ButtonSwitchPage
+                data-testid="btn-switch-next-page"
                 disabled={dataMoviesSeries?.currentPage === dataMoviesSeries?.totalPages}
-                onClick={() => handlePassToNextPage({setDataMoviesSeries, dataMoviesSeries})}>
+                onClick={() => handlePassToNextPage({ setDataMoviesSeries, dataMoviesSeries })}>
                 <GrCaretNext />
             </ButtonSwitchPage>
-            <ButtonSwitchPage
+            <ButtonSwitchPage 
+                data-testid="btn-switch-end-page"
                 disabled={dataMoviesSeries?.currentPage === dataMoviesSeries?.totalPages}
-                onClick={() => handlePassToEndPage({setDataMoviesSeries, dataMoviesSeries})}>
+                onClick={() => handlePassToEndPage({ setDataMoviesSeries, dataMoviesSeries })}>
                 <GrChapterNext />
             </ButtonSwitchPage>
         </div>
