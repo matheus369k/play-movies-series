@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useContext, useEffect, useState } from "react"
 import { IdContext, PageDataContext } from "../../../app";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ButtonPlay } from "./button-play";
 import { TResponse } from "../../../types";
 import { Loading } from "./loading";
@@ -32,15 +32,7 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
             }).catch(() => {
                 setResponse({ ...response, loading: "error" })
             });
-    }, [])/* 
-
-    function handleGetIdMovies(id: string | undefined) {
-        event?.stopImmediatePropagation();
-
-        if (setImdbID && id) setImdbID(id);
-
-        resetScroll();
-    } */
+    }, [])
 
     function handleGetDataOfMovie() {
         if (setImdbID) setImdbID("");
@@ -72,16 +64,21 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
             >
                 <h2 className="font-bold text-4xl max-lg:text-2xl capitalize">{title}</h2>
                 <span
-                    onClick={() => handleGetDataOfMovie()}
+                    data-testid="category-section-more-movies"
+                    onClick={handleGetDataOfMovie}
                     className="text-gray-600 hover:text-gray-100 cursor-pointer max-lg:text-sm"
                 >
                     More
                 </span>
             </span>
             {response.loading === "finnish" &&
-                <ul className="flex gap-6 px-10 w-full max-xl:gap-2 max-xl:px-5 max-sm:px-2">
+                <ul 
+                    data-testid="category-section-movies" 
+                    className="flex gap-6 px-10 w-full max-xl:gap-2 max-xl:px-5 max-sm:px-2"
+                >
                     {response.data?.slice(0, 6).map((MovieSeries, index) => (
                         <li
+                            data-testid="category-section-movie-play"
                             onClick={() => handleGetIdMovie(
                                 MovieSeries.imdbID,
                                 setImdbID,
@@ -94,14 +91,14 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                                 } ${index === 4 && "max-lg:hidden"
                                 }`}
                         >
-                            <Link to="/watch">
+                            <div>
                                 <img
                                     src={MovieSeries.Poster}
                                     className="w-full h-full max-h-64 max-w-44 object-cover transition-all opacity-100 group-hover/play:opacity-40"
                                     alt={MovieSeries.Type + ": " + MovieSeries.Title}
                                 />
                                 <ButtonPlay />
-                            </Link>
+                            </div>
                         </li>
                     ))
                     }
