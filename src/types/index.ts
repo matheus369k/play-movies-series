@@ -1,4 +1,4 @@
-export interface TMoviesSeriesInFocus extends TResponse {
+export interface TMovieAllInfo{
     Title?: string
     Year?: string
     Rated?: string
@@ -25,10 +25,9 @@ export interface TMoviesSeriesInFocus extends TResponse {
     totalSeasons?: string
     Website?: string
     Response?: string
-    index?: number
 }
 
-export interface TMoviesSeries {
+export interface TMovieInfo {
     Poster: string
     Title: string
     Type: string
@@ -36,26 +35,32 @@ export interface TMoviesSeries {
     imdbID: string
 }
 
-export interface TStateDataMoviesSeries extends TResponse{
-  data?: TMoviesSeries[]
-  title?: string
+export interface TMovieWatch {
+  data: TMovieAllInfo
+  imdbID: string
+  index: number
+  loading: "loading" | "finnish" | "error"
+}
+
+export interface TMoviesInfoWithPagination extends TResponse{
   totalPages?: number
   currentPage?: number
+  title?: string
   type?: string
   year?: number
 }
 
-export interface TPageDataContext {
-  dataMoviesSeries?: TStateDataMoviesSeries
-  setDataMoviesSeries?: React.Dispatch<React.SetStateAction<TStateDataMoviesSeries>>
+export interface TStateMoviesInfoWithPagination {
+  moviesInfoWithPagination?: TMoviesInfoWithPagination
+  setMoviesInfoWithPagination?: React.Dispatch<React.SetStateAction<TMoviesInfoWithPagination>>
 }
 
-export interface TIdContext {
-  imdbID?: string | null
-  setImdbID?: React.Dispatch<React.SetStateAction<string | null>>
+export interface TStateMovieAllInfo {
+  movieWatch?: TMovieWatch
+  setMovieWatch?: React.Dispatch<React.SetStateAction<TMovieWatch>>
 }
 
 export interface TResponse{
-  data?: TMoviesSeries[]
+  data?: TMovieInfo[]
   loading: "loading" | "finnish" | "error"
 }
