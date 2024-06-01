@@ -1,4 +1,4 @@
-export const dbFocusDatas: {imdbid: string}[] = [
+export const dbFocusData: {imdbid: string}[] = [
     {
         "imdbid": "tt5090568"
     },

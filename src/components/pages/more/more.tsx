@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { IdContext, PageDataContext } from "../../../app"
 import { Pagination } from "../components/pagination";
 import { ButtonPlay } from "../components/button-play";
 import { useNavigate } from "react-router";
@@ -7,33 +6,35 @@ import { handleGetIdMovie } from "../functions/get-id-movies";
 import { FeatchApiPagination } from "../hooks/fetch-api";
 import { Loading } from "../components/loading";
 import { Error } from "../components/error";
+import { PaginationContext } from "../../../context/pagination-context";
+import { WatchContext } from "../../../context/watch-context";
 
 export function MoreMoviesSeries() {
-    const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
-    const { setImdbID } = useContext(IdContext);
+    const { moviesInfoWithPagination, setMoviesInfoWithPagination } = useContext(PaginationContext);
+    const { setMovieWatch } = useContext(WatchContext);
     const navigate = useNavigate();
 
-    const urlParams = `&s=all&type=${dataMoviesSeries?.type}&y=${dataMoviesSeries?.year}&page=${dataMoviesSeries?.currentPage}`;
+    const urlParams = `&s=all&type=${moviesInfoWithPagination?.type}&y=${moviesInfoWithPagination?.year}&page=${moviesInfoWithPagination?.currentPage}`;
     const url = "https://www.omdbapi.com/?apikey=d074a25e" + urlParams;
 
-    FeatchApiPagination(dataMoviesSeries, setDataMoviesSeries, url);
+    FeatchApiPagination(moviesInfoWithPagination, setMoviesInfoWithPagination, url);
 
     return (
         <section className="flex flex-col justify-between px-2 gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
-            <h2 className="font-bold text-4xl text-center mb-10">{dataMoviesSeries?.title}</h2>
-            {dataMoviesSeries?.loading === "finnish" &&
+            <h2 className="font-bold text-4xl text-center mb-10">{moviesInfoWithPagination?.title}</h2>
+            {moviesInfoWithPagination?.loading === "finnish" &&
                 <>
                     <ul data-testid="more-movies" className="flex flex-wrap pb-6 w-auto max-sm:gap-y-6">
-                        {dataMoviesSeries?.data &&
-                            dataMoviesSeries?.data.map(dataMore => (
+                        {moviesInfoWithPagination?.data &&
+                            moviesInfoWithPagination?.data.map(dataMore => (
                                 <li
                                     data-testid="more-movie-play"
                                     onClick={() => handleGetIdMovie(
-                                        dataMore.imdbID, 
-                                        setImdbID, 
+                                        dataMore.imdbID,
+                                        setMovieWatch, 
                                         navigate
                                     )}
-                                    key={dataMoviesSeries?.title + "-id-" + dataMore.imdbID}
+                                    key={moviesInfoWithPagination?.title + "-id-" + dataMore.imdbID}
                                     className="flex flex-col items-center w-1/5 max-xl:w-1/4 max-md:w-1/3"
                                 >
                                     <div
@@ -57,13 +58,13 @@ export function MoreMoviesSeries() {
                     <Pagination />
                 </>
             }
-            {dataMoviesSeries?.loading === "loading"
+            {moviesInfoWithPagination?.loading === "loading"
                 && <Loading
                     message="Carregando"
                     styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                 />
             }
-            {dataMoviesSeries?.loading === "error"
+            {moviesInfoWithPagination?.loading === "error"
                 && <Error
                     message="Erro ao tentar carregar"
                     styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"

@@ -1,6 +1,5 @@
 import axios from "axios"
 import { useContext, useEffect, useState } from "react"
-import { IdContext, PageDataContext } from "../../../app";
 import { useNavigate } from "react-router-dom";
 import { ButtonPlay } from "./button-play";
 import { TResponse } from "../../../types";
@@ -9,6 +8,8 @@ import { Error } from "./error";
 import { setParamsAtUrl } from "../functions/add-url-params";
 import { resetScroll } from "../../functions/reset-scroll";
 import { handleGetIdMovie } from "../functions/get-id-movies";
+import { PaginationContext } from "../../../context/pagination-context";
+import { WatchContext } from "../../../context/watch-context";
 
 interface PropsSectionMovieAndSeries {
     type: string
@@ -19,8 +20,8 @@ interface PropsSectionMovieAndSeries {
 
 export function CategorySection({ type, page, title, year }: PropsSectionMovieAndSeries) {
     const [response, setResponse] = useState<TResponse>({ loading: "loading" })
-    const { setDataMoviesSeries } = useContext(PageDataContext);
-    const { setImdbID } = useContext(IdContext);
+    const { setMoviesInfoWithPagination } = useContext(PaginationContext);
+    const { setMovieWatch } = useContext(WatchContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -35,9 +36,16 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
     }, [])
 
     function handleGetDataOfMovie() {
-        if (setImdbID) setImdbID("");
-        if (setDataMoviesSeries && response.data) {
-            setDataMoviesSeries({
+        if (setMovieWatch) {
+            setMovieWatch({
+                imdbID: "",
+                data: {},
+                index: 0,
+                loading: "loading"
+            });
+        }
+        if (setMoviesInfoWithPagination && response.data) {
+            setMoviesInfoWithPagination({
                 ...response,
                 data: response.data,
                 title: title,
@@ -72,8 +80,8 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                 </span>
             </span>
             {response.loading === "finnish" &&
-                <ul 
-                    data-testid="category-section-movies" 
+                <ul
+                    data-testid="category-section-movies"
                     className="flex gap-6 px-10 w-full max-xl:gap-2 max-xl:px-5 max-sm:px-2"
                 >
                     {response.data?.slice(0, 6).map((MovieSeries, index) => (
@@ -81,9 +89,9 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                             data-testid="category-section-movie-play"
                             onClick={() => handleGetIdMovie(
                                 MovieSeries.imdbID,
-                                setImdbID,
+                                setMovieWatch,
                                 navigate,
-                                setDataMoviesSeries,
+                                setMoviesInfoWithPagination,
                                 response
                             )}
                             key={"release-id-" + MovieSeries.imdbID}

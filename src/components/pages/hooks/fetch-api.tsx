@@ -1,11 +1,11 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { TMoviesSeriesInFocus, TResponse, TStateDataMoviesSeries } from "../../../types";
+import { TMovieWatch, TMoviesInfoWithPagination } from "../../../types";
 import { setParamsAtUrl } from "../functions/add-url-params";
 
 export function FeatchApiPagination(
-    state: TStateDataMoviesSeries & TResponse | undefined,
-    setState: React.Dispatch<React.SetStateAction<TStateDataMoviesSeries & TResponse>> | undefined,
+    state: TMoviesInfoWithPagination | undefined,
+    setState: React.Dispatch<React.SetStateAction<TMoviesInfoWithPagination>> | undefined,
     url: string,
     paramsName?: string
 ) {
@@ -39,29 +39,30 @@ export function FeatchApiPagination(
 }
 
 export function FeatchApiOneData(
-    state: TMoviesSeriesInFocus | undefined,
-    setState: React.Dispatch<React.SetStateAction<TMoviesSeriesInFocus>>,
-    imdbID: string | null | undefined,
+    state: TMovieWatch | undefined,
+    setState: React.Dispatch<React.SetStateAction<TMovieWatch>> | undefined,
+    imdbID: string | undefined,
     paramsName?: string
 ) {
-    useEffect(() => {
-        const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${imdbID}`;
+    if (state === undefined || setState === undefined) return;
 
-        if (setState === undefined) throw new Error("state not found");
+    const idMovie = imdbID || state.imdbID;
+
+    useEffect(() => {
+
+        const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${idMovie}`;
 
         axios.get(url).then(resp => {
             if (resp.data.Response === "False") throw new Error("databese not found");
 
-
-            setState({ ...resp.data, loading: "finnish", index: state?.index || 0 })
+            setState({...state, imdbID: resp.data.imdbID ,data: resp.data, loading: "finnish" })
 
         }).catch(() => {
             setState({ ...state, loading: "error" })
         });
 
-        if (imdbID === undefined || imdbID === "" || imdbID === null || paramsName === undefined) return;
+        if (idMovie === "" || idMovie === undefined || paramsName === undefined) return;
 
-        setParamsAtUrl(paramsName, imdbID);
-    }, [imdbID])
-
+        setParamsAtUrl(paramsName, idMovie);
+    }, [idMovie])
 }

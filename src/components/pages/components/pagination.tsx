@@ -4,11 +4,11 @@ import { GrChapterPrevious } from "react-icons/gr";
 import { GrCaretPrevious } from "react-icons/gr";
 import { ButtonSwitchPage } from "../components/button-switch-page";
 import { handlePassToEndPage, handlePassToNextPage, handlePassToPreviousPage, handlePassToStartPage } from "../functions/pagination";
+import { PaginationContext } from "../../../context/pagination-context";
 import { useContext } from "react";
-import { PageDataContext } from "../../../app";
 
 export function Pagination() {
-    const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
+    const { moviesInfoWithPagination, setMoviesInfoWithPagination } = useContext(PaginationContext);
 
     return (
         <div
@@ -17,30 +17,30 @@ export function Pagination() {
         >
             <ButtonSwitchPage
                 data-testid="btn-switch-initial-page"
-                disabled={(dataMoviesSeries?.currentPage || 1) === 1}
-                onClick={() => handlePassToStartPage({ setDataMoviesSeries, dataMoviesSeries })}>
+                disabled={(moviesInfoWithPagination?.currentPage || 1) === 1}
+                onClick={() => handlePassToStartPage({ setMoviesInfoWithPagination, moviesInfoWithPagination })}>
                 <GrChapterPrevious />
             </ButtonSwitchPage>
             <ButtonSwitchPage
                 data-testid="btn-switch-previous-page"
-                disabled={(dataMoviesSeries?.currentPage || 1) === 1}
-                onClick={() => handlePassToPreviousPage({ setDataMoviesSeries, dataMoviesSeries })}>
+                disabled={(moviesInfoWithPagination?.currentPage || 1) === 1}
+                onClick={() => handlePassToPreviousPage({ setMoviesInfoWithPagination, moviesInfoWithPagination })}>
                 <GrCaretPrevious />
             </ButtonSwitchPage>
             <p>
-                <span>{dataMoviesSeries?.currentPage || 1} </span>/
-                <span> {dataMoviesSeries?.totalPages || 1}</span>
+                <span>{moviesInfoWithPagination?.currentPage || 1} </span>/
+                <span> {moviesInfoWithPagination?.totalPages || 1}</span>
             </p>
             <ButtonSwitchPage
                 data-testid="btn-switch-next-page"
-                disabled={dataMoviesSeries?.currentPage === dataMoviesSeries?.totalPages}
-                onClick={() => handlePassToNextPage({ setDataMoviesSeries, dataMoviesSeries })}>
+                disabled={moviesInfoWithPagination?.currentPage === moviesInfoWithPagination?.totalPages}
+                onClick={() => handlePassToNextPage({ setMoviesInfoWithPagination, moviesInfoWithPagination })}>
                 <GrCaretNext />
             </ButtonSwitchPage>
             <ButtonSwitchPage 
                 data-testid="btn-switch-end-page"
-                disabled={dataMoviesSeries?.currentPage === dataMoviesSeries?.totalPages}
-                onClick={() => handlePassToEndPage({ setDataMoviesSeries, dataMoviesSeries })}>
+                disabled={moviesInfoWithPagination?.currentPage === moviesInfoWithPagination?.totalPages}
+                onClick={() => handlePassToEndPage({ setMoviesInfoWithPagination, moviesInfoWithPagination })}>
                 <GrChapterNext />
             </ButtonSwitchPage>
         </div>

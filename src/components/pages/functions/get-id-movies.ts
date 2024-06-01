@@ -1,13 +1,13 @@
 import React from "react";
 import { NavigateFunction } from "react-router";
 import { resetScroll } from "../../functions/reset-scroll";
-import { TResponse, TStateDataMoviesSeries } from "../../../types";
+import { TMovieWatch, TResponse, TMoviesInfoWithPagination } from "../../../types";
 
 export function handleGetIdMovie(
-    id: string | undefined, 
-    setImdbID: React.Dispatch<React.SetStateAction<string | null>> | undefined, 
-    navigate:  NavigateFunction,
-    setDataMoviesSeries?: React.Dispatch<React.SetStateAction<TStateDataMoviesSeries>> | undefined,
+    id: string | undefined,
+    setMovieWatch: React.Dispatch<React.SetStateAction<TMovieWatch>> | undefined,
+    navigate: NavigateFunction,
+    setDataMoviesSeries?: React.Dispatch<React.SetStateAction<TMoviesInfoWithPagination>> | undefined,
     response?: TResponse
 ) {
     event?.stopImmediatePropagation();
@@ -16,7 +16,14 @@ export function handleGetIdMovie(
 
     if (input) input.value = "";
 
-    if (setImdbID && id) setImdbID(id);
+    if (setMovieWatch && id) {
+        setMovieWatch({
+            data: {},
+            index: 0,
+            loading: "loading",
+            imdbID: id
+        });
+    }
 
     if (setDataMoviesSeries && response) {
         setDataMoviesSeries({

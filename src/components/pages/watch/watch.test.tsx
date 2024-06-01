@@ -224,7 +224,7 @@ describe("WatchMovieSeries", ()=>{
             <IdContext.Provider value={{ imdbID, setImdbID }}>
                 <PageDataContext.Provider value={{ dataMoviesSeries, setDataMoviesSeries }}>
                     <WatchMovieSeries />
-                </PageDataContext.Provider>
+                </PageDataContext.Provider>;
             </IdContext.Provider>
         );
 

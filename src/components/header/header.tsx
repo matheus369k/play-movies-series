@@ -1,20 +1,33 @@
-import { IdContext, PageDataContext } from "../../app";
 import { GrPrevious } from "react-icons/gr";
 import { useContext } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { useNavigate } from "react-router"
 import { resetScroll } from "../functions/reset-scroll";
+import { PaginationContext } from "../../context/pagination-context";
+import { WatchContext } from "../../context/watch-context";
 
 export function Header() {
-    const { setImdbID } = useContext(IdContext);
-    const { dataMoviesSeries, setDataMoviesSeries } = useContext(PageDataContext);
+    const { moviesInfoWithPagination, setMoviesInfoWithPagination } = useContext(PaginationContext);
+    const { setMovieWatch } = useContext(WatchContext);
     const navigate = useNavigate();
 
     function handleToBackPage() {
         (document.querySelector("[name='search']") as HTMLFormElement).value = "";
 
-        if (setImdbID) setImdbID("");
-        if (setDataMoviesSeries) setDataMoviesSeries({loading: "loading"})
+        if (setMovieWatch) {
+            setMovieWatch({
+                imdbID: "",
+                data: {},
+                index: 0,
+                loading: "loading"
+            });
+        };
+        if (setMoviesInfoWithPagination) {
+            setMoviesInfoWithPagination({ 
+                data: undefined,
+                loading: "loading" 
+            });
+    }
 
         navigate("/")
     }
@@ -23,10 +36,17 @@ export function Header() {
         event?.preventDefault();
 
         const inputSearch = (document.querySelector("[name='search']") as HTMLFormElement);
-        if (setDataMoviesSeries) setDataMoviesSeries({ ...dataMoviesSeries, currentPage: 1 ,title: inputSearch.value, loading: "loading"});
+        if (setMoviesInfoWithPagination) {
+            setMoviesInfoWithPagination({
+                ...moviesInfoWithPagination,
+                currentPage: 1,
+                title: inputSearch.value,
+                loading: "loading"
+            });
+        }
 
         inputSearch.value = "";
-        
+
         resetScroll();
 
         navigate("/search")

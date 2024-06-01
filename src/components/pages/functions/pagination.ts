@@ -1,30 +1,30 @@
-import { TStateDataMoviesSeries } from "../../../types"
+import { TMoviesInfoWithPagination } from "../../../types"
 
 interface TPageDataContext {
-    dataMoviesSeries?: TStateDataMoviesSeries
-    setDataMoviesSeries?: React.Dispatch<React.SetStateAction<TStateDataMoviesSeries>>
+    moviesInfoWithPagination?: TMoviesInfoWithPagination
+    setMoviesInfoWithPagination?: React.Dispatch<React.SetStateAction<TMoviesInfoWithPagination>>
 }
 
-export function handlePassToNextPage({ setDataMoviesSeries, dataMoviesSeries }: TPageDataContext) {
-    if (setDataMoviesSeries) {
-        setDataMoviesSeries({ ...dataMoviesSeries, loading: "loading", currentPage: (dataMoviesSeries?.currentPage || 1) + 1 })
+export function handlePassToNextPage({ setMoviesInfoWithPagination, moviesInfoWithPagination }: TPageDataContext) {
+    if (setMoviesInfoWithPagination) {
+        setMoviesInfoWithPagination({ ...moviesInfoWithPagination, loading: "loading", currentPage: (moviesInfoWithPagination?.currentPage || 1) + 1 })
     }
 }
 
-export function handlePassToEndPage({ setDataMoviesSeries, dataMoviesSeries }: TPageDataContext) {
-    if (setDataMoviesSeries) {
-        setDataMoviesSeries({ ...dataMoviesSeries, loading: "loading", currentPage: (dataMoviesSeries?.totalPages || 1) })
+export function handlePassToEndPage({ setMoviesInfoWithPagination, moviesInfoWithPagination }: TPageDataContext) {
+    if (setMoviesInfoWithPagination) {
+        setMoviesInfoWithPagination({ ...moviesInfoWithPagination, loading: "loading", currentPage: (moviesInfoWithPagination?.totalPages || 1) })
     }
 }
 
-export function handlePassToPreviousPage({ setDataMoviesSeries, dataMoviesSeries }: TPageDataContext) {
-    if (setDataMoviesSeries) {
-        setDataMoviesSeries({ ...dataMoviesSeries, loading: "loading", currentPage: (dataMoviesSeries?.currentPage || 1) - 1 })
+export function handlePassToPreviousPage({ setMoviesInfoWithPagination, moviesInfoWithPagination }: TPageDataContext) {
+    if (setMoviesInfoWithPagination) {
+        setMoviesInfoWithPagination({ ...moviesInfoWithPagination, loading: "loading", currentPage: (moviesInfoWithPagination?.currentPage || 1) - 1 })
     }
 }
 
-export function handlePassToStartPage({ setDataMoviesSeries, dataMoviesSeries }: TPageDataContext) {
-    if (setDataMoviesSeries) {
-        setDataMoviesSeries({ ...dataMoviesSeries, loading: "loading", currentPage: 1 })
+export function handlePassToStartPage({ setMoviesInfoWithPagination, moviesInfoWithPagination }: TPageDataContext) {
+    if (setMoviesInfoWithPagination) {
+        setMoviesInfoWithPagination({ ...moviesInfoWithPagination, loading: "loading", currentPage: 1 })
     }
 }
