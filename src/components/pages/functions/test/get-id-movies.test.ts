@@ -22,7 +22,12 @@ describe("get-id-movies module", () => {
 
         mockHandleGetIdMovie(id, setImdbID, navigate, setDataMoviesSeries, oldData);
 
-        expect(setImdbID.mock.lastCall[0]).toBe(id);
+        expect(setImdbID.mock.lastCall[0]).toEqual({
+            data: {},
+            index: 0,
+            loading: "loading",
+            imdbID: id
+        });
         expect(navigate.mock.lastCall[0]).toBe("/watch");
         expect(mockScrollTo()).toBeTruthy();
     })

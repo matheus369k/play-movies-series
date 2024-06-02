@@ -17,13 +17,13 @@ import { Error } from "../components/error";
 import { WatchContext } from "../../../context/watch-context";
 
 export function WatchMovieSeries() {
-    const [watchAction, setwatchAction] = useState({ isLoading: false, isFullScreen: false });
+    const [watchAction, setWatchAction] = useState({ isLoading: false, isFullScreen: false });
     const { movieWatch, setMovieWatch } = useContext(WatchContext);
 
     FeatchApiOneData(movieWatch, setMovieWatch, undefined,"id");
 
     function handleFullScreen() {
-        setwatchAction({
+        setWatchAction({
             ...watchAction,
             isFullScreen: !watchAction.isFullScreen
         });
@@ -58,13 +58,16 @@ export function WatchMovieSeries() {
                                     visible
                                     fluxDefault
                                     data-testid="watch-play-movie"
-                                    onClick={() => { setwatchAction({ ...watchAction, isLoading: true }) }}
+                                    onClick={() => { setWatchAction({ ...watchAction, isLoading: true }) }}
                                 />
                             }
                         </div>
                         <div className="flex items-center gap-2 transition-all">
                             <Icon><TbPlayerTrackPrevFilled /></Icon>
-                            <Icon data-testid="watch-play-pause-movie" onClick={() => { setwatchAction({ ...watchAction, isLoading: !watchAction.isLoading }) }}>
+                            <Icon 
+                                data-testid="watch-play-pause-movie" 
+                                onClick={() => { setWatchAction({ ...watchAction, isLoading: !watchAction.isLoading }) }}
+                            >
                                 {watchAction.isLoading
                                     ? <TbPlayerPauseFilled />
                                     : <FaPlay />

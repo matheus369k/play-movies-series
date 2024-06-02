@@ -1,9 +1,11 @@
 import { CategorySection } from "../category-section";
 import { render, fireEvent } from "@testing-library/react";
-import { IdContext, PageDataContext } from "../../../../app";
 import { screen } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import React from "react";
+import { TMovieWatch, TMoviesInfoWithPagination } from "../../../../types";
+import { WatchContextProvider } from "../../../../context/watch-context";
+import { PaginationContextProvider } from "../../../../context/pagination-context";
 
 const mockNavigate = jest.fn();
 const mockEffect = jest.fn();
@@ -90,7 +92,7 @@ describe("Category-section", () => {
     })
 
     it("clicking button play", () => {
-        let imdbID, dataMoviesSeries;
+        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "loading" };
         const response = {
             data: [{
                 Poster: "https://",
@@ -101,19 +103,28 @@ describe("Category-section", () => {
             }],
             loading: "finnish"
         };
+        const movieWatch: TMovieWatch = {
+            data: {},
+            imdbID: "",
+            index: 0,
+            loading: "loading"
+        }
 
+        const setMovieWatch = jest.fn();
         const setResponse = jest.fn();
-        const setImdbID = jest.fn();
-        const setDataMoviesSeries = jest.fn();
+        const setMoviesInfoWithPagination = jest.fn();
 
-        spyState.mockImplementation(() => [response, setResponse]);
+        spyState
+            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
+            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
+            .mockImplementationOnce(() => [response, setResponse])
 
         render(
-            <IdContext.Provider value={{ imdbID, setImdbID }}>
-                <PageDataContext.Provider value={{ dataMoviesSeries, setDataMoviesSeries }}>
+            <WatchContextProvider>
+                <PaginationContextProvider>
                     <CategorySection title="lançamento" page={1} type="movies" year={2000} />
-                </PageDataContext.Provider >
-            </IdContext.Provider>
+                </PaginationContextProvider>
+            </WatchContextProvider>
         );
 
         const playMovie = screen.getByTestId("category-section-movie-play");
@@ -124,7 +135,7 @@ describe("Category-section", () => {
     })
 
     it("clicking on the link more movie", () => {
-        let imdbID, dataMoviesSeries;
+        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "loading" };
         const response = {
             data: [{
                 Poster: "https://",
@@ -135,19 +146,28 @@ describe("Category-section", () => {
             }],
             loading: "finnish"
         };
+        const movieWatch: TMovieWatch = {
+            data: {},
+            imdbID: "",
+            index: 0,
+            loading: "loading"
+        }
 
+        const setMovieWatch = jest.fn();
         const setResponse = jest.fn();
-        const setImdbID = jest.fn();
-        const setDataMoviesSeries = jest.fn();
+        const setMoviesInfoWithPagination = jest.fn();
 
-        spyState.mockImplementation(() => [response, setResponse]);
+        spyState
+            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
+            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
+            .mockImplementationOnce(() => [response, setResponse])
 
         render(
-            <IdContext.Provider value={{ imdbID, setImdbID }}>
-                <PageDataContext.Provider value={{ dataMoviesSeries, setDataMoviesSeries }}>
+            <WatchContextProvider>
+                <PaginationContextProvider>
                     <CategorySection title="lançamento" page={1} type="movies" year={2000} />
-                </PageDataContext.Provider >
-            </IdContext.Provider>
+                </PaginationContextProvider>
+            </WatchContextProvider>
         );
 
         const linkMore = screen.getByTestId("category-section-more-movies");
@@ -162,8 +182,13 @@ describe("Category-section", () => {
         expect(mockSetParamsAtUrl).toHaveBeenNthCalledWith(3, ["year", 2000])
         expect(mockSetParamsAtUrl).toHaveBeenNthCalledWith(4, ["page", 1])
 
-        expect(setImdbID).toHaveBeenLastCalledWith("");
-        expect(setDataMoviesSeries.mock.lastCall[0]).toEqual({
+        expect(setMovieWatch).toHaveBeenLastCalledWith({
+            imdbID: "",
+            data: {},
+            index: 0,
+            loading: "loading"
+        });
+        expect(setMoviesInfoWithPagination.mock.lastCall[0]).toEqual({
             data: [
                 {
                     Poster: 'https://',

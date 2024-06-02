@@ -3,7 +3,7 @@ import { TMoviesInfoWithPagination, TStateMoviesInfoWithPagination } from "../ty
 
 export const PaginationContext = createContext<TStateMoviesInfoWithPagination>({});
 
-export function PaginationContextPorvider(props: any) {
+export function PaginationContextProvider(props: any) {
     const [moviesInfoWithPagination, setMoviesInfoWithPagination] = useState<TMoviesInfoWithPagination>(() => {
         const url = new URL(window.location.toString());
         const pathName = window.location.pathname;

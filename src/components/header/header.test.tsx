@@ -1,10 +1,15 @@
 import { render, fireEvent } from "@testing-library/react";
 import { screen } from "@testing-library/dom"
 import { Header } from "./header";
-import { IdContext, PageDataContext } from "../../app";
 import "@testing-library/jest-dom";
+import { TMovieWatch, TMoviesInfoWithPagination } from "../../types";
+import { WatchContextProvider } from "../../context/watch-context";
+import { PaginationContextProvider } from "../../context/pagination-context";
+import React from "react";
 
 const mockNavigate = jest.fn();
+
+const spyState = jest.spyOn(React, "useState");
 
 jest.mock("react-router", () => ({
     ...jest.requireActual("react-router"),
@@ -12,18 +17,30 @@ jest.mock("react-router", () => ({
 }));
 
 describe("Header", () => {
-    it("should render at component", () => {
-        let imdbID, dataMoviesSeries;
+    beforeEach(() => jest.resetAllMocks());
 
-        const setImdbID = jest.fn();
-        const setDataMoviesSeries = jest.fn();
+    it("should render at component", () => {
+        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
+        let movieWatch: TMovieWatch = {
+            data: {},
+            imdbID: "",
+            index: 0,
+            loading: "loading"
+        }
+
+        const setMovieWatch = jest.fn();
+        const setMoviesInfoWithPagination = jest.fn();
+
+        spyState
+            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
+            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
 
         render(
-            <IdContext.Provider value={{ imdbID, setImdbID }}>
-                <PageDataContext.Provider value={{ dataMoviesSeries, setDataMoviesSeries }}>
+            <WatchContextProvider>
+                <PaginationContextProvider>
                     <Header />
-                </PageDataContext.Provider>
-            </IdContext.Provider>
+                </PaginationContextProvider>
+            </WatchContextProvider>
         );
 
         expect(screen.getByText("Filmes e Series")).toBeInTheDocument();
@@ -34,17 +51,27 @@ describe("Header", () => {
         const url = new URL(window.location.toString());
         window.history.pushState({}, "", url + "more");
 
-        let imdbID, dataMoviesSeries;
+        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
+        const movieWatch: TMovieWatch = {
+            data: {},
+            imdbID: "",
+            index: 0,
+            loading: "finnish"
+        }
 
-        const setImdbID = jest.fn();
-        const setDataMoviesSeries = jest.fn();
+        const setMovieWatch = jest.fn();
+        const setMoviesInfoWithPagination = jest.fn();
+
+        spyState
+            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
+            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
 
         render(
-            <IdContext.Provider value={{ imdbID, setImdbID }}>
-                <PageDataContext.Provider value={{ dataMoviesSeries, setDataMoviesSeries }}>
+            <WatchContextProvider>
+                <PaginationContextProvider>
                     <Header />
-                </PageDataContext.Provider>
-            </IdContext.Provider>
+                </PaginationContextProvider>
+            </WatchContextProvider>
         );
 
         const buttonBackPage = screen.getByTestId("btn-back");
@@ -53,24 +80,42 @@ describe("Header", () => {
 
         expect(mockNavigate.mock.calls[0][0]).toBe("/");
 
-        expect(setImdbID).toHaveBeenCalledWith("");
-        expect(setDataMoviesSeries).toHaveBeenCalledWith({loading: "loading"});
+        expect(setMovieWatch.mock.lastCall[0]).toEqual({
+            imdbID: "",
+            data: {},
+            index: 0,
+            loading: "loading"
+        });
+        expect(setMoviesInfoWithPagination.mock.lastCall[0]).toEqual({
+            data: undefined,
+            loading: "loading"
+        });
     })
 
-    it("when submit search by movies", ()=> {
+    it("when submit search by movies", () => {
         window.scrollTo = jest.fn();
 
-        let imdbID, dataMoviesSeries;
+        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
+        let movieWatch: TMovieWatch = {
+            data: {},
+            imdbID: "",
+            index: 0,
+            loading: "loading"
+        }
 
-        const setImdbID = jest.fn();
-        const setDataMoviesSeries = jest.fn();
+        const setMovieWatch = jest.fn();
+        const setMoviesInfoWithPagination = jest.fn();
+
+        spyState
+            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
+            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
 
         render(
-            <IdContext.Provider value={{ imdbID, setImdbID }}>
-                <PageDataContext.Provider value={{ dataMoviesSeries, setDataMoviesSeries }}>
+            <WatchContextProvider>
+                <PaginationContextProvider>
                     <Header />
-                </PageDataContext.Provider>
-            </IdContext.Provider>
+                </PaginationContextProvider>
+            </WatchContextProvider>
         );
 
         const submitSearchForm = screen.getByTestId("search-form");
@@ -79,10 +124,10 @@ describe("Header", () => {
 
         expect(mockNavigate.mock.lastCall[0]).toBe("/search")
 
-        expect(setDataMoviesSeries.mock.lastCall[0]).toEqual({
-            "currentPage": 1 ,
-            "title": "", 
-            "loading": "loading"
+        expect(setMoviesInfoWithPagination.mock.lastCall[0]).toEqual({
+            currentPage: 1,
+            title: "",
+            loading: "loading"
         });
     })
 })

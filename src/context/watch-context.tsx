@@ -1,4 +1,4 @@
-import { createContext, useState } from "react"
+import { createContext, useState } from "react";
 import { TStateMovieAllInfo, TMovieWatch } from "../types";
 
 export const WatchContext = createContext<TStateMovieAllInfo>({
@@ -11,7 +11,7 @@ export const WatchContext = createContext<TStateMovieAllInfo>({
     setMovieWatch: () => { }
 });
 
-export function WachContextProvider(props: any) {
+export function WatchContextProvider(props: any) {
     const [movieWatch, setMovieWatch] = useState<TMovieWatch>(() => {
         const url = new URL(window.location.toString());
 

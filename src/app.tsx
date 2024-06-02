@@ -1,7 +1,7 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router/appRouter";
-import { PaginationContextPorvider } from "./context/pagination-context";
-import { WachContextProvider } from "./context/watch-context";
+import { PaginationContextProvider } from "./context/pagination-context";
+import { WatchContextProvider } from "./context/watch-context";
 
 
 export function App() {/* 
@@ -56,11 +56,11 @@ export function App() {/*
 
   return (
     <div className="bg-gray-950 text-gray-100 min-h-screen font-inter tracking-wider">
-      <WachContextProvider>
-        <PaginationContextPorvider>
+      <WatchContextProvider>
+        <PaginationContextProvider>
           <RouterProvider router={router} />
-        </PaginationContextPorvider>
-      </WachContextProvider>
+        </PaginationContextProvider>
+      </WatchContextProvider>
     </div>
   )
 }
