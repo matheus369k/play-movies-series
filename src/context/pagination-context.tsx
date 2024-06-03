@@ -24,13 +24,17 @@ export function PaginationContextProvider(props: any) {
         };
     });
 
+    function getUrlParams(url: URL ,nameParams: string) {
+        return url.searchParams.get(nameParams);
+    }
+
     function reloadUrlStateWithMoreParams(url: URL): TMoviesInfoWithPagination {
         return {
             data: undefined,
-            title: url.searchParams.get("title")?.replace("+", " ") || "Todos",
-            currentPage: parseInt(url.searchParams.get("page") || "1"),
-            type: url.searchParams.get("type") || "",
-            year: parseInt(url.searchParams.get("year") || "1999"),
+            title: getUrlParams(url, "title")?.replace("+", " ") || "Todos",
+            currentPage: parseInt(getUrlParams(url, "page") || "1"),
+            type: getUrlParams(url, "type") || "",
+            year: parseInt(getUrlParams(url, "year") || "1999"),
             loading: "loading"
         }
     }
@@ -38,9 +42,9 @@ export function PaginationContextProvider(props: any) {
     function reloadUrlStateWithSearchParams(url: URL): TMoviesInfoWithPagination {
         return {
             data: undefined,
-            title: url.searchParams.get("search")?.replace("+", " ") || "all",
+            title: getUrlParams(url, "search")?.replace("+", " ") || "all",
             totalPages: 1,
-            currentPage: parseInt(url.searchParams.get("page") || "1"),
+            currentPage: parseInt(getUrlParams(url, "page") || "1"),
             loading: "loading",
         };
     }

@@ -23,7 +23,7 @@ export function Search() {
         <section 
             className="flex px-2 flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50"
         >
-            <h2 className="font-bold text-4xl text-center mb-10 max-md:text-2xl">Resultado de "{moviesInfoWithPagination?.title}"</h2>
+            <h2 className="font-bold capitalize text-4xl text-center mb-10 max-md:text-2xl">Resultado de "{moviesInfoWithPagination?.title}"</h2>
             {moviesInfoWithPagination?.loading === "finnish" &&
                 <>
                     <ul 

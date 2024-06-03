@@ -1,15 +1,7 @@
 import { createContext, useState } from "react";
 import { TStateMovieAllInfo, TMovieWatch } from "../types";
 
-export const WatchContext = createContext<TStateMovieAllInfo>({
-    movieWatch: {
-        imdbID: "",
-        loading: "loading",
-        index: 0,
-        data: {}
-    },
-    setMovieWatch: () => { }
-});
+export const WatchContext = createContext<TStateMovieAllInfo>({});
 
 export function WatchContextProvider(props: any) {
     const [movieWatch, setMovieWatch] = useState<TMovieWatch>(() => {

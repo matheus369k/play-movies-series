@@ -21,7 +21,7 @@ export function MoreMoviesSeries() {
 
     return (
         <section className="flex flex-col justify-between px-2 gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
-            <h2 className="font-bold text-4xl text-center mb-10">{moviesInfoWithPagination?.title}</h2>
+            <h2 className="font-bold capitalize text-4xl text-center mb-10">{moviesInfoWithPagination?.title}</h2>
             {moviesInfoWithPagination?.loading === "finnish" &&
                 <>
                     <ul data-testid="more-movies" className="flex flex-wrap pb-6 w-auto max-sm:gap-y-6">

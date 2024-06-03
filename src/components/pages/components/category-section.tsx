@@ -70,7 +70,7 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
             <span
                 className="flex justify-between items-center pl-3 border-l-8 border-l-red-600 mb-6 rounded-l"
             >
-                <h2 className="font-bold text-4xl max-lg:text-2xl capitalize">{title}</h2>
+                <h2 className="font-bold capitalize text-4xl max-lg:text-2xl">{title}</h2>
                 <span
                     data-testid="category-section-more-movies"
                     onClick={handleGetDataOfMovie}

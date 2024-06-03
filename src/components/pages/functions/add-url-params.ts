@@ -3,4 +3,4 @@ export function setParamsAtUrl(name: string, value: string | number){
 
     newUrl.searchParams.set(name, value.toString().replace(" ", "+"));
     window.history.pushState({}, "", newUrl);
-  }
+}
