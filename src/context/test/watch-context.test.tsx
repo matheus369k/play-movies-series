@@ -35,4 +35,14 @@ describe("WatchContextProvider", ()=> {
             data: {}
         });
     })
+
+    it("Context state with id params", ()=> {
+        const url = new URL(window.location.toString() + "/watch");
+        url.searchParams.set("id", "");
+        window.history.pushState({}, "", url);
+
+        render(<WatchContextProvider/>);
+
+        expect(spyState.mock.results[0].value[0]).toHaveProperty("imdbID", "");
+    })
 })
