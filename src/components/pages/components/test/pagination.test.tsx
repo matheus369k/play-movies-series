@@ -18,7 +18,6 @@ const mockHandlePassToPreviousPage = jest.fn();
 
 const spyState = jest.spyOn(React, "useState");
 
-
 jest.mock("../../functions/pagination", () => ({
     handlePassToNextPage: ({ 
         moviesInfoWithPagination, 
@@ -36,27 +35,33 @@ jest.mock("../../functions/pagination", () => ({
         moviesInfoWithPagination, 
         setMoviesInfoWithPagination 
     }: PropsMock) => mockHandlePassToEndPage({moviesInfoWithPagination, setMoviesInfoWithPagination})
-}))
+}));
+
+const renderComponent = (currentPage: number) => {
+    const moviesInfoWithPagination: TMoviesInfoWithPagination = {
+        loading: "finnish",
+        currentPage: currentPage,
+        totalPages: 12,
+    };
+
+    const setMoviesInfoWithPagination = jest.fn()
+
+    spyState.mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
+
+    render(
+        <PaginationContextProvider>
+            <Pagination />
+        </PaginationContextProvider>
+    );
+
+    return {moviesInfoWithPagination, setMoviesInfoWithPagination};
+}
 
 describe("Pagination Component", () => {
     beforeEach(()=> jest.clearAllMocks())
 
     it("clicking to next 1 page", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-            loading: "finnish",
-            currentPage: 1,
-            totalPages: 12,
-        };
-
-        const setMoviesInfoWithPagination = jest.fn()
-
-        spyState.mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <PaginationContextProvider>
-                <Pagination />
-            </PaginationContextProvider>
-        )
+        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponent(1);
 
         const nextPage = screen.getByTestId("btn-switch-next-page");
 
@@ -69,21 +74,7 @@ describe("Pagination Component", () => {
     })
 
     it("clicking to previous 1 page", ()=> {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-            loading: "finnish",
-            currentPage: 2,
-            totalPages: 12,
-        };
-
-        const setMoviesInfoWithPagination = jest.fn()
-
-        spyState.mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <PaginationContextProvider>
-                <Pagination />
-            </PaginationContextProvider>
-        )
+        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponent(2);
 
         const previousPage = screen.getByTestId("btn-switch-previous-page");
 
@@ -93,21 +84,7 @@ describe("Pagination Component", () => {
     })
 
     it("clicking to initial page", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-            loading: "finnish",
-            currentPage: 2,
-            totalPages: 12,
-        };
-
-        const setMoviesInfoWithPagination = jest.fn()
-
-        spyState.mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <PaginationContextProvider>
-                <Pagination />
-            </PaginationContextProvider>
-        )
+        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponent(2);
 
         const initialPage = screen.getByTestId("btn-switch-initial-page");
 
@@ -117,21 +94,7 @@ describe("Pagination Component", () => {
     })
 
     it("clicking to end page", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-            loading: "finnish",
-            currentPage: 1,
-            totalPages: 12,
-        };
-
-        const setMoviesInfoWithPagination = jest.fn()
-
-        spyState.mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <PaginationContextProvider>
-                <Pagination />
-            </PaginationContextProvider>
-        )
+        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponent(1);
 
         const endPage = screen.getByTestId("btn-switch-end-page");
 
@@ -141,21 +104,8 @@ describe("Pagination Component", () => {
     })
 
     it("no back page", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-            loading: "finnish",
-            currentPage: 1,
-            totalPages: 12,
-        };
+        renderComponent(1);
 
-        const setMoviesInfoWithPagination = jest.fn()
-
-        spyState.mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <PaginationContextProvider>
-                <Pagination />
-            </PaginationContextProvider>
-        )
         const previousPage = screen.getByTestId("btn-switch-previous-page");
 
         fireEvent.click(previousPage);
@@ -164,21 +114,7 @@ describe("Pagination Component", () => {
     })
 
     it("no next page", ()=> {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-            loading: "finnish",
-            currentPage: 12,
-            totalPages: 12,
-        };
-
-        const setMoviesInfoWithPagination = jest.fn()
-
-        spyState.mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <PaginationContextProvider>
-                <Pagination />
-            </PaginationContextProvider>
-        )
+        renderComponent(12);
 
         const endPage = screen.getByTestId("btn-switch-end-page");
 

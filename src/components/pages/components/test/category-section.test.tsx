@@ -36,6 +36,45 @@ jest.mock("../../functions/add-url-params", () => ({
     setParamsAtUrl: (name: string, value: string | number) => mockSetParamsAtUrl([name, value])
 }))
 
+const renderComponent = () => {
+    const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "loading" };
+    const response = {
+        data: [{
+            Poster: "https://",
+            Title: "Transformers",
+            imdbID: "h785k673j464",
+            Type: "movie",
+            Year: "2008"
+        }],
+        loading: "finnish"
+    };
+    const movieWatch: TMovieWatch = {
+        data: {},
+        imdbID: "",
+        index: 0,
+        loading: "loading"
+    }
+
+    const setMovieWatch = jest.fn();
+    const setResponse = jest.fn();
+    const setMoviesInfoWithPagination = jest.fn();
+
+    spyState
+        .mockImplementationOnce(() => [movieWatch, setMovieWatch])
+        .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
+        .mockImplementationOnce(() => [response, setResponse])
+
+    render(
+        <WatchContextProvider>
+            <PaginationContextProvider>
+                <CategorySection title="lançamento" page={1} type="movies" year={2000} />
+            </PaginationContextProvider>
+        </WatchContextProvider>
+    );
+
+    return { setResponse, setMovieWatch, setMoviesInfoWithPagination }
+}
+
 describe("Category-section", () => {
     it("should render loading display", () => {
         const response = { loading: "loading" };
@@ -92,40 +131,7 @@ describe("Category-section", () => {
     })
 
     it("clicking button play", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "loading" };
-        const response = {
-            data: [{
-                Poster: "https://",
-                Title: "Transformers",
-                imdbID: "h785k673j464",
-                Type: "movie",
-                Year: "2008"
-            }],
-            loading: "finnish"
-        };
-        const movieWatch: TMovieWatch = {
-            data: {},
-            imdbID: "",
-            index: 0,
-            loading: "loading"
-        }
-
-        const setMovieWatch = jest.fn();
-        const setResponse = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-            .mockImplementationOnce(() => [response, setResponse])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <CategorySection title="lançamento" page={1} type="movies" year={2000} />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        renderComponent();
 
         const playMovie = screen.getByTestId("category-section-movie-play");
 
@@ -135,40 +141,8 @@ describe("Category-section", () => {
     })
 
     it("clicking on the link more movie", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "loading" };
-        const response = {
-            data: [{
-                Poster: "https://",
-                Title: "Transformers",
-                imdbID: "h785k673j464",
-                Type: "movie",
-                Year: "2008"
-            }],
-            loading: "finnish"
-        };
-        const movieWatch: TMovieWatch = {
-            data: {},
-            imdbID: "",
-            index: 0,
-            loading: "loading"
-        }
 
-        const setMovieWatch = jest.fn();
-        const setResponse = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-            .mockImplementationOnce(() => [response, setResponse])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <CategorySection title="lançamento" page={1} type="movies" year={2000} />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        const { setMovieWatch, setMoviesInfoWithPagination } = renderComponent();
 
         const linkMore = screen.getByTestId("category-section-more-movies");
 

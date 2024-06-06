@@ -16,32 +16,38 @@ jest.mock("react-router", () => ({
     useNavigate: () => mockNavigate
 }));
 
+const renderComponent = () => {
+    const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
+    let movieWatch: TMovieWatch = {
+        data: {},
+        imdbID: "",
+        index: 0,
+        loading: "finnish"
+    }
+
+    const setMovieWatch = jest.fn();
+    const setMoviesInfoWithPagination = jest.fn();
+
+    spyState
+        .mockImplementationOnce(() => [movieWatch, setMovieWatch])
+        .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
+
+    render(
+        <WatchContextProvider>
+            <PaginationContextProvider>
+                <Header />
+            </PaginationContextProvider>
+        </WatchContextProvider>
+    );
+
+    return {setMovieWatch,  setMoviesInfoWithPagination};
+}
+
 describe("Header", () => {
     beforeEach(() => jest.resetAllMocks());
 
     it("should render at component", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
-        let movieWatch: TMovieWatch = {
-            data: {},
-            imdbID: "",
-            index: 0,
-            loading: "loading"
-        }
-
-        const setMovieWatch = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <Header />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        renderComponent();
 
         expect(screen.getByText("Filmes e Series")).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Pesquisar...")).toBeInTheDocument();
@@ -51,28 +57,7 @@ describe("Header", () => {
         const url = new URL(window.location.toString());
         window.history.pushState({}, "", url + "more");
 
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
-        const movieWatch: TMovieWatch = {
-            data: {},
-            imdbID: "",
-            index: 0,
-            loading: "finnish"
-        }
-
-        const setMovieWatch = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <Header />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        const {setMovieWatch,  setMoviesInfoWithPagination} = renderComponent();
 
         const buttonBackPage = screen.getByTestId("btn-back");
 
@@ -95,28 +80,7 @@ describe("Header", () => {
     it("when submit search by movies", () => {
         window.scrollTo = jest.fn();
 
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
-        let movieWatch: TMovieWatch = {
-            data: {},
-            imdbID: "",
-            index: 0,
-            loading: "loading"
-        }
-
-        const setMovieWatch = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <Header />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        const {setMoviesInfoWithPagination} = renderComponent();
 
         const submitSearchForm = screen.getByTestId("search-form");
 

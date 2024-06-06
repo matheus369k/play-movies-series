@@ -22,7 +22,7 @@ describe("WatchContextProvider", ()=> {
     it("Context state with id params", ()=> {
         const id = "ba76s84kf962";
 
-        const url = new URL(window.location.toString() + "/watch");
+        const url = new URL(window.location.toString() + "watch");
         url.searchParams.set("id", id);
         window.history.pushState({}, "", url);
 
@@ -36,8 +36,8 @@ describe("WatchContextProvider", ()=> {
         });
     })
 
-    it("Context state with id params", ()=> {
-        const url = new URL(window.location.toString() + "/watch");
+    it("Context state with id params empty", ()=> {
+        const url = new URL(window.location.toString() + "watch");
         url.searchParams.set("id", "");
         window.history.pushState({}, "", url);
 
