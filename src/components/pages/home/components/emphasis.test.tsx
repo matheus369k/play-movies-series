@@ -26,6 +26,20 @@ jest.mock("../../functions/get-id-movies", () => ({
     handleGetIdMovie: () => mockHandleGetIdMovie.mockReturnValue(true)
 }))
 
+const renderComponentEmphasis = (movieWatch: TMovieWatch) => {
+    const setMovieWatch = jest.fn();
+
+    spyState.mockImplementationOnce(() => [movieWatch, setMovieWatch])
+
+    render(
+        <WatchContextProvider>
+            <Emphasis />
+        </WatchContextProvider>
+    );
+
+    return { setMovieWatch }
+}
+
 describe("Emphasis", () => {
     it("should render loading display", () => {
         const movieWatch: TMovieWatch = {
@@ -35,15 +49,7 @@ describe("Emphasis", () => {
             loading: "loading"
         }
 
-        const setMovieWatch = jest.fn();
-
-        spyState.mockImplementationOnce(() => [movieWatch, setMovieWatch])
-
-        render(
-            <WatchContextProvider>
-                <Emphasis />
-            </WatchContextProvider>
-        );
+        renderComponentEmphasis(movieWatch);
 
         expect(screen.getByText("Carregando")).toBeInTheDocument();
     })
@@ -56,15 +62,7 @@ describe("Emphasis", () => {
             loading: "error"
         }
 
-        const setMovieWatch = jest.fn();
-
-        spyState.mockImplementationOnce(() => [movieWatch, setMovieWatch])
-
-        render(
-            <WatchContextProvider>
-                <Emphasis />
-            </WatchContextProvider>
-        );
+        renderComponentEmphasis(movieWatch);
 
         expect(screen.getByText("Erro ao tentar carregar")).toBeInTheDocument();
     })
@@ -77,15 +75,7 @@ describe("Emphasis", () => {
             loading: "finnish"
         }
 
-        const setMovieWatch = jest.fn();
-
-        spyState.mockImplementationOnce(() => [movieWatch, setMovieWatch])
-
-        render(
-            <WatchContextProvider>
-                <Emphasis />
-            </WatchContextProvider>
-        );
+        renderComponentEmphasis(movieWatch);
 
         expect(screen.getByTestId("movie-emphasis")).toBeInTheDocument();
     })
@@ -98,15 +88,7 @@ describe("Emphasis", () => {
             loading: "finnish"
         }
 
-        const setMovieWatch = jest.fn();
-
-        spyState.mockImplementationOnce(() => [movieWatch, setMovieWatch])
-
-        render(
-            <WatchContextProvider>
-                <Emphasis />
-            </WatchContextProvider>
-        );
+        const { setMovieWatch } = renderComponentEmphasis(movieWatch);
 
         const btnNextMovie = screen.getByTestId("btn-next");
 
@@ -124,15 +106,7 @@ describe("Emphasis", () => {
             loading: "finnish"
         }
 
-        const setMovieWatch = jest.fn();
-
-        spyState.mockImplementationOnce(() => [movieWatch, setMovieWatch])
-
-        render(
-            <WatchContextProvider>
-                <Emphasis />
-            </WatchContextProvider>
-        );
+        const {setMovieWatch} = renderComponentEmphasis(movieWatch);
 
         const btnPreviousMovie = screen.getByTestId("btn-previous");
 
@@ -150,15 +124,7 @@ describe("Emphasis", () => {
             loading: "finnish"
         }
 
-        const setMovieWatch = jest.fn();
-
-        spyState.mockImplementationOnce(() => [movieWatch, setMovieWatch])
-
-        render(
-            <WatchContextProvider>
-                <Emphasis />
-            </WatchContextProvider>
-        );
+        renderComponentEmphasis(movieWatch);
 
         const moviePlay = screen.getByTestId("emphasis-play-movie");
 
@@ -175,15 +141,7 @@ describe("Emphasis", () => {
             loading: "finnish"
         }
 
-        const setMovieWatch = jest.fn();
-
-        spyState.mockImplementationOnce(() => [movieWatch, setMovieWatch])
-
-        render(
-            <WatchContextProvider>
-                <Emphasis />
-            </WatchContextProvider>
-        );
+        renderComponentEmphasis(movieWatch);
 
         expect(mockFeatchApiOneData()).toBeTruthy();
     })

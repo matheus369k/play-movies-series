@@ -37,7 +37,7 @@ jest.mock("../../functions/pagination", () => ({
     }: PropsMock) => mockHandlePassToEndPage({moviesInfoWithPagination, setMoviesInfoWithPagination})
 }));
 
-const renderComponent = (currentPage: number) => {
+const renderComponentPagination = (currentPage: number) => {
     const moviesInfoWithPagination: TMoviesInfoWithPagination = {
         loading: "finnish",
         currentPage: currentPage,
@@ -61,7 +61,7 @@ describe("Pagination Component", () => {
     beforeEach(()=> jest.clearAllMocks())
 
     it("clicking to next 1 page", () => {
-        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponent(1);
+        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponentPagination(1);
 
         const nextPage = screen.getByTestId("btn-switch-next-page");
 
@@ -74,7 +74,7 @@ describe("Pagination Component", () => {
     })
 
     it("clicking to previous 1 page", ()=> {
-        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponent(2);
+        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponentPagination(2);
 
         const previousPage = screen.getByTestId("btn-switch-previous-page");
 
@@ -84,7 +84,7 @@ describe("Pagination Component", () => {
     })
 
     it("clicking to initial page", () => {
-        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponent(2);
+        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponentPagination(2);
 
         const initialPage = screen.getByTestId("btn-switch-initial-page");
 
@@ -94,7 +94,7 @@ describe("Pagination Component", () => {
     })
 
     it("clicking to end page", () => {
-        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponent(1);
+        const {moviesInfoWithPagination, setMoviesInfoWithPagination} = renderComponentPagination(1);
 
         const endPage = screen.getByTestId("btn-switch-end-page");
 
@@ -104,7 +104,7 @@ describe("Pagination Component", () => {
     })
 
     it("no back page", () => {
-        renderComponent(1);
+        renderComponentPagination(1);
 
         const previousPage = screen.getByTestId("btn-switch-previous-page");
 
@@ -114,7 +114,7 @@ describe("Pagination Component", () => {
     })
 
     it("no next page", ()=> {
-        renderComponent(12);
+        renderComponentPagination(12);
 
         const endPage = screen.getByTestId("btn-switch-end-page");
 

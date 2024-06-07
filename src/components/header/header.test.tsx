@@ -16,7 +16,7 @@ jest.mock("react-router", () => ({
     useNavigate: () => mockNavigate
 }));
 
-const renderComponent = () => {
+const renderComponentHeader = () => {
     const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
     let movieWatch: TMovieWatch = {
         data: {},
@@ -47,7 +47,7 @@ describe("Header", () => {
     beforeEach(() => jest.resetAllMocks());
 
     it("should render at component", () => {
-        renderComponent();
+        renderComponentHeader();
 
         expect(screen.getByText("Filmes e Series")).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Pesquisar...")).toBeInTheDocument();
@@ -57,7 +57,7 @@ describe("Header", () => {
         const url = new URL(window.location.toString());
         window.history.pushState({}, "", url + "more");
 
-        const {setMovieWatch,  setMoviesInfoWithPagination} = renderComponent();
+        const {setMovieWatch,  setMoviesInfoWithPagination} = renderComponentHeader();
 
         const buttonBackPage = screen.getByTestId("btn-back");
 
@@ -80,7 +80,7 @@ describe("Header", () => {
     it("when submit search by movies", () => {
         window.scrollTo = jest.fn();
 
-        const {setMoviesInfoWithPagination} = renderComponent();
+        const {setMoviesInfoWithPagination} = renderComponentHeader();
 
         const submitSearchForm = screen.getByTestId("search-form");
 

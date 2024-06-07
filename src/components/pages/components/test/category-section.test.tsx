@@ -36,7 +36,7 @@ jest.mock("../../functions/add-url-params", () => ({
     setParamsAtUrl: (name: string, value: string | number) => mockSetParamsAtUrl([name, value])
 }))
 
-const renderComponent = () => {
+const renderComponentCategorySection = () => {
     const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "loading" };
     const response = {
         data: [{
@@ -131,7 +131,7 @@ describe("Category-section", () => {
     })
 
     it("clicking button play", () => {
-        renderComponent();
+        renderComponentCategorySection();
 
         const playMovie = screen.getByTestId("category-section-movie-play");
 
@@ -142,7 +142,7 @@ describe("Category-section", () => {
 
     it("clicking on the link more movie", () => {
 
-        const { setMovieWatch, setMoviesInfoWithPagination } = renderComponent();
+        const { setMovieWatch, setMoviesInfoWithPagination } = renderComponentCategorySection();
 
         const linkMore = screen.getByTestId("category-section-more-movies");
 

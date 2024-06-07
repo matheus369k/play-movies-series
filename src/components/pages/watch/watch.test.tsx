@@ -22,9 +22,52 @@ jest.mock("../hooks/fetch-api", () => ({
     FeatchApiOneData: () => mockFeatchApiOneData.mockReturnValue(true)
 }))
 
+const renderComponentWatch = (movieWatch: TMovieWatch) => {
+    const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
+
+    const setMovieWatch = jest.fn();
+    const setMoviesInfoWithPagination = jest.fn();
+
+    spyState
+        .mockImplementationOnce(() => [movieWatch, setMovieWatch])
+        .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
+
+    render(
+        <WatchContextProvider>
+            <PaginationContextProvider>
+                <WatchMovieSeries />
+            </PaginationContextProvider>
+        </WatchContextProvider>
+    );
+
+    return { setMovieWatch, setMoviesInfoWithPagination };
+}
+
+const renderComponentWatchWithScreenMode = (movieWatch: TMovieWatch, watchAction: object) => {
+    const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
+
+    const setMovieWatch = jest.fn();
+    const setWatchAction = jest.fn();
+    const setMoviesInfoWithPagination = jest.fn();
+
+    spyState
+        .mockImplementationOnce(() => [movieWatch, setMovieWatch])
+        .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
+        .mockImplementationOnce(() => [watchAction, setWatchAction])
+
+    render(
+        <WatchContextProvider>
+            <PaginationContextProvider>
+                <WatchMovieSeries />
+            </PaginationContextProvider>
+        </WatchContextProvider>
+    );
+
+    return {setMovieWatch, setWatchAction, setMoviesInfoWithPagination};
+}
+
 describe("WatchMovieSeries", () => {
     it("should render loading display", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
         const movieWatch: TMovieWatch = {
             data: {},
             imdbID: "",
@@ -32,26 +75,12 @@ describe("WatchMovieSeries", () => {
             loading: "loading"
         }
 
-        const setMovieWatch = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <WatchMovieSeries />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        renderComponentWatch(movieWatch);
 
         expect(screen.getByText("Carregando")).toBeInTheDocument();
     })
 
     it("should render error display", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
         const movieWatch: TMovieWatch = {
             data: {},
             imdbID: "",
@@ -59,26 +88,12 @@ describe("WatchMovieSeries", () => {
             loading: "error"
         }
 
-        const setMovieWatch = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <WatchMovieSeries />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        renderComponentWatch(movieWatch);
 
         expect(screen.getByText("Erro ao tentar carregar")).toBeInTheDocument();
     })
 
     it("should render main display", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
         const movieWatch: TMovieWatch = {
             data: {},
             imdbID: "",
@@ -86,20 +101,7 @@ describe("WatchMovieSeries", () => {
             loading: "finnish"
         }
 
-        const setMovieWatch = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <WatchMovieSeries />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        renderComponentWatch(movieWatch);
 
         expect(screen.getByTestId("watch-screen-movie")).toBeInTheDocument();
         expect(screen.getByTestId("watch-post-infor-movie")).toBeInTheDocument();
@@ -107,7 +109,6 @@ describe("WatchMovieSeries", () => {
     })
 
     it("call to hook function FeatchApiOneData", () => {
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
         const movieWatch: TMovieWatch = {
             data: {},
             imdbID: "",
@@ -115,37 +116,19 @@ describe("WatchMovieSeries", () => {
             loading: "finnish"
         }
 
-        const setMovieWatch = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <WatchMovieSeries />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        renderComponentWatch(movieWatch);
 
         expect(mockFeatchApiOneData()).toBeTruthy();
     })
 
     it("clicking button to enter on the fullScreen", () => {
         const watchAction = { isLoading: false, isFullScreen: false };
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
         const movieWatch: TMovieWatch = {
             data: {},
             imdbID: "",
             index: 0,
             loading: "finnish"
         }
-
-        const setMovieWatch = jest.fn();
-        const setWatchAction = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
 
         const mockRequestFullscreen = window.HTMLBodyElement.prototype.requestFullscreen = jest.fn();
         mockRequestFullscreen.mockImplementation(() => {
@@ -154,18 +137,7 @@ describe("WatchMovieSeries", () => {
             }
         });
 
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-            .mockImplementationOnce(() => [watchAction, setWatchAction])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <WatchMovieSeries />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        const {setWatchAction} = renderComponentWatchWithScreenMode(movieWatch, watchAction);
 
         const btnFullScreen = screen.getByTestId("watch-btn-fullScreen");
 
@@ -177,17 +149,12 @@ describe("WatchMovieSeries", () => {
 
     it("clicking button to exit on the fullScreen", () => {
         const watchAction = { isLoading: false, isFullScreen: true };
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
         const movieWatch: TMovieWatch = {
             data: {},
             imdbID: "",
             index: 0,
             loading: "finnish"
         }
-
-        const setMovieWatch = jest.fn();
-        const setWatchAction = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
 
         const mockExitFullscreen = window.document.exitFullscreen = jest.fn();
         mockExitFullscreen.mockImplementation(() => {
@@ -196,18 +163,7 @@ describe("WatchMovieSeries", () => {
             }
         });
 
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-            .mockImplementationOnce(() => [watchAction, setWatchAction])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <WatchMovieSeries />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        const {setWatchAction} = renderComponentWatchWithScreenMode(movieWatch, watchAction);
 
         const btnFullScreen = screen.getByTestId("watch-btn-fullScreen");
 
@@ -219,7 +175,6 @@ describe("WatchMovieSeries", () => {
 
     it("clicking to play movie", () => {
         const watchAction = { isLoading: false, isFullScreen: false };
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
         const movieWatch: TMovieWatch = {
             data: {},
             imdbID: "",
@@ -227,22 +182,7 @@ describe("WatchMovieSeries", () => {
             loading: "finnish"
         }
 
-        const setMovieWatch = jest.fn();
-        const setWatchAction = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-            .mockImplementationOnce(() => [watchAction, setWatchAction])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <WatchMovieSeries />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        const {setWatchAction} = renderComponentWatchWithScreenMode(movieWatch, watchAction);
 
         const buttonPlayPauseMovie = screen.getByTestId("watch-play-pause-movie");
         const btnPlayMovie = screen.getByTestId("watch-play-movie");
@@ -256,7 +196,6 @@ describe("WatchMovieSeries", () => {
 
     it("clicking to pause movie", () => {
         const watchAction = { isLoading: true, isFullScreen: false };
-        const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
         const movieWatch: TMovieWatch = {
             data: {},
             imdbID: "",
@@ -264,22 +203,7 @@ describe("WatchMovieSeries", () => {
             loading: "finnish"
         }
 
-        const setMovieWatch = jest.fn();
-        const setWatchAction = jest.fn();
-        const setMoviesInfoWithPagination = jest.fn();
-
-        spyState
-            .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-            .mockImplementationOnce(() => [moviesInfoWithPagination, setMoviesInfoWithPagination])
-            .mockImplementationOnce(() => [watchAction, setWatchAction])
-
-        render(
-            <WatchContextProvider>
-                <PaginationContextProvider>
-                    <WatchMovieSeries />
-                </PaginationContextProvider>
-            </WatchContextProvider>
-        );
+        const {setWatchAction} = renderComponentWatchWithScreenMode(movieWatch, watchAction);
 
         const buttonPlayPauseMovie = screen.getByTestId("watch-play-pause-movie");
 
