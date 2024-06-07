@@ -43,14 +43,14 @@ export function WatchMovieSeries() {
     }
 
     return (
-        <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen max-lg:px-6 max-sm:px-1">
+        <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen max-md:pt-20 max-lg:px-6 max-sm:px-1">
             {movieWatch?.loading === "finnish" &&
                 <>
                     <div 
                         data-testid="watch-screen-movie"
                         className={`flex flex-col justify-between bg-black w-full h-screen m-auto rounded border border-gray-500 p-4 group/watch z-50 max-sm:p-2 ${watchAction.isFullScreen ? "fixed top-0 left-0 overflow-hidden border-none" : "relative max-w-4xl max-h-[530px] max-lg:max-h-[56vw]"}`}
                     >
-                        <h2 className="font-bold text-base transition-all">{movieWatch?.data.Title}</h2>
+                        <h3 className="font-bold text-base transition-all">{movieWatch?.data.Title}</h3>
                         <div className={`w-max mx-auto transition-all ${watchAction.isLoading ? "animate-spin" : ""}`}>
                             {watchAction.isLoading
                                 ? <TbLoader2 className="size-16 max-sm:size-8" />
