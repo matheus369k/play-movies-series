@@ -1,31 +1,54 @@
-# React + TypeScript + Vite
+<h1 align="center">Play Movies Series</h1>
+<div align="center">
+  <a href="#ferramentas">Ferramentas</a> |
+  <a href="#projetos">Projetos</a> |
+  <a href="#aprendizado">Aprendizado</a> |
+  <a href="#designer">Designer</a> |
+  <a href="#licença">Licença</a>
+</div>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <img src="https://img.shields.io/github/license/matheus369k/play-movies-series.svg"/>
+</p>
+<p>
+ <img src="./.github/preview-project.png" />
+</p>
 
-Currently, two official plugins are available:
+## 🧰 Ferramentas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+No desenvolvimento do projeto fora escolhido algumas ferramentas e elas foram:
 
-## Expanding the ESLint configuration
+- React
+- TypeScript
+- TailwindCSS
+- Test-library
+- Jest
+- figma
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 💻 Projeto
 
-- Configure the top-level `parserOptions` property like this:
+O objetivo da criação do projeto fora pela a experiencia em criar um site com um tema interesante e bem requisitado atualmente que e o de entreterimento.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+O Projeto e um site que visa chegar o mais perto possivel no momento a um site de streams de filmes e series.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
-# play-movies-series
+Para acessar os dados de cada filme fora usado a api gratis do site 🔗[omdbapi.com](https://www.omdbapi.com/).
+
+Acesse o site Play Movies and Series 🔗[Aqui](https://matheus369k.github.io/play-movies-series/).
+
+## 📖 Aprendizado
+
+Durante o desenvolvimento do projeto tive como praticar 
+
+- A integração de uma api e um projeto, coletando seu dados de acordo com o usuarios requisita.
+- Criar estados na url e poder acessar eles para facilitar o compatilhamento do site sem perder o estado anterior da pagina.
+- Aprimorar o uso de testes unitarios com o jest e test-library. 
+
+## 🎨 Designer
+
+O designer do projetos foi criado no figma por mim, tendo sido um pouco modificado em relação ao resultado final.
+
+para acessa o figma do projetos 🔗[clique aqui](https://www.figma.com/design/gvF8dpYbqf8pCGxGo1na6J/Movies-project?node-id=38-653).
+
+## 📃 Licença
+
+Fora usado a licença ( 🔗[MIT](./LICENSE.txt) ) no projeto.
