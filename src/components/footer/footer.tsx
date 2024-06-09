@@ -22,12 +22,12 @@ export function Footer() {
                     <li><FaYoutube className="w-8 h-auto cursor-pointer" /></li>
                     <li><MdEmail className="w-8 h-auto cursor-pointer" /></li>
                 </ul>
-                <nav className="flex gap-6 list-none flex-wrap justify-center max-sm:gap-3">
+                <ul className="flex gap-6 list-none flex-wrap justify-center max-sm:gap-3">
                     <li><a href="#">Lançamentos</a></li>
                     <li><a href="#">Recomendados</a></li>
                     <li><a href="#">Filmes</a></li>
                     <li><a href="#">Series</a></li>
-                </nav>
+                </ul>
             </div>
         </footer>
     )

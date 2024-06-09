@@ -8,10 +8,10 @@ export function PaginationContextProvider(props: any) {
         const url = new URL(window.location.toString());
         const pathName = window.location.pathname;
 
-        if (pathName === "/search" && url.searchParams.has("search")) {
+        if (pathName === "/play-movies-series/search" && url.searchParams.has("search")) {
             return reloadUrlStateWithSearchParams(url)
         };
-        if (pathName === "/more") {
+        if (pathName === "/play-movies-series/more") {
             return reloadUrlStateWithMoreParams(url)
         };
 

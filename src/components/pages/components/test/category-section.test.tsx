@@ -149,7 +149,7 @@ describe("Category-section", () => {
         fireEvent.click(linkMore);
 
         expect(mockResetScroll).toBeTruthy();
-        expect(mockNavigate.mock.lastCall[0]).toBe("/more");
+        expect(mockNavigate.mock.lastCall[0]).toBe("/play-movies-series/more");
 
         expect(mockSetParamsAtUrl).toHaveBeenNthCalledWith(1, ["title", "lançamento"])
         expect(mockSetParamsAtUrl).toHaveBeenNthCalledWith(2, ["type", "movies"])

@@ -29,7 +29,7 @@ export function Header() {
             });
     }
 
-        navigate("/")
+        navigate("/play-movies-series/")
     }
 
     function handleSubmitForm() {
@@ -49,14 +49,15 @@ export function Header() {
 
         resetScroll();
 
-        navigate("/search")
+        navigate("/play-movies-series/search")
     }
 
     return (
         <header
-            className={`absolute top-0 left-0 w-full p-6 flex justify-between items-center z-50 max-lg:p-2 ${window.location.pathname === "/" && "max-md:flex-col max-md:gap-6 max-md:items-start"}`}
-        >
-            {window.location.pathname === "/"
+            className={`absolute top-0 left-0 w-full p-6 flex justify-between items-center z-50 max-lg:p-2 ${
+                window.location.pathname === "/play-movies-series/" && "max-md:flex-col max-md:gap-6 max-md:items-start"}
+            `}>
+            {window.location.pathname === "/play-movies-series/"
                 ? <h1
                     className="text-gray-100 font-bold text-4xl max-lg:text-3xl">
                     <span className="text-red-600">Play</span> Filmes e Series
@@ -75,7 +76,7 @@ export function Header() {
                 onSubmit={handleSubmitForm}
                 autoComplete="off"
                 method="get"
-                className={`relative text-gray-400 backdrop-blur-sm ${window.location.pathname === "/" && "max-md:mx-auto"}`}
+                className={`relative text-gray-400 backdrop-blur-sm ${window.location.pathname === "/play-movies-series/" && "max-md:mx-auto"}`}
             >
                 <label
                     htmlFor="search">

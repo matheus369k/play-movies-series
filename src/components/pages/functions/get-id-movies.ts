@@ -34,5 +34,5 @@ export function handleGetIdMovie(
 
     resetScroll();
 
-    navigate("/watch");
+    navigate("/play-movies-series/watch");
 }

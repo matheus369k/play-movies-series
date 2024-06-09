@@ -28,7 +28,7 @@ describe("get-id-movies module", () => {
             loading: "loading",
             imdbID: id
         });
-        expect(navigate.mock.lastCall[0]).toBe("/watch");
+        expect(navigate.mock.lastCall[0]).toBe("/play-movies-series/watch");
         expect(mockScrollTo()).toBeTruthy();
     })
 

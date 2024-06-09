@@ -27,7 +27,7 @@ describe("PaginationContextProvider", () => {
     })
 
     it("More page with params", () => {
-        const url = new URL(window.location.origin.toString() + "/more");
+        const url = new URL(window.location.origin.toString() + "/play-movies-series/more");
 
         setParams(url, "title", "lançamentos");
         setParams(url, "page", 10);
@@ -47,7 +47,7 @@ describe("PaginationContextProvider", () => {
     })
 
     it("More page with params empty", ()=>{
-        const url = new URL(window.location.origin.toString() + "/more");
+        const url = new URL(window.location.origin.toString() + "/play-movies-series/more");
 
         setParams(url, "title", "");
         setParams(url, "page", "");
@@ -67,7 +67,7 @@ describe("PaginationContextProvider", () => {
     })
 
     it("Search page with params", () => {
-        const url = new URL(window.location.origin.toString() + "/search");
+        const url = new URL(window.location.origin.toString() + "/play-movies-series/search");
 
         setParams(url, "search", "Transformers");
         setParams(url, "page", 10);
@@ -84,7 +84,7 @@ describe("PaginationContextProvider", () => {
     })
 
     it("Search page with params empty", () => {
-        const url = new URL(window.location.origin.toString() + "/search");
+        const url = new URL(window.location.origin.toString() + "/play-movies-series/search");
 
         setParams(url, "search", "");
         setParams(url, "page", "");

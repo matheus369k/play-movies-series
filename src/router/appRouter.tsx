@@ -5,28 +5,26 @@ import { WatchMovieSeries } from "../components/pages/watch/watch";
 import { Search } from "../components/pages/search/search";
 import { Root } from "../components/root/root";
 
-export const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Root />,
-        children: [
-            {
-                path: "/",
-                element: <Home />
-            },
-            {
-                path: "/more",
-                element: <MoreMoviesSeries />
-            },
-            {
-                path: "/watch",
-                element: <WatchMovieSeries />
-            },
-            {
-                path: "/search",
-                element: <Search />
-            }
+export const router = createBrowserRouter([{
+    path: "/play-movies-series/",
+    element: <Root />,
+    children: [
+        {
+            path: "/play-movies-series/",
+            element: <Home />
+        },
+        {
+            path: "/play-movies-series/more",
+            element: <MoreMoviesSeries />
+        },
+        {
+            path: "/play-movies-series/watch",
+            element: <WatchMovieSeries />
+        },
+        {
+            path: "/play-movies-series/search",
+            element: <Search />
+        }
 
-        ]
-    },
-])
+    ]
+}])

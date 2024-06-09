@@ -40,7 +40,7 @@ export function Emphasis() {
     }
 
     return (
-        <div className={`relative max-h-[769px] p-1 my-2 after:bg-[url('../assets/bg-play-movies.webp')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
+        <div className={`relative max-h-[769px] p-1 my-2 min-h-[769px] max-md:min-h-[400px] after:bg-[url('../assets/bg-play-movies.webp')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}>
             {movieWatch?.loading === "finnish" &&
                 <div
                     key={movieWatch?.imdbID}

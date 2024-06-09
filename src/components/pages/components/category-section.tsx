@@ -57,7 +57,7 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
         }
 
         resetScroll();
-        navigate("/more");
+        navigate("/play-movies-series/more");
 
         setParamsAtUrl("title", title || "");
         setParamsAtUrl("type", type || "");
@@ -74,7 +74,7 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                 <span
                     data-testid="category-section-more-movies"
                     onClick={handleGetDataOfMovie}
-                    className="text-gray-600 hover:text-gray-100 cursor-pointer max-lg:text-sm"
+                    className="text-gray-600 hover:text-gray-100 cursor-pointer"
                 >
                     More
                 </span>

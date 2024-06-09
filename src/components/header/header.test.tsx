@@ -55,7 +55,7 @@ describe("Header", () => {
 
     it("when clicking return to home", () => {
         const url = new URL(window.location.toString());
-        window.history.pushState({}, "", url + "more");
+        window.history.pushState({}, "", url + "play-movies-series/more");
 
         const {setMovieWatch,  setMoviesInfoWithPagination} = renderComponentHeader();
 
@@ -63,7 +63,7 @@ describe("Header", () => {
 
         fireEvent.click(buttonBackPage);
 
-        expect(mockNavigate.mock.calls[0][0]).toBe("/");
+        expect(mockNavigate.mock.calls[0][0]).toBe("/play-movies-series/");
 
         expect(setMovieWatch.mock.lastCall[0]).toEqual({
             imdbID: "",
@@ -86,7 +86,7 @@ describe("Header", () => {
 
         fireEvent.submit(submitSearchForm);
 
-        expect(mockNavigate.mock.lastCall[0]).toBe("/search")
+        expect(mockNavigate.mock.lastCall[0]).toBe("/play-movies-series/search")
 
         expect(setMoviesInfoWithPagination.mock.lastCall[0]).toEqual({
             currentPage: 1,
