@@ -7,8 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        inter: "Inter, sans-serif",
-        goldMan: "Goldman, sans-serif"
+        inter: "Inter, sans-serif"
       }
     },
   },

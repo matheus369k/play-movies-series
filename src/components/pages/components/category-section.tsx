@@ -74,7 +74,7 @@ export function CategorySection({ type, page, title, year }: PropsSectionMovieAn
                 <span
                     data-testid="category-section-more-movies"
                     onClick={handleGetDataOfMovie}
-                    className="text-gray-600 hover:text-gray-100 cursor-pointer"
+                    className="text-gray-500 hover:text-gray-100 cursor-pointer"
                 >
                     More
                 </span>
