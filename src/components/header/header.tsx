@@ -3,8 +3,8 @@ import { useContext } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { useNavigate } from "react-router";
 import { resetScroll } from "../functions/reset-scroll";
-import { PaginationContext } from "../../context/pagination-context";
-import { WatchContext } from "../../context/watch-context";
+import { PaginationContext } from "@/context/pagination-context";
+import { WatchContext } from "@/context/watch-context";
 import { HOME_ROUTE, SEARCH_ROUTE } from "@/router/path-routes";
 import { useForm } from "react-hook-form";
 
@@ -14,13 +14,13 @@ export function Header() {
   const { setMovieWatch } = useContext(WatchContext);
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
-      search: "all",
+      search: "",
     }
   });
   const navigate = useNavigate();
 
   function handleToBackPage() {
-    (document.querySelector("[name='search']") as HTMLFormElement).value = "";
+    reset();
 
     if (setMovieWatch) {
       setMovieWatch({
@@ -46,12 +46,12 @@ export function Header() {
   return (
     <header
       className={`absolute top-0 left-0 w-full p-6 flex justify-between items-center z-50 max-lg:p-2 ${
-        window.location.pathname === "/play-movies-series/" &&
+        window.location.pathname === HOME_ROUTE &&
         "max-md:flex-col max-md:gap-6 max-md:items-start"
       }
             `}
     >
-      {window.location.pathname === "/play-movies-series/" ? (
+      {window.location.pathname === HOME_ROUTE ? (
         <h1 className="text-gray-100 font-bold text-4xl max-lg:text-3xl">
           <span className="text-red-600">Play</span> Filmes e Series
         </h1>
@@ -67,10 +67,10 @@ export function Header() {
       )}
       <form
         data-testid="search-form"
-        onSubmit={() => handleSubmit(handleSubmitSearchForm)}
+        onSubmit={handleSubmit(handleSubmitSearchForm)}
         autoComplete="off"
         className={`relative text-gray-400 backdrop-blur-sm ${
-          window.location.pathname === "/play-movies-series/" &&
+          window.location.pathname === HOME_ROUTE &&
           "max-md:mx-auto"
         }`}
       >
