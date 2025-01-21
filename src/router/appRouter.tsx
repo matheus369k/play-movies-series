@@ -4,27 +4,34 @@ import { MoreMoviesSeries } from "../components/pages/more/more";
 import { WatchMovieSeries } from "../components/pages/watch/watch";
 import { Search } from "../components/pages/search/search";
 import { Root } from "../components/root/root";
+import {
+  HOME_ROUTE,
+  MORE_ROUTE,
+  SEARCH_ROUTE,
+  WATCH_ROUTE,
+} from "./path-routes";
 
-export const router = createBrowserRouter([{
-    path: "/play-movies-series/",
+export const router = createBrowserRouter([
+  {
+    path: HOME_ROUTE,
     element: <Root />,
     children: [
-        {
-            path: "/play-movies-series/",
-            element: <Home />
-        },
-        {
-            path: "/play-movies-series/more",
-            element: <MoreMoviesSeries />
-        },
-        {
-            path: "/play-movies-series/watch",
-            element: <WatchMovieSeries />
-        },
-        {
-            path: "/play-movies-series/search",
-            element: <Search />
-        }
-
-    ]
-}])
+      {
+        path: HOME_ROUTE,
+        element: <Home />,
+      },
+      {
+        path: MORE_ROUTE,
+        element: <MoreMoviesSeries />,
+      },
+      {
+        path: WATCH_ROUTE,
+        element: <WatchMovieSeries />,
+      },
+      {
+        path: SEARCH_ROUTE,
+        element: <Search />,
+      },
+    ],
+  },
+]);
