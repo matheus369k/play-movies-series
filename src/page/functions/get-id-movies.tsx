@@ -1,7 +1,7 @@
 import React from "react";
 import { NavigateFunction } from "react-router";
-import { resetScroll } from "../../functions/reset-scroll";
-import { TMovieWatch } from "../../../types";
+import { resetScroll } from "../../components/functions/reset-scroll";
+import { TMovieWatch } from "../../types";
 import { ReduceStateType } from "@/context/pagination-context";
 import { WATCH_ROUTE } from "@/router/path-routes";
 

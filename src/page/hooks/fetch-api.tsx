@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect } from "react";
-import { TMovieWatch } from "../../../types";
+import { TMovieWatch } from "@/types";
 import { setParamsAtUrl } from "../functions/add-url-params";
 import { PaginationContext } from "@/context/pagination-context";
 

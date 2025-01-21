@@ -2,8 +2,8 @@ import { GrCaretNext } from "react-icons/gr";
 import { GrChapterNext } from "react-icons/gr";
 import { GrChapterPrevious } from "react-icons/gr";
 import { GrCaretPrevious } from "react-icons/gr";
-import { ButtonSwitchPage } from "../components/button-switch-page";
-import { PaginationContext } from "../../../context/pagination-context";
+import { ButtonSwitchPage } from "./button-switch-page";
+import { PaginationContext } from "../../context/pagination-context";
 import { useContext } from "react";
 
 export function Pagination() {

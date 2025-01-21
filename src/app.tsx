@@ -1,5 +1,6 @@
-import { RootLayout } from "./root";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router/appRouter";
 
 export function App() {
-  return <RootLayout />;
+  return <RouterProvider router={router} />;
 }

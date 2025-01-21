@@ -2,14 +2,14 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ButtonPlay } from "./button-play";
-import { TResponse } from "../../../types";
+import { TResponse } from "../../types";
 import { Loading } from "./loading";
 import { Error } from "./error";
 import { setParamsAtUrl } from "../functions/add-url-params";
-import { resetScroll } from "../../functions/reset-scroll";
+import { resetScroll } from "../../components/functions/reset-scroll";
 import { handleGetIdMovie } from "../functions/get-id-movies";
-import { PaginationContext } from "../../../context/pagination-context";
-import { WatchContext } from "../../../context/watch-context";
+import { PaginationContext } from "../../context/pagination-context";
+import { WatchContext } from "../../context/watch-context";
 import { HOME_ROUTE } from "@/router/path-routes";
 
 interface PropsSectionMovieAndSeries {

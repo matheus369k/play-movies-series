@@ -6,8 +6,8 @@ import { handleGetIdMovie } from "../functions/get-id-movies";
 import { FeatchApiPagination } from "../hooks/fetch-api";
 import { Loading } from "../components/loading";
 import { Error } from "../components/error";
-import { PaginationContext } from "../../../context/pagination-context";
-import { WatchContext } from "../../../context/watch-context";
+import { PaginationContext } from "@/context/pagination-context";
+import { WatchContext } from "@/context/watch-context";
 
 export function MoreMoviesSeries() {
   const { state } = useContext(PaginationContext);
