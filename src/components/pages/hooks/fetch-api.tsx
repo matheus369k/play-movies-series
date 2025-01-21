@@ -1,68 +1,76 @@
 import axios from "axios";
-import React, { useEffect } from "react";
-import { TMovieWatch, TMoviesInfoWithPagination } from "../../../types";
+import React, { useContext, useEffect } from "react";
+import { TMovieWatch } from "../../../types";
 import { setParamsAtUrl } from "../functions/add-url-params";
+import { PaginationContext } from "@/context/pagination-context";
 
-export function FeatchApiPagination(
-    state: TMoviesInfoWithPagination | undefined,
-    setState: React.Dispatch<React.SetStateAction<TMoviesInfoWithPagination>> | undefined,
-    url: string,
-    paramsName?: string
-) {
-    useEffect(() => {
-        if (setState === undefined) throw new Error("State not found")
+export function FeatchApiPagination(url: string, paramsName?: string) {
+  const { state, handleCompleteResponseData, handleErrorResponseData } =
+    useContext(PaginationContext);
 
-        axios.get(url).then(resp => {
-            if (resp.data.Search === undefined) {
-                throw new Error("database not found")
-            };
+  useEffect(() => {
+    axios
+      .get(url)
+      .then((resp) => {
+        if (resp.data.Search === undefined) {
+          throw new Error("database not found");
+        }
 
-            setState({
-                ...state,
-                data: resp.data.Search,
-                totalPages: Math.round(parseInt(resp.data.totalResults) / 10),
-                loading: "finnish"
-            })
-
-            setParamsAtUrl("page", state?.currentPage || 1);
-        }).catch(() => {
-            setState({
-                ...state,
-                loading: "error"
-            })
+        handleCompleteResponseData({
+          data: resp.data.Search,
+          totalPages: Math.round(parseInt(resp.data.totalResults) / 10),
         });
 
-        if (state?.title === undefined || state?.title === "" || paramsName === undefined) return;
+        setParamsAtUrl("page", state?.currentPage || 1);
+      })
+      .catch(() => {
+        handleErrorResponseData();
+      });
 
-        setParamsAtUrl(paramsName, state.title)
-    }, [state?.title, state?.currentPage]);
+    if (
+      state?.title === undefined ||
+      state?.title === "" ||
+      paramsName === undefined
+    )
+      return;
+
+    setParamsAtUrl(paramsName, state.title);
+  }, [state?.title, state?.currentPage]);
 }
 
 export function FeatchApiOneData(
-    state: TMovieWatch | undefined,
-    setState: React.Dispatch<React.SetStateAction<TMovieWatch>> | undefined,
-    imdbID: string | undefined,
-    paramsName?: string
+  state: TMovieWatch | undefined,
+  setState: React.Dispatch<React.SetStateAction<TMovieWatch>> | undefined,
+  imdbID: string | undefined,
+  paramsName?: string
 ) {
-    if (state === undefined || setState === undefined) return;
+  if (state === undefined || setState === undefined) return;
 
-    const idMovie = imdbID || state.imdbID;
+  const idMovie = imdbID || state.imdbID;
 
-    useEffect(() => {
+  useEffect(() => {
+    const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${idMovie}`;
 
-        const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${idMovie}`;
+    axios
+      .get(url)
+      .then((resp) => {
+        if (resp.data.Response === "False")
+          throw new Error("databese not found");
 
-        axios.get(url).then(resp => {
-            if (resp.data.Response === "False") throw new Error("databese not found");
-
-            setState({...state, imdbID: resp.data.imdbID ,data: resp.data, loading: "finnish" })
-
-        }).catch(() => {
-            setState({ ...state, loading: "error" })
+        setState({
+          ...state,
+          imdbID: resp.data.imdbID,
+          data: resp.data,
+          loading: "finnish",
         });
+      })
+      .catch(() => {
+        setState({ ...state, loading: "error" });
+      });
 
-        if (idMovie === "" || idMovie === undefined || paramsName === undefined) return;
+    if (idMovie === "" || idMovie === undefined || paramsName === undefined)
+      return;
 
-        setParamsAtUrl(paramsName, idMovie);
-    }, [idMovie])
+    setParamsAtUrl(paramsName, idMovie);
+  }, [idMovie]);
 }
