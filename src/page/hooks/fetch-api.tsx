@@ -1,8 +1,8 @@
 import axios from "axios";
-import React, { useContext, useEffect } from "react";
-import { TMovieWatch } from "@/types";
+import { useContext, useEffect } from "react";
 import { setParamsAtUrl } from "../functions/add-url-params";
 import { PaginationContext } from "@/context/pagination-context";
+import { WatchContext } from "@/context/watch-context";
 
 export function FeatchApiPagination(url: string, paramsName?: string) {
   const { state, handleCompleteResponseData, handleErrorResponseData } =
@@ -39,12 +39,10 @@ export function FeatchApiPagination(url: string, paramsName?: string) {
 }
 
 export function FeatchApiOneData(
-  state: TMovieWatch | undefined,
-  setState: React.Dispatch<React.SetStateAction<TMovieWatch>> | undefined,
   imdbID: string | undefined,
   paramsName?: string
 ) {
-  if (state === undefined || setState === undefined) return;
+  const { state, handleCompleteResponseData, handleErrorResponseData } = useContext(WatchContext);
 
   const idMovie = imdbID || state.imdbID;
 
@@ -57,15 +55,13 @@ export function FeatchApiOneData(
         if (resp.data.Response === "False")
           throw new Error("databese not found");
 
-        setState({
-          ...state,
+        handleCompleteResponseData({
           imdbID: resp.data.imdbID,
           data: resp.data,
-          loading: "finnish",
         });
       })
       .catch(() => {
-        setState({ ...state, loading: "error" });
+        handleErrorResponseData();
       });
 
     if (idMovie === "" || idMovie === undefined || paramsName === undefined)

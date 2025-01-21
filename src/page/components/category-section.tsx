@@ -27,7 +27,7 @@ export function CategorySection({
 }: PropsSectionMovieAndSeries) {
   const [response, setResponse] = useState<TResponse>({ loading: "loading" });
   const { handleGetMovies, handleAddData } = useContext(PaginationContext);
-  const { setMovieWatch } = useContext(WatchContext);
+  const { handleResetData, handleAddIDBMID } = useContext(WatchContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,14 +44,8 @@ export function CategorySection({
   }, []);
 
   function handleGetDataOfMovie() {
-    if (setMovieWatch) {
-      setMovieWatch({
-        imdbID: "",
-        data: {},
-        index: 0,
-        loading: "loading",
-      });
-    }
+    handleResetData();
+
     if (response.data) {
       handleGetMovies({
         ...response,
@@ -97,7 +91,7 @@ export function CategorySection({
               onClick={() =>
                 handleGetIdMovie(
                   MovieSeries.imdbID,
-                  setMovieWatch,
+                  handleAddIDBMID,
                   navigate,
                   handleAddData,
                   response

@@ -11,7 +11,7 @@ import { WatchContext } from "@/context/watch-context";
 
 export function MoreMoviesSeries() {
   const { state } = useContext(PaginationContext);
-  const { setMovieWatch } = useContext(WatchContext);
+  const { handleAddIDBMID } = useContext(WatchContext);
   const navigate = useNavigate();
 
   const urlParams = `&s=all&type=${state?.type}&y=${state?.year}&page=${state?.currentPage}`;
@@ -35,7 +35,7 @@ export function MoreMoviesSeries() {
                 <li
                   data-testid="more-movie-play"
                   onClick={() =>
-                    handleGetIdMovie(dataMore.imdbID, setMovieWatch, navigate)
+                    handleGetIdMovie(dataMore.imdbID, handleAddIDBMID, navigate)
                   }
                   key={state?.title + "-id-" + dataMore.imdbID}
                   className="flex flex-col items-center w-1/5 max-xl:w-1/4 max-md:w-1/3"

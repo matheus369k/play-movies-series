@@ -11,7 +11,7 @@ import { WatchContext } from "@/context/watch-context";
 
 export function Search() {
   const { state } = useContext(PaginationContext);
-  const { setMovieWatch } = useContext(WatchContext);
+  const { handleAddIDBMID } = useContext(WatchContext);
   const navigate = useNavigate();
 
   const urlParams = `&s=${state?.title || "all"}&page=${state?.currentPage}`;
@@ -34,7 +34,7 @@ export function Search() {
               <li
                 data-testid="search-play-movie"
                 onClick={() =>
-                  handleGetIdMovie(dataSearch.imdbID, setMovieWatch, navigate)
+                  handleGetIdMovie(dataSearch.imdbID, handleAddIDBMID, navigate)
                 }
                 key={state?.title + "-id-" + dataSearch.imdbID}
                 className="flex flex-col items-center w-1/5 max-xl:w-1/4 max-md:w-1/3"

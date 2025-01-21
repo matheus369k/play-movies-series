@@ -11,26 +11,17 @@ import { useForm } from "react-hook-form";
 export function Header() {
   const { handleAddSearchTitle, handleRemoveData } =
     useContext(PaginationContext);
-  const { setMovieWatch } = useContext(WatchContext);
+  const { handleResetData } = useContext(WatchContext);
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       search: "",
-    }
+    },
   });
   const navigate = useNavigate();
 
   function handleToBackPage() {
     reset();
-
-    if (setMovieWatch) {
-      setMovieWatch({
-        imdbID: "",
-        data: {},
-        index: 0,
-        loading: "loading",
-      });
-    }
-
+    handleResetData();
     handleRemoveData();
     navigate(HOME_ROUTE);
   }
@@ -66,12 +57,10 @@ export function Header() {
         </button>
       )}
       <form
-        data-testid="search-form"
         onSubmit={handleSubmit(handleSubmitSearchForm)}
         autoComplete="off"
         className={`relative text-gray-400 backdrop-blur-sm ${
-          window.location.pathname === HOME_ROUTE &&
-          "max-md:mx-auto"
+          window.location.pathname === HOME_ROUTE && "max-md:mx-auto"
         }`}
       >
         <label htmlFor="search">
@@ -81,8 +70,6 @@ export function Header() {
           {...register("search")}
           className="bg-gray-200/20 text-gray-100 outline-none border border-gray-500  focus:border-gray-100 focus:outline-none placeholder:text-gray-400 w-[400px] p-2 pl-12 rounded-full max-lg:w-[375px] max-sm:max-lg:w-[300px] max-sm:text-sm max-sm:pl-10"
           type="search"
-          name="search"
-          id="search"
           placeholder="Pesquisar..."
         />
       </form>

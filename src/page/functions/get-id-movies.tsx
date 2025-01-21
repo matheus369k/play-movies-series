@@ -1,34 +1,26 @@
-import React from "react";
 import { NavigateFunction } from "react-router";
 import { resetScroll } from "../../components/functions/reset-scroll";
-import { TMovieWatch } from "../../types";
-import { ReduceStateType } from "@/context/pagination-context";
+import { ReduceStateType as ReducerPaginationStateType } from "@/context/pagination-context";
+import { ReducerStateType as ReducerWatchStateType } from "@/context/watch-context";
 import { WATCH_ROUTE } from "@/router/path-routes";
 
 export function handleGetIdMovie(
   id: string | undefined,
-  setMovieWatch: React.Dispatch<React.SetStateAction<TMovieWatch>> | undefined,
+  handleAddIDBMID: ({ imdbID }: Pick<ReducerWatchStateType, "imdbID">) => void,
   navigate: NavigateFunction,
-  handleAddData?: ({ data }: Pick<ReduceStateType, "data">) => void,
-  response?: Pick<ReduceStateType, "data">
+  handleAddData?: ({ data }: Pick<ReducerPaginationStateType, "data">) => void,
+  response?: Pick<ReducerPaginationStateType, "data">
 ) {
   const input = document.querySelector("[name='search']") as HTMLFormElement;
 
   if (input) input.value = "";
 
-  if (setMovieWatch && id) {
-    setMovieWatch({
-      data: {},
-      index: 0,
-      loading: "loading",
-      imdbID: id,
-    });
+  if (id) {
+    handleAddIDBMID({ imdbID: id });
   }
 
   if (handleAddData && response) {
-    handleAddData({
-      data: response.data,
-    });
+    handleAddData({ data: response.data });
   }
 
   resetScroll();

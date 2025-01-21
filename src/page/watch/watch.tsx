@@ -21,9 +21,9 @@ export function WatchMovieSeries() {
     isLoading: false,
     isFullScreen: false,
   });
-  const { movieWatch, setMovieWatch } = useContext(WatchContext);
+  const { state } = useContext(WatchContext);
 
-  FeatchApiOneData(movieWatch, setMovieWatch, undefined, "id");
+  FeatchApiOneData(undefined, "id");
 
   function handleFullScreen() {
     setWatchAction({
@@ -47,7 +47,7 @@ export function WatchMovieSeries() {
 
   return (
     <section className="flex flex-col gap-10 pt-32 max-w-7xl mx-auto min-h-screen max-md:pt-20 max-lg:px-6 max-sm:px-1">
-      {movieWatch?.loading === "finnish" && (
+      {state?.loading === "finnish" && (
         <>
           <div
             data-testid="watch-screen-movie"
@@ -58,7 +58,7 @@ export function WatchMovieSeries() {
             }`}
           >
             <h3 className="font-bold text-base transition-all">
-              {movieWatch?.data.Title}
+              {state?.data.Title}
             </h3>
             <div
               className={`w-max mx-auto transition-all ${
@@ -120,25 +120,25 @@ export function WatchMovieSeries() {
           >
             <img
               className="h-[400px] w-[290px] rounded border border-gray-500 max-lg:mx-auto"
-              src={movieWatch?.data.Poster}
-              alt={movieWatch?.data.Type + ": " + movieWatch?.data.Title}
+              src={state?.data.Poster}
+              alt={state?.data.Type + ": " + state?.data.Title}
             />
             <ul className="flex flex-col gap-2">
-              <Cell title="Titulo" value={movieWatch?.data.Title} />
-              <Cell title="Lançamento" value={movieWatch?.data.Released} />
-              <Cell title="Diretor" value={movieWatch?.data.Director} />
-              <Cell title="Tipo" value={movieWatch?.data.Type} />
-              <Cell title="Duração" value={movieWatch?.data.Runtime} />
-              <Cell title="Nota" value={movieWatch?.data.imdbRating} />
-              <Cell title="Genero" value={movieWatch?.data.Genre} />
-              <Cell title="Autor" value={movieWatch?.data.Writer} />
-              <Cell title="Atores" value={movieWatch?.data.Actors} />
+              <Cell title="Titulo" value={state?.data.Title} />
+              <Cell title="Lançamento" value={state?.data.Released} />
+              <Cell title="Diretor" value={state?.data.Director} />
+              <Cell title="Tipo" value={state?.data.Type} />
+              <Cell title="Duração" value={state?.data.Runtime} />
+              <Cell title="Nota" value={state?.data.imdbRating} />
+              <Cell title="Genero" value={state?.data.Genre} />
+              <Cell title="Autor" value={state?.data.Writer} />
+              <Cell title="Atores" value={state?.data.Actors} />
               <Cell
                 title="Temporadas"
-                value={movieWatch?.data.totalSeasons || "N/A"}
+                value={state?.data.totalSeasons || "N/A"}
               />
-              <Cell title="Premios" value={movieWatch?.data.Awards} />
-              <Cell title="Descrição" value={movieWatch?.data.Plot} />
+              <Cell title="Premios" value={state?.data.Awards} />
+              <Cell title="Descrição" value={state?.data.Plot} />
             </ul>
           </div>
           <CategorySection
@@ -149,13 +149,13 @@ export function WatchMovieSeries() {
           />
         </>
       )}
-      {movieWatch?.loading === "loading" && (
+      {state?.loading === "loading" && (
         <Loading
           message="Carregando"
           styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       )}
-      {movieWatch?.loading === "error" && (
+      {state?.loading === "error" && (
         <Error
           message="Erro ao tentar carregar"
           styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
