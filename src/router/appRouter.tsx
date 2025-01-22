@@ -10,6 +10,7 @@ import {
   SEARCH_ROUTE,
   WATCH_ROUTE,
 } from "./path-routes";
+import { NotFound } from "@/components/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -33,5 +34,6 @@ export const router = createBrowserRouter([
         element: <Search />,
       },
     ],
+    errorElement: <NotFound />,
   },
 ]);
