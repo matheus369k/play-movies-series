@@ -11,6 +11,7 @@ import {
 } from "../../context/pagination-context";
 import { WatchContext } from "../../context/watch-context";
 import { CategorySectionHeader } from "./category-section-header";
+import { MovieCard } from "./movie-card";
 
 interface PropsSectionMovieAndSeries {
   type: string;
@@ -65,9 +66,6 @@ export function CategorySection({
   year,
 }: PropsSectionMovieAndSeries) {
   const [state, dispatch] = useReducer(reducer, { loading: "loading" });
-  const { handleAddData } = useContext(PaginationContext);
-  const { handleAddIDBMID } = useContext(WatchContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const url = `https://www.omdbapi.com/?apikey=d074a25e&s=all&plot=full&y=${year}&type=${type}&page=${page}`;
@@ -86,7 +84,7 @@ export function CategorySection({
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto h-fit w-full px-6 m-6 max-lg:m-0 max-xl:px-2">
+    <div className="max-w-7xl mx-auto h-fit w-full">
       <CategorySectionHeader
         title={title}
         type={type}
@@ -103,38 +101,13 @@ export function CategorySection({
         <Error message="Error ao tentar carregar" styles="py-16" />
       )}
 
-      {state.loading === "finnish" && (
-        <ul
-          data-testid="category-section-movies"
-          className="flex gap-6 px-10 w-full max-xl:gap-2 max-xl:px-5 max-sm:px-2"
-        >
-          {state.data?.slice(0, 6).map((MovieSeries, index) => (
-            <li
-              data-testid="category-section-movie-play"
-              onClick={() =>
-                handleGetIdMovie(
-                  MovieSeries.imdbID,
-                  handleAddIDBMID,
-                  navigate,
-                  handleAddData,
-                  state
-                )
-              }
-              key={"release-id-" + MovieSeries.imdbID}
-              className={`relative bg-black/50 rounded-md border border-gray-100 w-max z-40 cursor-pointer group/play ${
-                index === 3 && "max-sm:hidden"
-              } ${index === 4 && "max-lg:hidden"}`}
-            >
-              <div>
-                <img
-                  src={MovieSeries.Poster}
-                  className="w-full h-full max-h-64 max-w-44 object-cover transition-all opacity-100 group-hover/play:opacity-40"
-                  alt={MovieSeries.Type + ": " + MovieSeries.Title}
-                />
-                <ButtonPlay />
-              </div>
-            </li>
-          ))}
+      {state?.data && (
+        <ul className="flex gap-3 px-5 w-max max-xl:gap-2 max-xl:px-5 max-sm:px-2">
+          {state.data.map((MovieSeries) => {
+            return (
+              <MovieCard key={MovieSeries.imdbID} {...MovieSeries} onlyImage />
+            );
+          })}
         </ul>
       )}
     </div>

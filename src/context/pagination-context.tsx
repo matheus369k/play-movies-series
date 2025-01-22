@@ -24,14 +24,16 @@ interface ContextPaginationType {
   handleLastPage: () => void;
 }
 
+export interface ReducerStateDataType {
+  Poster: string;
+  Title: string;
+  Type: string;
+  Year: string;
+  imdbID: string;
+}
+
 export interface ReduceStateType {
-  data?: {
-    Poster: string;
-    Title: string;
-    Type: string;
-    Year: string;
-    imdbID: string;
-  }[];
+  data?: ReducerStateDataType[];
   title: string;
   totalPages: number;
   currentPage: number;
@@ -43,13 +45,7 @@ export interface ReduceStateType {
 interface ReducerActionType {
   type: string;
   payload?: {
-    data?: {
-      Poster: string;
-      Title: string;
-      Type: string;
-      Year: string;
-      imdbID: string;
-    }[];
+    data?: ReducerStateDataType[];
     title?: string;
     totalPages?: number;
     currentPage?: number;

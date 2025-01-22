@@ -51,7 +51,7 @@ export function CategorySectionHeader({
   }
 
   return (
-    <span className="flex justify-between items-center pl-3 border-l-8 border-l-red-600 mb-6 rounded-l">
+    <span className="flex justify-between items-center pl-3 border-l-4 border-l-red-600 mb-6 rounded">
       <h2 className="font-bold capitalize text-4xl max-lg:text-2xl">{title}</h2>
       <span
         data-testid="category-section-more-movies"
