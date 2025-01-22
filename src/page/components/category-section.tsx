@@ -1,16 +1,16 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { ButtonPlay } from "./button-play";
-import { TResponse } from "../../types";
 import { Loading } from "./loading";
 import { Error } from "./error";
-import { setParamsAtUrl } from "../functions/add-url-params";
-import { resetScroll } from "../../components/functions/reset-scroll";
 import { handleGetIdMovie } from "../functions/get-id-movies";
-import { PaginationContext } from "../../context/pagination-context";
+import {
+  PaginationContext,
+  ReduceStateType as ReducePaginationStateType,
+} from "../../context/pagination-context";
 import { WatchContext } from "../../context/watch-context";
-import { HOME_ROUTE } from "@/router/path-routes";
+import { CategorySectionHeader } from "./category-section-header";
 
 interface PropsSectionMovieAndSeries {
   type: string;
@@ -19,15 +19,54 @@ interface PropsSectionMovieAndSeries {
   year: number;
 }
 
+export type ReducerStateType = Pick<
+  ReducePaginationStateType,
+  "data" | "loading"
+>;
+
+const ReducerCases = {
+  COMPLETE_RESPONSE: "complete/response",
+  ERROR_RESPONSE: "error/response",
+  LOADING_RESPONSE: "loading/response",
+};
+const reducer = (
+  state: ReducerStateType,
+  action: {
+    type: string;
+    payload?: Omit<ReducerStateType, "loading">;
+  }
+): ReducerStateType => {
+  switch (action.type) {
+    case ReducerCases.LOADING_RESPONSE:
+      return {
+        ...state,
+        loading: "loading",
+      };
+    case ReducerCases.COMPLETE_RESPONSE:
+      return {
+        ...state,
+        loading: "finnish",
+        data: action.payload?.data,
+      };
+    case ReducerCases.ERROR_RESPONSE:
+      return {
+        ...state,
+        loading: "error",
+      };
+    default:
+      return state;
+  }
+};
+
 export function CategorySection({
   type,
   page,
   title,
   year,
 }: PropsSectionMovieAndSeries) {
-  const [response, setResponse] = useState<TResponse>({ loading: "loading" });
-  const { handleGetMovies, handleAddData } = useContext(PaginationContext);
-  const { handleResetData, handleAddIDBMID } = useContext(WatchContext);
+  const [state, dispatch] = useReducer(reducer, { loading: "loading" });
+  const { handleAddData } = useContext(PaginationContext);
+  const { handleAddIDBMID } = useContext(WatchContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,56 +75,40 @@ export function CategorySection({
     axios
       .get(url)
       .then((resp) => {
-        setResponse({ loading: "finnish", data: resp.data.Search });
+        dispatch({
+          type: ReducerCases.COMPLETE_RESPONSE,
+          payload: { data: resp.data.Search },
+        });
       })
       .catch(() => {
-        setResponse({ ...response, loading: "error" });
+        dispatch({ type: ReducerCases.ERROR_RESPONSE });
       });
   }, []);
 
-  function handleGetDataOfMovie() {
-    handleResetData();
-
-    if (response.data) {
-      handleGetMovies({
-        ...response,
-        data: response.data,
-        title: title,
-        type: type,
-        year: year,
-        currentPage: page,
-      });
-    }
-
-    resetScroll();
-    navigate(HOME_ROUTE);
-
-    setParamsAtUrl("title", title || "");
-    setParamsAtUrl("type", type || "");
-    setParamsAtUrl("year", year || 1999);
-    setParamsAtUrl("page", page || 1);
-  }
-
   return (
     <div className="max-w-7xl mx-auto h-fit w-full px-6 m-6 max-lg:m-0 max-xl:px-2">
-      <span className="flex justify-between items-center pl-3 border-l-8 border-l-red-600 mb-6 rounded-l">
-        <h2 className="font-bold capitalize text-4xl max-lg:text-2xl">
-          {title}
-        </h2>
-        <span
-          data-testid="category-section-more-movies"
-          onClick={handleGetDataOfMovie}
-          className="text-gray-500 hover:text-gray-100 cursor-pointer"
-        >
-          More
-        </span>
-      </span>
-      {response.loading === "finnish" && (
+      <CategorySectionHeader
+        title={title}
+        type={type}
+        page={page}
+        year={year}
+        state={state}
+      />
+
+      {state.loading === "loading" && (
+        <Loading message="Carregando" styles="py-16" />
+      )}
+
+      {state.loading === "error" && (
+        <Error message="Error ao tentar carregar" styles="py-16" />
+      )}
+
+      {state.loading === "finnish" && (
         <ul
           data-testid="category-section-movies"
           className="flex gap-6 px-10 w-full max-xl:gap-2 max-xl:px-5 max-sm:px-2"
         >
-          {response.data?.slice(0, 6).map((MovieSeries, index) => (
+          {state.data?.slice(0, 6).map((MovieSeries, index) => (
             <li
               data-testid="category-section-movie-play"
               onClick={() =>
@@ -94,7 +117,7 @@ export function CategorySection({
                   handleAddIDBMID,
                   navigate,
                   handleAddData,
-                  response
+                  state
                 )
               }
               key={"release-id-" + MovieSeries.imdbID}
@@ -113,12 +136,6 @@ export function CategorySection({
             </li>
           ))}
         </ul>
-      )}
-      {response.loading === "loading" && (
-        <Loading message="Carregando" styles="my-16" />
-      )}
-      {response.loading === "error" && (
-        <Error message="Erro ao tentar carregar" styles="my-16" />
       )}
     </div>
   );
