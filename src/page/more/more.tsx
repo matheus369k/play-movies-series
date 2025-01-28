@@ -24,7 +24,7 @@ export function MoreMoviesSeries() {
         <>
           <ul
             data-testid="more-movies"
-            className="flex flex-wrap gap-3 pb-6 w-auto"
+            className="flex justify-center flex-wrap gap-3 pb-6 w-auto"
           >
             {stateValueDeferred.data.map((dataMore) => {
               return <MovieCard key={dataMore.imdbID} {...dataMore} />;

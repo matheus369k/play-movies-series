@@ -51,7 +51,7 @@ export function WatchMovieSeries() {
         <>
           <div
             data-testid="watch-screen-movie"
-            className={`flex flex-col justify-between bg-black w-full h-screen m-auto rounded border border-gray-500 p-4 group/watch z-50 max-sm:p-2 ${
+            className={`flex flex-col justify-between bg-black w-full h-screen m-auto rounded border border-gray-500 p-4 aspect-video group/watch z-50 max-sm:p-2 ${
               watchAction.isFullScreen
                 ? "fixed top-0 left-0 overflow-hidden border-none"
                 : "relative max-w-4xl max-h-[530px] max-lg:max-h-[56vw]"

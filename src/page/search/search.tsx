@@ -32,7 +32,7 @@ export function Search() {
         <>
           <ul
             data-testid="search-movies"
-            className="flex flex-wrap gap-3 pb-6 w-auto"
+            className="flex justify-center flex-wrap gap-3 pb-6 w-auto"
           >
             {stateValueDeferred.data?.map((dataSearch) => {
               return <MovieCard key={dataSearch.imdbID} {...dataSearch} />;
