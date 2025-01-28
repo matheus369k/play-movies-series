@@ -2,11 +2,10 @@ import axios from "axios";
 import { useEffect, useReducer } from "react";
 import { Loading } from "./loading";
 import { Error } from "./error";
-import {
-  ReduceStateType as ReducePaginationStateType
-} from "../../context/pagination-context";
+import { ReduceStateType as ReducePaginationStateType } from "../../context/pagination-context";
 import { CategorySectionHeader } from "./category-section-header";
 import { MovieCard } from "./movie-card";
+import { MoviesCarouselProvider } from "./movies-carousel";
 
 interface PropsSectionMovieAndSeries {
   type: string;
@@ -79,7 +78,7 @@ export function CategorySection({
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto h-fit w-full">
+    <div className="max-w-7xl mx-auto h-fit w-full p-4">
       <CategorySectionHeader
         title={title}
         type={type}
@@ -97,13 +96,17 @@ export function CategorySection({
       )}
 
       {state?.data && (
-        <ul className="flex gap-3 px-5 w-max max-xl:gap-2 max-xl:px-5 max-sm:px-2">
-          {state.data.map((MovieSeries) => {
-            return (
-              <MovieCard key={MovieSeries.imdbID} {...MovieSeries} onlyImage />
-            );
-          })}
-        </ul>
+          <MoviesCarouselProvider>
+            {state.data.map((MovieSeries) => {
+              return (
+                <MovieCard
+                  key={MovieSeries.imdbID}
+                  {...MovieSeries}
+                  onlyImage
+                />
+              );
+            })}
+          </MoviesCarouselProvider>
       )}
     </div>
   );
