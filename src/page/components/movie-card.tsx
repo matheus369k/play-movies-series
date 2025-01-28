@@ -1,4 +1,5 @@
 import { ReducerStateDataType } from "@/context/pagination-context";
+import { TbPhotoOff } from "react-icons/tb";
 import { ButtonPlay } from "./button-play";
 import { useContext } from "react";
 import { WatchContext } from "@/context/watch-context";
@@ -25,20 +26,30 @@ export function MovieCard({
     navigate(WATCH_ROUTE);
   }
 
+  console.log(Poster);
+
   return (
     <li
       onClick={handleClickedPlayOnMovie}
-      className={`flex flex-col items-center bg-gray-900 rounded border border-gray-800 ${
+      className={`flex flex-col items-center bg-gray-900 rounded border border-gray-800 max-w-52 ${
         onlyImage ? "" : " p-2"
       }`}
     >
-      <div className="relative group/play bg-black/50 z-50 cursor-pointer">
-        <img
-          src={Poster}
-          loading="lazy"
-          className="w-44 h-64 rounded transition-all opacity-100 group-hover/play:opacity-40 max-sm:w-28 max-sm:h-40"
-          alt={Type + ": " + Title}
-        />
+      <div className="relative group/play bg-black/50 z-50 rounded cursor-pointer aspect-[3/4] overflow-hidden">
+        {Poster === "N/A" ? (
+          <img
+            src="https://placehold.co/225x300?text=Not+Found"
+            className="w-full h-full object-cover transition-all opacity-100 group-hover/play:opacity-40"
+            alt="imagem escrito not found com fundo solido"
+          />
+        ) : (
+          <img
+            src={Poster}
+            loading="lazy"
+            className="w-full h-full object-cover transition-all opacity-100 group-hover/play:opacity-40"
+            alt={Type + ": " + Title}
+          />
+        )}
         <ButtonPlay />
       </div>
       {!onlyImage && (

@@ -1,15 +1,10 @@
 import axios from "axios";
-import { useContext, useEffect, useReducer } from "react";
-import { useNavigate } from "react-router-dom";
-import { ButtonPlay } from "./button-play";
+import { useEffect, useReducer } from "react";
 import { Loading } from "./loading";
 import { Error } from "./error";
-import { handleGetIdMovie } from "../functions/get-id-movies";
 import {
-  PaginationContext,
-  ReduceStateType as ReducePaginationStateType,
+  ReduceStateType as ReducePaginationStateType
 } from "../../context/pagination-context";
-import { WatchContext } from "../../context/watch-context";
 import { CategorySectionHeader } from "./category-section-header";
 import { MovieCard } from "./movie-card";
 
