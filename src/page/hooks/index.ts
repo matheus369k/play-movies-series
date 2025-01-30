@@ -1,0 +1,1 @@
+export { usefetchOmbdapi } from "./useFetchImdbid";

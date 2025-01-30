@@ -1,6 +1,6 @@
 import { useContext, useDeferredValue } from "react";
 import { Pagination } from "../components/pagination";
-import { FeatchApiPagination } from "../hooks/fetch-api";
+import { usefetchOmbdapi } from "../hooks";
 import { Error } from "../components/error";
 import {
   PaginationContext
@@ -10,9 +10,9 @@ import { MovieCard } from "../components/movie-card";
 export function MoreMoviesSeries() {
   const { state } = useContext(PaginationContext);
   const stateValueDeferred = useDeferredValue(state);
-
-  const urlParams = `?s=all&type=${state?.type}&y=${state?.year}&page=${state?.currentPage}`;
-  FeatchApiPagination(urlParams);
+  usefetchOmbdapi().getManyData({
+    params: `?s=all&type=${state?.type}&y=${state?.year}&page=${state?.currentPage}`
+  })
 
   return (
     <section className="flex flex-col justify-between px-2 gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">

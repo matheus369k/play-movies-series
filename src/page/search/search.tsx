@@ -1,6 +1,6 @@
 import { useContext, useDeferredValue } from "react";
 import { Pagination } from "../components/pagination";
-import { FeatchApiPagination } from "../hooks/fetch-api";
+import { usefetchOmbdapi } from "../hooks";
 import { Error } from "../components/error";
 import {
   PaginationContext
@@ -10,10 +10,10 @@ import { MovieCard } from "../components/movie-card";
 export function Search() {
   const { state } = useContext(PaginationContext);
   const stateValueDeferred = useDeferredValue(state);
-
-  const urlParams = `?s=${state?.title || "all"}&page=${state?.currentPage}`;
-
-  FeatchApiPagination(urlParams, "search");
+  usefetchOmbdapi().getManyData({
+    params: `?s=${state?.title || "all"}&page=${state?.currentPage}`,
+    key: "search"
+  })
 
   return (
     <section className="flex px-2 flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">

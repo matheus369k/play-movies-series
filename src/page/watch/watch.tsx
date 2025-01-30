@@ -11,19 +11,20 @@ import { randomYearNumber } from "../functions/random-year";
 import { TbLoader2 } from "react-icons/tb";
 import { TbPlayerPauseFilled } from "react-icons/tb";
 import { BiExitFullscreen } from "react-icons/bi";
-import { FeatchApiOneData } from "../hooks/fetch-api";
+import { usefetchOmbdapi } from "../hooks";
 import { Loading } from "../components/loading";
 import { Error } from "../components/error";
 import { WatchContext } from "../../context/watch-context";
 
 export function WatchMovieSeries() {
+  usefetchOmbdapi().getOneData({
+    paramsName: "id",
+  });
   const [watchAction, setWatchAction] = useState({
     isLoading: false,
     isFullScreen: false,
   });
   const { state } = useContext(WatchContext);
-
-  FeatchApiOneData(undefined, "id");
 
   function handleFullScreen() {
     setWatchAction({
@@ -116,13 +117,16 @@ export function WatchMovieSeries() {
           </div>
           <div
             data-testid="watch-post-infor-movie"
-            className="flex gap-6 text-gray-500 m-6 max-lg:flex-col max-sm:mx-2"
+            className="flex gap-6 items-center text-gray-500 m-6 max-lg:flex-col max-sm:mx-2"
           >
-            <img
-              className="h-[400px] w-[290px] rounded border border-gray-500 max-lg:mx-auto"
-              src={state?.data.Poster}
-              alt={state?.data.Type + ": " + state?.data.Title}
-            />
+            <div className="min-h-[400px] min-w-[300px] h-full rounded border border-gray-500 bg-gray-900 max-lg:mx-auto overflow-hidden">
+              <img
+                className="object-fill"
+                src={state?.data.Poster}
+                alt={state?.data.Type + ": " + state?.data.Title}
+              />
+            </div>
+
             <ul className="flex flex-col gap-2">
               <Cell title="Titulo" value={state?.data.Title} />
               <Cell title="Lançamento" value={state?.data.Released} />

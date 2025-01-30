@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { dbFocusData } from "@/data/movies-id";
 import { ButtonPlay } from "../../components/button-play";
 import { handleGetIdMovie } from "../../functions/get-id-movies";
-import { FeatchApiOneData } from "../../hooks/fetch-api";
+import { usefetchOmbdapi } from "../../hooks";
 import { ButtonSwitch } from "./button-switch";
 import { Loading } from "../../components/loading";
 import { Error } from "../../components/error";
@@ -13,10 +13,11 @@ import { WatchContext } from "@/context/watch-context";
 
 export function Emphasis() {
   const { state, handleAddIndex, handleAddIDBMID } = useContext(WatchContext);
-  const focusProduction = dbFocusData()[state?.index || 0];
+  usefetchOmbdapi().getOneData({
+    imdbID: dbFocusData()[state?.index || 0].imdbid,
+  });
+  
   const navigate = useNavigate();
-
-  FeatchApiOneData(focusProduction.imdbid);
 
   function handlePassToNextMovieSeries() {
     if (state === undefined) return;
