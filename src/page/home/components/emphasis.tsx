@@ -2,7 +2,7 @@ import { GrNext } from "react-icons/gr";
 import { GrPrevious } from "react-icons/gr";
 import { useContext } from "react";
 import { useNavigate } from "react-router";
-import { dbFocusData } from "@/data/focus-bg-id";
+import { dbFocusData } from "@/data/movies-id";
 import { ButtonPlay } from "../../components/button-play";
 import { handleGetIdMovie } from "../../functions/get-id-movies";
 import { FeatchApiOneData } from "../../hooks/fetch-api";
@@ -13,7 +13,7 @@ import { WatchContext } from "@/context/watch-context";
 
 export function Emphasis() {
   const { state, handleAddIndex, handleAddIDBMID } = useContext(WatchContext);
-  const focusProduction = dbFocusData[state?.index || 0];
+  const focusProduction = dbFocusData()[state?.index || 0];
   const navigate = useNavigate();
 
   FeatchApiOneData(focusProduction.imdbid);

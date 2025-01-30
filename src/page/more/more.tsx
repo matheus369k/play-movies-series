@@ -11,9 +11,8 @@ export function MoreMoviesSeries() {
   const { state } = useContext(PaginationContext);
   const stateValueDeferred = useDeferredValue(state);
 
-  const urlParams = `&s=all&type=${state?.type}&y=${state?.year}&page=${state?.currentPage}`;
-  const url = "https://www.omdbapi.com/?apikey=d074a25e" + urlParams;
-  FeatchApiPagination(url);
+  const urlParams = `?s=all&type=${state?.type}&y=${state?.year}&page=${state?.currentPage}`;
+  FeatchApiPagination(urlParams);
 
   return (
     <section className="flex flex-col justify-between px-2 gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">

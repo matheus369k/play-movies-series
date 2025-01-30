@@ -1,16 +1,15 @@
-import axios from "axios";
 import { useContext, useEffect } from "react";
 import { setParamsAtUrl } from "../functions/add-url-params";
 import { PaginationContext } from "@/context/pagination-context";
 import { WatchContext } from "@/context/watch-context";
+import { AxiosOmbdapi } from "@/util/axios-omdbapi";
 
-export function FeatchApiPagination(url: string, paramsName?: string) {
+export function FeatchApiPagination(params: string, paramsName?: string) {
   const { state, handleCompleteResponseData, handleErrorResponseData } =
     useContext(PaginationContext);
 
   useEffect(() => {
-    axios
-      .get(url)
+    AxiosOmbdapi.get(params)
       .then((resp) => {
         if (resp.data.Search === undefined) {
           throw new Error("database not found");
@@ -42,15 +41,15 @@ export function FeatchApiOneData(
   imdbID: string | undefined,
   paramsName?: string
 ) {
-  const { state, handleCompleteResponseData, handleErrorResponseData } = useContext(WatchContext);
+  const { state, handleCompleteResponseData, handleErrorResponseData } =
+    useContext(WatchContext);
 
   const idMovie = imdbID || state.imdbID;
 
   useEffect(() => {
-    const url = `https://www.omdbapi.com/?apikey=d074a25e&i=${idMovie}`;
+    const params = `?i=${idMovie}`;
 
-    axios
-      .get(url)
+    AxiosOmbdapi.get(params)
       .then((resp) => {
         if (resp.data.Response === "False")
           throw new Error("databese not found");

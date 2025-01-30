@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useReducer } from "react";
 import { Loading } from "./loading";
 import { Error } from "./error";
@@ -6,6 +5,7 @@ import { ReduceStateType as ReducePaginationStateType } from "../../context/pagi
 import { CategorySectionHeader } from "./category-section-header";
 import { MovieCard } from "./movie-card";
 import { MoviesCarouselProvider } from "./movies-carousel";
+import { AxiosOmbdapi } from "@/util/axios-omdbapi";
 
 interface PropsSectionMovieAndSeries {
   type: string;
@@ -62,10 +62,9 @@ export function CategorySection({
   const [state, dispatch] = useReducer(reducer, { loading: "loading" });
 
   useEffect(() => {
-    const url = `https://www.omdbapi.com/?apikey=d074a25e&s=all&plot=full&y=${year}&type=${type}&page=${page}`;
+    const params = `?s=all&plot=full&y=${year}&type=${type}&page=${page}`;
 
-    axios
-      .get(url)
+    AxiosOmbdapi.get(params)
       .then((resp) => {
         dispatch({
           type: ReducerCases.COMPLETE_RESPONSE,
@@ -96,17 +95,13 @@ export function CategorySection({
       )}
 
       {state?.data && (
-          <MoviesCarouselProvider>
-            {state.data.map((MovieSeries) => {
-              return (
-                <MovieCard
-                  key={MovieSeries.imdbID}
-                  {...MovieSeries}
-                  onlyImage
-                />
-              );
-            })}
-          </MoviesCarouselProvider>
+        <MoviesCarouselProvider>
+          {state.data.map((MovieSeries) => {
+            return (
+              <MovieCard key={MovieSeries.imdbID} {...MovieSeries} onlyImage />
+            );
+          })}
+        </MoviesCarouselProvider>
       )}
     </div>
   );

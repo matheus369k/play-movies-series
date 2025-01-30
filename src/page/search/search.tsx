@@ -1,27 +1,19 @@
 import { useContext, useDeferredValue } from "react";
 import { Pagination } from "../components/pagination";
-import { ButtonPlay } from "../components/button-play";
-import { handleGetIdMovie } from "../functions/get-id-movies";
-import { useNavigate } from "react-router";
 import { FeatchApiPagination } from "../hooks/fetch-api";
-import { Loading } from "../components/loading";
 import { Error } from "../components/error";
 import {
-  PaginationContext,
-  ReducerStateDataType,
+  PaginationContext
 } from "@/context/pagination-context";
-import { WatchContext } from "@/context/watch-context";
 import { MovieCard } from "../components/movie-card";
-import { WATCH_ROUTE } from "@/router/path-routes";
 
 export function Search() {
   const { state } = useContext(PaginationContext);
   const stateValueDeferred = useDeferredValue(state);
 
-  const urlParams = `&s=${state?.title || "all"}&page=${state?.currentPage}`;
-  const url = "https://www.omdbapi.com/?apikey=d074a25e" + urlParams;
+  const urlParams = `?s=${state?.title || "all"}&page=${state?.currentPage}`;
 
-  FeatchApiPagination(url, "search");
+  FeatchApiPagination(urlParams, "search");
 
   return (
     <section className="flex px-2 flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">
