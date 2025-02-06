@@ -14,7 +14,7 @@ export function RootLayout() {
       <WatchContextProvider>
         <PaginationContextProvider>
           <Header />
-          <main>
+          <main className="min-h-[calc(100vh-9rem)] h-full">
             <Outlet />
           </main>
           <Footer />

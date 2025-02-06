@@ -26,8 +26,6 @@ export function MovieCard({
     navigate(WATCH_ROUTE);
   }
 
-  console.log(Poster);
-
   return (
     <li
       onClick={handleClickedPlayOnMovie}

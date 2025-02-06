@@ -77,7 +77,7 @@ export function CategorySection({
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto h-fit w-full p-4">
+    <div className="max-w-7xl mx-auto h-fit w-full py-4">
       <CategorySectionHeader
         title={title}
         type={type}
