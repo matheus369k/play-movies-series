@@ -12,7 +12,7 @@ export function Footer() {
                 <span
                     className="text-red-600">
                     Play
-                </span> Filmes e Series
+                </span> Movie and Series
             </h1>
             <div className="flex justify-between items-center max-md:flex-col max-md:gap-6">
                 <ul className="flex gap-6">
@@ -23,9 +23,9 @@ export function Footer() {
                     <li><MdEmail className="w-8 h-auto cursor-pointer" /></li>
                 </ul>
                 <ul className="flex gap-6 list-none flex-wrap justify-center max-sm:gap-3">
-                    <li><a href="#">Lançamentos</a></li>
-                    <li><a href="#">Recomendados</a></li>
-                    <li><a href="#">Filmes</a></li>
+                    <li><a href="#">Release</a></li>
+                    <li><a href="#">Recommendation</a></li>
+                    <li><a href="#">Movies</a></li>
                     <li><a href="#">Series</a></li>
                 </ul>
             </div>

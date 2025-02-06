@@ -37,7 +37,7 @@ export function Emphasis() {
 
   return (
     <div
-      className={`relative max-h-[769px] p-1 my-2 min-h-[769px] max-md:min-h-[400px] after:bg-[url('../assets/bg-play-movies.webp')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}
+      className={`relative min-h-[60vh] p-1 my-2 after:bg-[url('../assets/bg-play-movies.webp')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}
     >
       {state?.loading === "finnish" && (
         <div
@@ -61,11 +61,11 @@ export function Emphasis() {
               <ButtonPlay />
             </div>
             <p className="select-none font-bold text-center max-sm:text-sm">
-              <span className="text-gray-200">Genero: </span>
+              <span className="text-gray-200">Genre: </span>
               {state.data.Genre}
-              <span className="text-gray-200"> - Lançamento: </span>
+              <span className="text-gray-200"> - Release: </span>
               {state.data.Released}
-              <span className="text-gray-200"> - Nota: </span>
+              <span className="text-gray-200"> - Note: </span>
               {state.data.imdbRating}
             </p>
             <p className="max-w-[80%] text-center font-normal w-full max-md:max-w-full max-sm:text-sm">

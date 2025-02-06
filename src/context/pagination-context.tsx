@@ -165,7 +165,7 @@ const handleInitialReducer = (state: ReduceStateType) => {
   if (pathName === MORE_ROUTE) {
     return {
       ...state,
-      title: getUrlParams(url, "title")?.replace("+", " ") || "Todos",
+      title: getUrlParams(url, "title")?.replace("+", " ") || "Random",
       currentPage: parseInt(getUrlParams(url, "page") || "1"),
       type: getUrlParams(url, "type") || "",
       year: parseInt(getUrlParams(url, "year") || "1999"),

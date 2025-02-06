@@ -4,13 +4,13 @@ import { randomYearNumber } from "../functions/random-year";
 
 export function Home() {
     return (
-        <section className="flex flex-col gap-6">
+        <section className="flex flex-col gap-6 max-xl:px-4">
             <Emphasis />
-            <div className="flex flex-col gap-12">
-            <CategorySection year={2024} page={1} title="lançamentos" type="" />
-            <CategorySection year={randomYearNumber()} page={1} title="recomendados" type="" />
-            <CategorySection year={randomYearNumber()} page={1} title="filmes" type="movie" />
-            <CategorySection year={randomYearNumber()} page={1} title="series" type="series" />
+            <div className="flex flex-col gap-8">
+            <CategorySection year={2024} page={1} title="Release" type="" />
+            <CategorySection year={randomYearNumber()} page={1} title="Recommendation" type="" />
+            <CategorySection year={randomYearNumber()} page={1} title="Movies" type="movie" />
+            <CategorySection year={randomYearNumber()} page={1} title="Series" type="series" />
             </div>
         </section>
     )

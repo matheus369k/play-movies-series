@@ -16,9 +16,11 @@ export function MoreMoviesSeries() {
 
   return (
     <section className="flex flex-col justify-between px-2 gap-10 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
-      <h2 className="font-bold capitalize text-4xl text-center mb-10">
-        {state?.title}
-      </h2>
+     <span className="pl-3 border-l-4 border-l-red-600 mb-6 rounded">
+        <h2 className="font-bold capitalize text-4xl max-lg:text-2xl">
+          {state?.title}
+        </h2>
+      </span>
       {stateValueDeferred.data && (
         <>
           <ul

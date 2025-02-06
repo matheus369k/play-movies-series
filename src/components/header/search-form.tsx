@@ -37,9 +37,9 @@ export function SearchForm({
       </label>
       <input
         {...register("search")}
-        className="bg-gray-200/20 text-gray-100 outline-none border border-gray-500  focus:border-gray-100 focus:outline-none placeholder:text-gray-400 w-[400px] p-2 pl-12 rounded-full max-lg:w-[375px] max-sm:max-lg:w-[300px] max-sm:text-sm max-sm:pl-10"
+        className="bg-gray-200/20 text-gray-100 outline-none border border-gray-500 focus:border-gray-100 focus:outline-none placeholder:text-gray-400 w-full p-2 pl-12 rounded-full max-sm:text-sm max-sm:pl-10"
         type="search"
-        placeholder="Pesquisar..."
+        placeholder="Search..."
       />
     </form>
   );

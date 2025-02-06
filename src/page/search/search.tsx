@@ -2,9 +2,7 @@ import { useContext, useDeferredValue } from "react";
 import { Pagination } from "../components/pagination";
 import { usefetchOmbdapi } from "../hooks";
 import { Error } from "../components/error";
-import {
-  PaginationContext
-} from "@/context/pagination-context";
+import { PaginationContext } from "@/context/pagination-context";
 import { MovieCard } from "../components/movie-card";
 
 export function Search() {
@@ -12,14 +10,16 @@ export function Search() {
   const stateValueDeferred = useDeferredValue(state);
   usefetchOmbdapi().getManyData({
     params: `?s=${state?.title || "all"}&page=${state?.currentPage}`,
-    key: "search"
-  })
+    key: "search",
+  });
 
   return (
-    <section className="flex px-2 flex-col justify-between gap-10 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">
-      <h2 className="font-bold capitalize text-4xl text-center mb-10 max-md:text-2xl">
-        Resultado de "{state?.title}"
-      </h2>
+    <section className="flex px-2 flex-col justify-between gap-5 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">
+      <span className="pl-3 border-l-4 border-l-red-600 mb-6 rounded">
+        <h2 className="font-bold capitalize text-4xl max-lg:text-2xl">
+          Search {state?.title}
+        </h2>
+      </span>
       {stateValueDeferred.data && (
         <>
           <ul
@@ -33,7 +33,7 @@ export function Search() {
           <Pagination />
         </>
       )}
-      
+
       {state?.loading === "error" && (
         <Error
           message="Nada foi Encontrado"

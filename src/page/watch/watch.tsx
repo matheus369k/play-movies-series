@@ -68,7 +68,7 @@ export function WatchMovieSeries() {
           <CategorySection
             year={randomYearNumber()}
             page={1}
-            title="Veja também"
+            title="See also"
             type=""
           />
         </>

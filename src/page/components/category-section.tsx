@@ -86,10 +86,6 @@ export function CategorySection({
         state={state}
       />
 
-      {state.loading === "loading" && (
-        <Loading message="Carregando" styles="py-16" />
-      )}
-
       {state.loading === "error" && (
         <Error message="Error ao tentar carregar" styles="py-16" />
       )}
