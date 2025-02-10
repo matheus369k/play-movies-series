@@ -1,9 +1,7 @@
-<h1 align="center">Play Movies Series</h1>
+<h1 align="center">Play Movies and Series</h1>
 <div align="center">
-  <a href="#ferramentas">Ferramentas</a> |
-  <a href="#projetos">Projetos</a> |
-  <a href="#aprendizado">Aprendizado</a> |
-  <a href="#designer">Designer</a> |
+  <a href="#descriçao">Descrição</a> |
+  <a href="#Iniciar">Iniciar</a> |
   <a href="#licença">Licença</a>
 </div>
 
@@ -11,44 +9,45 @@
   <img src="https://img.shields.io/github/license/matheus369k/play-movies-series.svg"/>
 </p>
 <p>
- <img src="./.github/preview-project.png" />
+ <img src="./.github/preview-project.jpg" />
 </p>
 
-## 🧰 Ferramentas
+## Descrição
+A aplicação e um site de streams de filmes se series, contendo um catalago vasto de filmes entre os anos 2000 e 2025, divididos em filmes e series. 
 
-No desenvolvimento do projeto fora escolhido algumas ferramentas e elas foram:
+Os dados vem de uma api publica chamada [omdbapi.com](https://www.omdbapi.com/).
 
-- React
-- TypeScript
-- TailwindCSS
-- Test-library
-- Jest
-- figma
+As principais funções do site são:
 
-## 💻 Projeto
+- filtro de dados por titulo e indentificador unico(id).
+- Auto paginação por scroll.
+- Carroceu de filmes, divididos em categorias.
 
-O objetivo da criação do projeto fora pela a experiencia em criar um site com um tema interesante e bem requisitado atualmente que e o de entreterimento.
+Acesse o site [Play Movies and Series](https://matheus369k.github.io/play-movies-series/).
 
-O Projeto e um site que visa chegar o mais perto possivel no momento a um site de streams de filmes e series.
+## Iniciar
+E Necessario ter o Nodejs e o git instalado.
 
-Para acessar os dados de cada filme fora usado a api gratis do site 🔗[omdbapi.com](https://www.omdbapi.com/).
+Faça clone do repositorio localmente.
 
-Acesse o site Play Movies and Series 🔗[Aqui](https://matheus369k.github.io/play-movies-series/).
+```bash
+git clone https://github.com/matheus369k/play-movies-series.git
+cd ./play-movies-series
+```
+Instale as dependencias
+```bash
+npm i
+```
+Crie um arquivo .env, com as variaves ambientes abaixo
+```bash
+VITE_API_OMDBAPI=dominio
+VITE_API_OMDBAPI_KEY=Chave
+```
+Agora você pode iniciar o projetos
+```bash
+npm run dev
+```
 
-## 📖 Aprendizado
+## Licença
 
-Durante o desenvolvimento do projeto tive como praticar 
-
-- A integração de uma api e um projeto, coletando seu dados de acordo com o usuarios requisita.
-- Criar estados na url e poder acessar eles para facilitar o compatilhamento do site sem perder o estado anterior da pagina.
-- Aprimorar o uso de testes unitarios com o jest e test-library. 
-
-## 🎨 Designer
-
-O designer do projetos foi criado no figma por mim, tendo sido um pouco modificado em relação ao resultado final.
-
-para acessa o figma do projetos 🔗[clique aqui](https://www.figma.com/design/gvF8dpYbqf8pCGxGo1na6J/Movies-project?node-id=38-653).
-
-## 📃 Licença
-
-Fora usado a licença ( 🔗[MIT](./LICENSE.txt) ) no projeto.
+Licença ( 🔗[MIT](./LICENSE.txt) )
