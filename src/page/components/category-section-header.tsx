@@ -26,12 +26,7 @@ export function CategorySectionHeader({
     handleResetContext();
     handleResetData();
 
-    navigate(MORE_ROUTE);
-    
-    // Setar query parametros na URL
-    setParamsAtUrl("title", title || "");
-    setParamsAtUrl("type", type || "");
-    setParamsAtUrl("year", year || 1999);
+    navigate(MORE_ROUTE+"?title="+title+"&type="+type+"&year="+year);
     
     resetScroll();
   }

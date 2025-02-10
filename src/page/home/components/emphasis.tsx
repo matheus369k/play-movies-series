@@ -50,7 +50,7 @@ export function Emphasis() {
   // selecionar o filme
   function handleClickedPlayOnMovie({ id }: { id: string }) {
     handleAddIDBMID({ imdbID: id });
-    navigate(WATCH_ROUTE);
+    navigate(WATCH_ROUTE + "?id=" + id);
   }
 
   if (isError) {

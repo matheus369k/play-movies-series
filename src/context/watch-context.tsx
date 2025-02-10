@@ -133,7 +133,6 @@ export function WatchContextProvider({
 
   function handleAddIDBMID({ imdbID }: Pick<ReducerStateType, "imdbID">) {
     dispatch({ type: ReducerCases.ADD_IDBM_ID, payload: { imdbID } });
-    setParamsAtUrl("id", imdbID);
   }
 
   function handleAddIndex({ index }: Pick<ReducerStateType, "index">) {

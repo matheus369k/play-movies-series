@@ -27,7 +27,7 @@ export function MovieCard({
   // selecionar o filme
   function handleClickedPlayOnMovie() {
     handleAddIDBMID({ imdbID });
-    navigate(WATCH_ROUTE);
+    navigate(WATCH_ROUTE+"?id="+imdbID);
   }
 
   return (
