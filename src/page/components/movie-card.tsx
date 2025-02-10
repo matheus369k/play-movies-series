@@ -5,11 +5,11 @@ import { useNavigate } from "react-router";
 import { WATCH_ROUTE } from "@/router/path-routes";
 
 interface MovieCardProps {
-  Poster: string
-  Title: string
-  Type: string
-  Year: string
-  imdbID: string
+  Poster: string;
+  Title: string;
+  Type: string;
+  Year: string;
+  imdbID: string;
   onlyImage?: boolean;
 }
 
@@ -32,25 +32,21 @@ export function MovieCard({
   return (
     <li
       onClick={handleClickedPlayOnMovie}
-      className={`flex flex-col items-center bg-gray-900 rounded border border-gray-800 max-w-52 ${
+      className={`flex flex-col items-center bg-gray-900 rounded border border-gray-800 max-w-52 max-sm:w-32 w-full  ${
         onlyImage ? "" : " p-2"
       }`}
     >
-      <div className="relative group/play bg-black/50 z-50 rounded cursor-pointer aspect-[3/4] overflow-hidden">
-        {Poster === "N/A" ? (
-          <img
-            src="https://placehold.co/225x300?text=Not+Found"
-            className="w-full h-full object-cover transition-all opacity-100 group-hover/play:opacity-40"
-            alt="imagem escrito not found com fundo solido"
-          />
-        ) : (
-          <img
-            src={Poster}
-            loading="lazy"
-            className="w-full h-full object-cover transition-all opacity-100 group-hover/play:opacity-40"
-            alt={Type + ": " + Title}
-          />
-        )}
+      <div className="relative group/play bg-black/50 z-50 rounded cursor-pointer aspect-[3/4] overflow-hidden min-h-full">
+        <img
+          src={Poster}
+          onError={(e) =>
+            (e.currentTarget.src =
+              "https://placehold.co/225x300?text=Not+Found")
+          }
+          loading="lazy"
+          className="w-full h-full object-fill border-b border-b-gray-800 transition-all opacity-100 group-hover/play:opacity-40 max-sm:border-none"
+          alt={Type + ": " + Title}
+        />
         <ButtonPlay />
       </div>
       {!onlyImage && (
