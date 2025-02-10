@@ -1,21 +1,26 @@
-import { GrNext } from "react-icons/gr";
-import { GrPrevious } from "react-icons/gr";
-import { useContext } from "react";
-import { useNavigate } from "react-router";
-import { dbFocusData } from "@/data/movies-id";
+// componentes de display
 import { ButtonPlay } from "../../components/button-play";
-import { handleGetIdMovie } from "../../functions/get-id-movies";
-import { ButtonSwitch } from "./button-switch";
-import { Loading } from "../../components/loading";
 import { Error } from "../../components/error";
-import { WatchContext } from "@/context/watch-context";
-import { useQuery } from "@tanstack/react-query";
+import { ButtonSwitch } from "./button-switch";
+import { GrPrevious } from "react-icons/gr";
+import { GrNext } from "react-icons/gr";
+
+// componentes logicos
 import { fetchOneOmbdapi } from "@/services/fetch-omdbapi";
+import { WatchContext } from "@/context/watch-context";
+import { WATCH_ROUTE } from "@/router/path-routes";
+import { dbFocusData } from "@/data/movies-id";
+
+// libs
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
+import { useContext } from "react";
 
 export function Emphasis() {
   const { state, handleAddIndex, handleAddIDBMID } = useContext(WatchContext);
   const mainMoviesIds = dbFocusData()[state?.index || 0].imdbid;
-  const { data, isFetching, isError } = useQuery({
+  // Requisição a api
+  const { data, isError } = useQuery({
     queryKey: ["movie", mainMoviesIds],
     queryFn: async () => {
       return await fetchOneOmbdapi({ id: mainMoviesIds });
@@ -24,6 +29,7 @@ export function Emphasis() {
 
   const navigate = useNavigate();
 
+  // Mostrar o proximo filme em destaque
   function handlePassToNextMovieSeries() {
     if (state === undefined) return;
 
@@ -32,12 +38,19 @@ export function Emphasis() {
     });
   }
 
+  // Mostrar o filme anterior em destaque
   function handlePassToPreviousMovieSeries() {
     if (state === undefined) return;
 
     handleAddIndex({
       index: Number(state.index || 0) - 1,
     });
+  }
+
+  // selecionar o filme
+  function handleClickedPlayOnMovie({ id }: { id: string }) {
+    handleAddIDBMID({ imdbID: id });
+    navigate(WATCH_ROUTE);
   }
 
   if (isError) {
@@ -63,7 +76,7 @@ export function Emphasis() {
             <div
               data-testid="emphasis-play-movie"
               onClick={() =>
-                handleGetIdMovie(data.imdbID, handleAddIDBMID, navigate)
+                handleClickedPlayOnMovie({ id: data.imdbID || "" })
               }
               className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
             >
@@ -87,9 +100,7 @@ export function Emphasis() {
             </p>
           </div>
           <div
-            onClick={() =>
-              handleGetIdMovie(data.imdbID, handleAddIDBMID, navigate)
-            }
+            onClick={() => handleClickedPlayOnMovie({ id: data.imdbID || "" })}
           >
             <ButtonPlay visible fluxDefault />
           </div>

@@ -1,7 +1,12 @@
-import { useLocation } from "react-router";
-import { HOME_ROUTE } from "@/router/path-routes";
-import { FormProvider, useForm } from "react-hook-form";
+// components de display
 import { SearchForm } from "./search-form";
+
+// components logicos
+import { HOME_ROUTE } from "@/router/path-routes";
+
+// libs
+import { FormProvider, useForm } from "react-hook-form";
+import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 
 export interface UseFormType {
@@ -9,14 +14,14 @@ export interface UseFormType {
 }
 
 export function Header() {
+  const { pathname } = useLocation();
   const hookForm = useForm<UseFormType>({
     defaultValues: {
       search: "",
     },
   });
 
-  const { pathname } = useLocation();
-
+  // Verificar se e a home page
   const currentPageIsHome =
     pathname === HOME_ROUTE || pathname === HOME_ROUTE + "/";
 

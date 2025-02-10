@@ -1,10 +1,10 @@
 import { resetScroll } from "@/components/functions/reset-scroll";
-import { WatchContext } from "@/context/watch-context";
-import { useContext } from "react";
-import { MORE_ROUTE } from "@/router/path-routes";
-import { useNavigate } from "react-router";
 import { setParamsAtUrl } from "../functions/add-url-params";
 import { SearchContext } from "@/context/search-context";
+import { WatchContext } from "@/context/watch-context";
+import { MORE_ROUTE } from "@/router/path-routes";
+import { useNavigate } from "react-router";
+import { useContext } from "react";
 
 interface PropsCategorySectionHeader {
   type: string;
@@ -22,11 +22,13 @@ export function CategorySectionHeader({
   const navigate = useNavigate();
 
   function handleGetDataOfMovie() {
+    // Resetar contextos
     handleResetContext();
     handleResetData();
 
     navigate(MORE_ROUTE);
     
+    // Setar query parametros na URL
     setParamsAtUrl("title", title || "");
     setParamsAtUrl("type", type || "");
     setParamsAtUrl("year", year || 1999);

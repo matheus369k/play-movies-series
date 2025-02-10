@@ -17,6 +17,7 @@ export function SearchContextProvider({
   const [search, setSearch] = useState(() => {
     const pathName = window.location.pathname;
 
+    // Verificar se estar na pagina de pesquisa
     if (pathName === SEARCH_ROUTE || pathName === SEARCH_ROUTE + "/") {
       return getUrlParams("search")?.replace("+", " ") || "one";
     }
@@ -29,10 +30,12 @@ export function SearchContextProvider({
     return url.searchParams.get(nameParams);
   }
 
+  // Atualizar valor do state search
   function handleUpdateSearch({ search }: { search: string }) {
     setSearch(search);
   }
 
+  // Resetar o valor para o padrão
   function handleResetContext() {
     setSearch("one");
   }

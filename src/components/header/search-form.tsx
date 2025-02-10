@@ -1,11 +1,16 @@
+// componentes de display
 import { IoSearchOutline } from "react-icons/io5";
-import { resetScroll } from "../functions/reset-scroll";
-import { useContext } from "react";
-import { useFormContext } from "react-hook-form";
-import { SEARCH_ROUTE } from "@/router/path-routes";
-import { useNavigate } from "react-router";
-import { UseFormType } from "./header";
+
+// componentes logicos
 import { SearchContext } from "@/context/search-context";
+import { resetScroll } from "../functions/reset-scroll";
+import { SEARCH_ROUTE } from "@/router/path-routes";
+import { UseFormType } from "./header";
+
+// libs
+import { useFormContext } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { useContext } from "react";
 
 export function SearchForm({
   currentPageIsHome,
@@ -16,6 +21,7 @@ export function SearchForm({
   const { handleUpdateSearch } = useContext(SearchContext);
   const navigate = useNavigate();
 
+  // Submit do campo de pesquisa
   function handleSubmitSearchForm({ search }: UseFormType) {
     navigate(SEARCH_ROUTE + `?search=${search}`);
     handleUpdateSearch({ search });

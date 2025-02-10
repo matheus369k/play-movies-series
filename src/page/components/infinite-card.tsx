@@ -1,5 +1,5 @@
 import { ButtonPlay } from "./button-play";
-import { ReactEventHandler, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { WatchContext } from "@/context/watch-context";
 import { useNavigate } from "react-router";
 import { WATCH_ROUTE } from "@/router/path-routes";
@@ -24,18 +24,20 @@ export function InfiniteMovieCard({
   elementIdActiveFetch,
   handleFetchMoreData,
 }: MovieCardProps) {
-  const isLastItem = imdbID === elementIdActiveFetch;
   const { ref, inView } = useInView({ delay: 1000, triggerOnce: true });
+  const { handleAddIDBMID } = useContext(WatchContext);
+  const isLastItem = imdbID === elementIdActiveFetch;
 
+  // fazer uma nova requisição se o elemento estiver visivel
   useEffect(() => {
     if (inView && isLastItem) {
       handleFetchMoreData();
     }
   }, [inView]);
 
-  const { handleAddIDBMID } = useContext(WatchContext);
   const navigate = useNavigate();
 
+  // selecionar o filme 
   function handleClickedPlayOnMovie() {
     handleAddIDBMID({ imdbID });
     navigate(WATCH_ROUTE);
@@ -43,6 +45,7 @@ export function InfiniteMovieCard({
 
   return (
     <li
+      // Assistir o elemento se ele for o primeiro da ultima pagina
       {...(elementIdActiveFetch === imdbID && { id: imdbID, ref: ref })}
       onClick={handleClickedPlayOnMovie}
       className="grid grid-rows-[auto, 20px] grid-cols-1 w-full gap-1 justify-center bg-gray-900 rounded border border-gray-800 max-w-52 max-sm:w-32 max-sm:grid-rows-1"
@@ -50,6 +53,7 @@ export function InfiniteMovieCard({
       <div className="relative group/play bg-black/50 z-50 rounded cursor-pointer aspect-[3/4] overflow-hidden min-h-full">
         <img
           src={Poster}
+          // Adicionar do site placehold se houver erro na principal
           onError={(e) =>
             (e.currentTarget.src =
               "https://placehold.co/225x300?text=Not+Found")

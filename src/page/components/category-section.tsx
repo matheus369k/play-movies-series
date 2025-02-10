@@ -1,9 +1,9 @@
-import { Error } from "./error";
 import { CategorySectionHeader } from "./category-section-header";
-import { MovieCard } from "./movie-card";
+import { fetchManyOmbdapi } from "@/services/fetch-omdbapi";
 import { MoviesCarouselProvider } from "./movies-carousel";
 import { useQuery } from "@tanstack/react-query";
-import { fetchManyOmbdapi } from "@/services/fetch-omdbapi";
+import { MovieCard } from "./movie-card";
+import { Error } from "./error";
 
 interface PropsSectionMovieAndSeries {
   type: string;
@@ -18,6 +18,7 @@ export function CategorySection({
   title,
   year,
 }: PropsSectionMovieAndSeries) {
+  // Fazer uma requisição para a api
   const { data, isError } = useQuery({
     queryKey: [title, type, year, page],
     queryFn: async () => {
@@ -27,6 +28,7 @@ export function CategorySection({
     },
   });
 
+  // Verificar se foi bem sucedida a requisição
   if (isError) {
     return <Error message="Error ao tentar carregar" styles="py-16" />;
   }

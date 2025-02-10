@@ -33,6 +33,7 @@ export interface ReducerDataStateType {
   Response?: string;
 }
 
+// Reducer types
 export interface ReducerStateType {
   imdbID: string;
   index: number;
@@ -47,6 +48,7 @@ interface ReducerActionType {
   };
 }
 
+// Context types
 interface ContextMovieWatchType {
   state: ReducerStateType;
   handleResetData: () => void;
@@ -54,41 +56,50 @@ interface ContextMovieWatchType {
   handleAddIndex: ({ index }: Pick<ReducerStateType, "index">) => void;
 }
 
+// Possiveis ações do reducer
 const ReducerCases = {
   RESET_DATA: "reset/data",
   ADD_IDBM_ID: "add/imdbID",
   ADD_INDEX: "add/index",
 };
 
+// Função que direciona para a ação escolhida
 const reducer = (
   state: ReducerStateType,
   action: ReducerActionType
 ): ReducerStateType => {
   switch (action.type) {
+    // resetar os dados para o valor padrãp
     case ReducerCases.RESET_DATA:
       return {
         ...state,
         imdbID: "",
         index: 0,
       };
+    // Setar o id do filme seleciona
     case ReducerCases.ADD_IDBM_ID:
       return {
         ...state,
         index: 0,
         imdbID: action.payload?.imdbID || "",
       };
+    // Atualizar o index, relacionado a paginação do filmes em destaque
     case ReducerCases.ADD_INDEX:
       return {
         ...state,
         index: action.payload?.index || 0,
       };
+    // Retornar valor padrão
     default:
       return state;
   }
 };
 
+// Setar o valor inicial do reducer
 const handleInitialReducer = (state: ReducerStateType) => {
   const url = new URL(window.location.toString());
+
+  // Verificar se ha um query parametro id na url
   if (url.searchParams.has("id")) {
     return {
       ...state,

@@ -11,9 +11,11 @@ export function ButtonPlay({
   fluxDefault,
   ...props
 }: PropsButtonPlay) {
+  // Verificar se ele segue o fluxo padrão da pagina ou não
   const positionDefault = fluxDefault
     ? ""
     : "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2";
+  // Verificar se ele deve ser sempre visivel ou so não
   const receiveVisible = visible
     ? ""
     : "opacity-0 group-hover/play:opacity-100";

@@ -24,6 +24,7 @@ export function MovieCard({
   const { handleAddIDBMID } = useContext(WatchContext);
   const navigate = useNavigate();
 
+  // selecionar o filme
   function handleClickedPlayOnMovie() {
     handleAddIDBMID({ imdbID });
     navigate(WATCH_ROUTE);
@@ -39,6 +40,7 @@ export function MovieCard({
       <div className="relative group/play bg-black/50 z-50 rounded cursor-pointer aspect-[3/4] overflow-hidden min-h-full">
         <img
           src={Poster}
+          // Adicionar do site placehold se houver erro na principal
           onError={(e) =>
             (e.currentTarget.src =
               "https://placehold.co/225x300?text=Not+Found")

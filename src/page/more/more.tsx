@@ -2,6 +2,7 @@ import { InfiniteMovieCard } from "../components/infinite-card";
 import { useInfiniteCards } from "../hooks/useInfiniteCards";
 
 export function MoreMoviesSeries() {
+  // Custom hook de paginação infinita
   const { data, handleFetchMoreData, title, isFetching } = useInfiniteCards({
     page: "more",
   });

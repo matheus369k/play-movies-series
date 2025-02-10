@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export function WatchMovieSeries() {
   const { state } = useContext(WatchContext);
+  // Requisição a api 
   const { data, isError, isFetching } = useQuery({
     queryFn: async () => await fetchOneOmbdapi({ id: state.imdbID }),
     queryKey: ["movie", state.imdbID],
