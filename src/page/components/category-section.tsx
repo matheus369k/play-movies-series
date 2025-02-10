@@ -19,7 +19,7 @@ export function CategorySection({
   year,
 }: PropsSectionMovieAndSeries) {
   const { data, isError } = useQuery({
-    queryKey: ["movies", type, page],
+    queryKey: [title, type, year, page],
     queryFn: async () => {
       const params = `?s=one&plot=full&y=${year}&type=${type}&page=${page}`;
 

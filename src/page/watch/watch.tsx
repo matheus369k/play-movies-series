@@ -59,7 +59,7 @@ export function WatchMovieSeries() {
                   })}
               </ul>
 
-              <div className="flex gap-4 font-bold text-2xl">
+              <div className="flex gap-4 font-bold text-2xl max-sm:text-xl max-sm:gap-2">
                 {data.imdbRating !== "N/A" && (
                   <div className="capitalize flex items-center gap-2 text-zinc-100">
                     <BsStarFill className="inline text-yellow-500" />

@@ -45,11 +45,12 @@ export function InfiniteMovieCard({
     <li
       {...(elementIdActiveFetch === imdbID && { id: imdbID, ref: ref })}
       onClick={handleClickedPlayOnMovie}
-      className="flex flex-col items-center bg-gray-900 rounded border border-gray-800 max-w-52"
+      className="flex flex-col items-center bg-gray-900 rounded border border-gray-800 max-w-52 max-sm:w-32"
     >
       <div className="relative group/play bg-black/50 z-50 rounded cursor-pointer aspect-[3/4] overflow-hidden">
         {Poster === "N/A" ? (
           <img
+            loading="lazy"
             src="https://placehold.co/225x300?text=Not+Found"
             className="w-full h-full object-cover transition-all opacity-100 group-hover/play:opacity-40"
             alt="imagem escrito not found com fundo solido"

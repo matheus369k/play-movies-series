@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { MORE_ROUTE } from "@/router/path-routes";
 import { useNavigate } from "react-router";
 import { setParamsAtUrl } from "../functions/add-url-params";
+import { SearchContext } from "@/context/search-context";
 
 interface PropsCategorySectionHeader {
   type: string;
@@ -17,9 +18,11 @@ export function CategorySectionHeader({
   year,
 }: PropsCategorySectionHeader) {
   const { handleResetData } = useContext(WatchContext);
+  const { handleResetContext } = useContext(SearchContext);
   const navigate = useNavigate();
 
   function handleGetDataOfMovie() {
+    handleResetContext();
     handleResetData();
 
     navigate(MORE_ROUTE);
