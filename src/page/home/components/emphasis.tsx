@@ -5,18 +5,23 @@ import { useNavigate } from "react-router";
 import { dbFocusData } from "@/data/movies-id";
 import { ButtonPlay } from "../../components/button-play";
 import { handleGetIdMovie } from "../../functions/get-id-movies";
-import { usefetchOmbdapi } from "../../hooks";
 import { ButtonSwitch } from "./button-switch";
 import { Loading } from "../../components/loading";
 import { Error } from "../../components/error";
 import { WatchContext } from "@/context/watch-context";
+import { useQuery } from "@tanstack/react-query";
+import { fetchOneOmbdapi } from "@/services/fetch-omdbapi";
 
 export function Emphasis() {
   const { state, handleAddIndex, handleAddIDBMID } = useContext(WatchContext);
-  usefetchOmbdapi().getOneData({
-    imdbID: dbFocusData()[state?.index || 0].imdbid,
+  const mainMoviesIds = dbFocusData()[state?.index || 0].imdbid;
+  const { data, isFetching, isError } = useQuery({
+    queryKey: ["movie", mainMoviesIds],
+    queryFn: async () => {
+      return await fetchOneOmbdapi({ id: mainMoviesIds });
+    },
   });
-  
+
   const navigate = useNavigate();
 
   function handlePassToNextMovieSeries() {
@@ -35,13 +40,31 @@ export function Emphasis() {
     });
   }
 
+  if (isFetching) {
+    return (
+      <Loading
+        message="Carregando"
+        styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      />
+    );
+  }
+
+  if (isError) {
+    return (
+      <Error
+        message="Erro ao tentar carregar"
+        styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      />
+    );
+  }
+
   return (
     <div
       className={`relative min-h-[60vh] p-1 my-2 after:bg-[url('../assets/bg-play-movies.webp')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}
     >
-      {state?.loading === "finnish" && (
+      {data && (
         <div
-          key={state?.imdbID}
+          key={data.imdbID}
           className={`relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 z-40 justify-center pt-28`}
           data-testid="movie-emphasis"
         >
@@ -49,32 +72,32 @@ export function Emphasis() {
             <div
               data-testid="emphasis-play-movie"
               onClick={() =>
-                handleGetIdMovie(state?.imdbID, handleAddIDBMID, navigate)
+                handleGetIdMovie(data.imdbID, handleAddIDBMID, navigate)
               }
               className="relative group/play text-gray-100 bg-black/50 rounded-md border border-gray-100 w-max h-max z-40 cursor-pointer"
             >
               <img
-                src={state.data.Poster}
+                src={data.Poster}
                 className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40 max-sm:w-32 max-sm:h-48"
-                alt={state.data.Type + ": " + state.data.Title}
+                alt={data.Type + ": " + data.Title}
               />
               <ButtonPlay />
             </div>
             <p className="select-none font-bold text-center max-sm:text-sm">
               <span className="text-gray-200">Genre: </span>
-              {state.data.Genre}
+              {data.Genre}
               <span className="text-gray-200"> - Release: </span>
-              {state.data.Released}
+              {data.Released}
               <span className="text-gray-200"> - Note: </span>
-              {state.data.imdbRating}
+              {data.imdbRating}
             </p>
             <p className="max-w-[80%] text-center font-normal w-full max-md:max-w-full max-sm:text-sm">
-              {state.data.Plot}
+              {data.Plot}
             </p>
           </div>
           <div
             onClick={() =>
-              handleGetIdMovie(state.imdbID, handleAddIDBMID, navigate)
+              handleGetIdMovie(data.imdbID, handleAddIDBMID, navigate)
             }
           >
             <ButtonPlay visible fluxDefault />
@@ -99,18 +122,6 @@ export function Emphasis() {
             </ButtonSwitch>
           </div>
         </div>
-      )}
-      {state?.loading === "loading" && (
-        <Loading
-          message="Carregando"
-          styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
-      )}
-      {state?.loading === "error" && (
-        <Error
-          message="Erro ao tentar carregar"
-          styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
       )}
     </div>
   );

@@ -1,8 +1,9 @@
 import { ButtonPlay } from "./button-play";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { WatchContext } from "@/context/watch-context";
 import { useNavigate } from "react-router";
 import { WATCH_ROUTE } from "@/router/path-routes";
+import { useInView } from "react-intersection-observer";
 
 interface MovieCardProps {
   Poster: string
@@ -10,17 +11,28 @@ interface MovieCardProps {
   Type: string
   Year: string
   imdbID: string
-  onlyImage?: boolean;
+  elementIdActiveFetch: string;
+  handleFetchMoreData: () => void;
 }
 
-export function MovieCard({
+export function InfiniteMovieCard({
   Poster,
   Title,
-  Type,
   Year,
   imdbID,
-  onlyImage,
+  Type,
+  elementIdActiveFetch,
+  handleFetchMoreData,
 }: MovieCardProps) {
+  const isLastItem = imdbID === elementIdActiveFetch;
+  const { ref, inView } = useInView({ delay: 1000, triggerOnce: true });
+
+  useEffect(() => {
+    if (inView && isLastItem) {
+      handleFetchMoreData();
+    }
+  }, [inView]);
+
   const { handleAddIDBMID } = useContext(WatchContext);
   const navigate = useNavigate();
 
@@ -31,10 +43,9 @@ export function MovieCard({
 
   return (
     <li
+      {...(elementIdActiveFetch === imdbID && { id: imdbID, ref: ref })}
       onClick={handleClickedPlayOnMovie}
-      className={`flex flex-col items-center bg-gray-900 rounded border border-gray-800 max-w-52 ${
-        onlyImage ? "" : " p-2"
-      }`}
+      className="flex flex-col items-center bg-gray-900 rounded border border-gray-800 max-w-52"
     >
       <div className="relative group/play bg-black/50 z-50 rounded cursor-pointer aspect-[3/4] overflow-hidden">
         {Poster === "N/A" ? (
@@ -53,16 +64,13 @@ export function MovieCard({
         )}
         <ButtonPlay />
       </div>
-      {!onlyImage && (
-        <>
-          <h3 className="max-w-44 overflow-hidden text-center text-ellipsis text-nowrap text-sm max-sm:hidden max-sm:max-w-28">
-            {Title}
-          </h3>
-          <p className="text-center text-sm max-sm:hidden">
-            <span>{Type} </span>-<span> {Year}</span>
-          </p>
-        </>
-      )}
+
+      <h3 className="max-w-44 overflow-hidden text-center text-ellipsis text-nowrap text-sm max-sm:hidden max-sm:max-w-28">
+        {Title}
+      </h3>
+      <p className="text-center text-sm max-sm:hidden">
+        <span>{Type} </span>-<span> {Year}</span>
+      </p>
     </li>
   );
 }

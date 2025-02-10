@@ -4,7 +4,7 @@ import { Header } from "./header";
 import "@testing-library/jest-dom";
 import { TMovieWatch, TMoviesInfoWithPagination } from "../../types";
 import { WatchContextProvider } from "../../context/watch-context";
-import { PaginationContextProvider } from "../../context/pagination-context";
+//import { PaginationContextProvider } from "../../context/pagination-context";
 import React from "react";
 
 const mockNavigate = jest.fn();

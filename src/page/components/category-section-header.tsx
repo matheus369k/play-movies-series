@@ -1,53 +1,34 @@
 import { resetScroll } from "@/components/functions/reset-scroll";
-import { PaginationContext } from "@/context/pagination-context";
 import { WatchContext } from "@/context/watch-context";
 import { useContext } from "react";
-import { ReducerStateType } from "./category-section";
 import { MORE_ROUTE } from "@/router/path-routes";
 import { useNavigate } from "react-router";
 import { setParamsAtUrl } from "../functions/add-url-params";
 
 interface PropsCategorySectionHeader {
-  state: ReducerStateType;
   type: string;
-  page: number;
   title: string;
   year: number;
 }
 
 export function CategorySectionHeader({
   title,
-  page,
   type,
   year,
-  state,
 }: PropsCategorySectionHeader) {
-  const { handleGetMovies } = useContext(PaginationContext);
   const { handleResetData } = useContext(WatchContext);
   const navigate = useNavigate();
 
   function handleGetDataOfMovie() {
     handleResetData();
 
-    if (state.data) {
-      handleGetMovies({
-        ...state,
-        data: state.data,
-        title: title,
-        type: type,
-        year: year,
-        currentPage: page,
-      });
-    }
-
-    resetScroll();
     navigate(MORE_ROUTE);
     
     setParamsAtUrl("title", title || "");
     setParamsAtUrl("type", type || "");
     setParamsAtUrl("year", year || 1999);
-    setParamsAtUrl("page", page || 1);
     
+    resetScroll();
   }
 
   return (

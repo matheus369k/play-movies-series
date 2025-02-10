@@ -1,44 +1,36 @@
-import { useContext, useDeferredValue } from "react";
-import { Pagination } from "../components/pagination";
-import { usefetchOmbdapi } from "../hooks";
-import { Error } from "../components/error";
-import { PaginationContext } from "@/context/pagination-context";
-import { MovieCard } from "../components/movie-card";
+import { InfiniteMovieCard } from "../components/infinite-card";
+import { useInfiniteCards } from "../hooks/useInfiniteCards";
 
 export function Search() {
-  const { state } = useContext(PaginationContext);
-  const stateValueDeferred = useDeferredValue(state);
-  usefetchOmbdapi().getManyData({
-    params: `?s=${state?.title || "all"}&page=${state?.currentPage}`,
-    key: "search",
+  const { data, handleFetchMoreData, title } = useInfiniteCards({
+    page: "search",
   });
 
   return (
     <section className="flex px-2 flex-col justify-between gap-5 pt-32 max-w-7xl mx-auto min-h-screen w-full z-50">
       <span className="pl-3 border-l-4 border-l-red-600 mb-6 rounded">
         <h2 className="font-bold capitalize text-4xl max-lg:text-2xl">
-          Search {state?.title}
+          Search {title}
         </h2>
       </span>
-      {stateValueDeferred.data && (
-        <>
-          <ul
-            data-testid="search-movies"
-            className="flex justify-center flex-wrap gap-3 pb-6 w-auto"
-          >
-            {stateValueDeferred.data?.map((dataSearch) => {
-              return <MovieCard key={dataSearch.imdbID} {...dataSearch} />;
-            })}
-          </ul>
-          <Pagination />
-        </>
-      )}
-
-      {state?.loading === "error" && (
-        <Error
-          message="Nada foi Encontrado"
-          styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
+      {data && (
+        <ul
+          data-testid="search-movies"
+          className="flex justify-center flex-wrap gap-3 pb-6 w-auto"
+        >
+          {data.Search.map((dataSearch) => {
+            return (
+              <InfiniteMovieCard
+                key={dataSearch.imdbID}
+                {...dataSearch}
+                handleFetchMoreData={handleFetchMoreData}
+                elementIdActiveFetch={
+                  data.Search[data.Search.length - 10].imdbID
+                }
+              />
+            );
+          })}
+        </ul>
       )}
     </section>
   );

@@ -1,27 +1,26 @@
 import { IoSearchOutline } from "react-icons/io5";
 import { resetScroll } from "../functions/reset-scroll";
 import { useContext } from "react";
-import { PaginationContext } from "@/context/pagination-context";
 import { useFormContext } from "react-hook-form";
 import { SEARCH_ROUTE } from "@/router/path-routes";
 import { useNavigate } from "react-router";
 import { UseFormType } from "./header";
+import { SearchContext } from "@/context/search-context";
 
 export function SearchForm({
   currentPageIsHome,
 }: {
   currentPageIsHome: boolean;
 }) {
-  const { handleAddSearchTitle } = useContext(PaginationContext);
   const { handleSubmit, reset, register } = useFormContext<UseFormType>();
+  const { handleUpdateSearch } = useContext(SearchContext);
   const navigate = useNavigate();
 
   function handleSubmitSearchForm({ search }: UseFormType) {
-    handleAddSearchTitle({ title: search });
-    reset();
-
+    navigate(SEARCH_ROUTE + `?search=${search}`);
+    handleUpdateSearch({ search });
     resetScroll();
-    navigate(SEARCH_ROUTE);
+    reset();
   }
 
   return (

@@ -6,36 +6,53 @@ import { Error } from "../components/error";
 import { WatchContext } from "../../context/watch-context";
 import { VideoScreen } from "./components/video-screen";
 import { BsStarFill } from "react-icons/bs";
+import { fetchOneOmbdapi } from "@/services/fetch-omdbapi";
+import { useQuery } from "@tanstack/react-query";
 
 export function WatchMovieSeries() {
   const { state } = useContext(WatchContext);
-  usefetchOmbdapi().getOneData({
-    paramsName: "id",
+  const { data, isError, isFetching } = useQuery({
+    queryFn: async () => await fetchOneOmbdapi({ id: state.imdbID }),
+    queryKey: ["movie", state.imdbID],
   });
+
+  if (isFetching) {
+    return null;
+  }
+
+  if (isError) {
+    return (
+      <Error
+        message="Error ao tenta carregar a pagina..."
+        styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      />
+    );
+  }
 
   return (
     <section className="flex pt-[400px] flex-col gap-8 max-w-7xl mx-auto max-xl:px-4">
-      {state?.loading === "finnish" && (
+      {data && (
         <>
-          <VideoScreen Title={state?.data.Title || ""} />
+          <VideoScreen Title={data.Title || ""} />
 
           <div className="flex flex-row-reverse justify-between gap-4">
             <img
               className="flex h-[175px] rounded border border-zinc-700 object-fill max-md:hidden"
-              src={state?.data.Poster}
+              src={data.Poster}
             />
 
             <div className="flex flex-col gap-4 w-full">
               <ul className="capitalize flex gap-4 z-20 overflow-hidden flex-wrap">
                 <li className="px-8 py-2 bg-transparent border border-zinc-100 rounded-3xl font-semibold text-zinc-100 text-nowrap max-sm:px-5 max-sm:py-2 max-sm:text-sm">
-                  {state?.data.Type}
+                  {data.Type}
                 </li>
-                {state?.data.Genre &&
-                  state?.data.Genre.split(", ").map((genre) => {
+                {data.Genre &&
+                  data.Genre.split(", ").map((genre) => {
                     return (
                       <li
                         key={genre}
-                        className="px-8 py-2 bg-transparent border border-zinc-100 rounded-3xl font-semibold text-zinc-100 text-nowrap max-sm:px-5 max-sm:py-2 max-sm:text-sm">
+                        className="px-8 py-2 bg-transparent border border-zinc-100 rounded-3xl font-semibold text-zinc-100 text-nowrap max-sm:px-5 max-sm:py-2 max-sm:text-sm"
+                      >
                         {genre}
                       </li>
                     );
@@ -43,25 +60,25 @@ export function WatchMovieSeries() {
               </ul>
 
               <div className="flex gap-4 font-bold text-2xl">
-                {state?.data.imdbRating !== "N/A" && (
+                {data.imdbRating !== "N/A" && (
                   <div className="capitalize flex items-center gap-2 text-zinc-100">
-                  <BsStarFill className="inline text-yellow-500" />
-                  <span>{state?.data.imdbRating}</span>
-                </div>
+                    <BsStarFill className="inline text-yellow-500" />
+                    <span>{data.imdbRating}</span>
+                  </div>
                 )}
-                {state?.data.Runtime !== "N/A" && (
+                {data.Runtime !== "N/A" && (
                   <>
-                    -<p>{state?.data.Runtime}</p>
+                    -<p>{data.Runtime}</p>
                   </>
                 )}
-                {state?.data.Released !== "N/A" && (
+                {data.Released !== "N/A" && (
                   <>
-                    -<p>{state?.data.Released}</p>
+                    -<p>{data.Released}</p>
                   </>
                 )}
               </div>
 
-              <p className="font-normal text-zinc-400">{state?.data.Plot}</p>
+              <p className="font-normal text-zinc-400">{data.Plot}</p>
             </div>
           </div>
 
@@ -72,13 +89,6 @@ export function WatchMovieSeries() {
             type=""
           />
         </>
-      )}
-
-      {state?.loading === "error" && (
-        <Error
-          message="Erro ao tentar carregar"
-          styles="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
       )}
     </section>
   );

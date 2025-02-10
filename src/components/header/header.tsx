@@ -1,12 +1,7 @@
-import { GrPrevious } from "react-icons/gr";
-import { useContext } from "react";
-import { useLocation, useNavigate } from "react-router";
-import { PaginationContext } from "@/context/pagination-context";
-import { WatchContext } from "@/context/watch-context";
+import { useLocation } from "react-router";
 import { HOME_ROUTE } from "@/router/path-routes";
 import { FormProvider, useForm } from "react-hook-form";
 import { SearchForm } from "./search-form";
-import { BiPlayCircle } from "react-icons/bi";
 import { Link } from "react-router-dom";
 
 export interface UseFormType {
@@ -14,24 +9,13 @@ export interface UseFormType {
 }
 
 export function Header() {
-  const { handleRemoveData } = useContext(PaginationContext);
-  const { handleResetData } = useContext(WatchContext);
   const hookForm = useForm<UseFormType>({
     defaultValues: {
       search: "",
     },
   });
 
-  const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { reset } = hookForm;
-
-  function handleToBackPage() {
-    reset();
-    handleResetData();
-    handleRemoveData();
-    navigate(HOME_ROUTE);
-  }
 
   const currentPageIsHome =
     pathname === HOME_ROUTE || pathname === HOME_ROUTE + "/";
