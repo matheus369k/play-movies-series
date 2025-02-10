@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { CategorySection } from "../components/category-section";
 import { randomYearNumber } from "../functions/random-year";
-import { usefetchOmbdapi } from "../hooks";
 import { Error } from "../components/error";
 import { WatchContext } from "../../context/watch-context";
 import { VideoScreen } from "./components/video-screen";

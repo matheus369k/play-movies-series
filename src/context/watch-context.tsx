@@ -1,7 +1,6 @@
 import {
   removeParamsAtUrl,
-  setParamsAtUrl,
-} from "@/page/functions/add-url-params";
+} from "@/page/functions";
 import { createContext, useReducer } from "react";
 
 export interface ReducerDataStateType {

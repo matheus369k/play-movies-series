@@ -1,5 +1,4 @@
 import { resetScroll } from "@/components/functions/reset-scroll";
-import { setParamsAtUrl } from "../functions/add-url-params";
 import { SearchContext } from "@/context/search-context";
 import { WatchContext } from "@/context/watch-context";
 import { MORE_ROUTE } from "@/router/path-routes";
