@@ -18,7 +18,7 @@ export function VideoScreen({
   };
 
   return (
-    <div className="absolute top-0 left-0 w-full h-[400px] bg-[url(@/assets/bg-play-movies.webp)] bg-cover aspect-video overflow-hidden cursor-pointer group/play max-sm:h[200px]">
+    <div className="absolute top-0 left-0 w-full h-[400px] bg-[url(@/assets/bg-play-movies.webp)] bg-cover aspect-video overflow-hidden cursor-pointer group/play max-sm:h-[200px]">
       <div
         id="videoScreen"
         data-testid="watch-screen-movie"

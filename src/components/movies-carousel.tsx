@@ -25,15 +25,15 @@ export function MoviesCarouselProvider({
       responsive={{
         desktop: {
           breakpoint: { max: 3000, min: 1024 },
-          items: 7,
+          items: 9,
         },
         tablet: {
           breakpoint: { max: 1024, min: 464 },
-          items: 5,
+          items: 6,
         },
         mobile: {
           breakpoint: { max: 464, min: 0 },
-          items: 3,
+          items: 4,
         },
       }}
     >
