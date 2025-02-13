@@ -2,7 +2,7 @@ import { SearchContext } from "@/context/search-context";
 import { fetchManyOmbdapi } from "@/services/fetch-omdbapi";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useRef } from "react";
-import { getUrlParams } from "../functions";
+import { getUrlParams } from "@/functions";
 
 export function useInfiniteCards({ page }: { page: "more" | "search" }) {
   const { search } = useContext(SearchContext);

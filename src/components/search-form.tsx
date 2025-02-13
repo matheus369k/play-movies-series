@@ -3,7 +3,7 @@ import { IoSearchOutline } from "react-icons/io5";
 
 // componentes logicos
 import { SearchContext } from "@/context/search-context";
-import { resetScroll } from "../functions/reset-scroll";
+import { TopResetScroll } from "@/functions";
 import { SEARCH_ROUTE } from "@/router/path-routes";
 import { UseFormType } from "./header";
 
@@ -25,7 +25,7 @@ export function SearchForm({
   function handleSubmitSearchForm({ search }: UseFormType) {
     navigate(SEARCH_ROUTE + `?search=${search}`);
     handleUpdateSearch({ search });
-    resetScroll();
+    TopResetScroll();
     reset();
   }
 

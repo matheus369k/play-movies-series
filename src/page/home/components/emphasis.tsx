@@ -1,6 +1,6 @@
 // componentes de display
-import { ButtonPlay } from "../../components/button-play";
-import { Error } from "../../components/error";
+import { ButtonPlay } from "@/components/button-play";
+import { Error } from "@/components/error";
 import { ButtonSwitch } from "./button-switch";
 import { GrPrevious } from "react-icons/gr";
 import { GrNext } from "react-icons/gr";

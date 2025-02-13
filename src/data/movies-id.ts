@@ -1,4 +1,3 @@
-
 export const dbFocusData = (): { imdbid: string }[] => { 
   return [
     {

@@ -3,9 +3,9 @@ import { fetchManyOmbdapi } from "@/services/fetch-omdbapi";
 import { MoviesCarouselProvider } from "./movies-carousel";
 import { useQuery } from "@tanstack/react-query";
 import { MovieCard } from "./movie-card";
-import { Error } from "./error";
+import { Error as ErrorComponent } from "./error";
 
-interface PropsSectionMovieAndSeries {
+interface CategorySectionProps {
   type: string;
   page: number;
   title: string;
@@ -17,7 +17,7 @@ export function CategorySection({
   page,
   title,
   year,
-}: PropsSectionMovieAndSeries) {
+}: CategorySectionProps) {
   // Fazer uma requisição para a api
   const { data, isError } = useQuery({
     queryKey: [title, type, year, page],
@@ -30,7 +30,7 @@ export function CategorySection({
 
   // Verificar se foi bem sucedida a requisição
   if (isError) {
-    return <Error message="Error ao tentar carregar" styles="py-16" />;
+    return <ErrorComponent message="Error ao tentar carregar" styles="py-16" />;
   }
 
   return (

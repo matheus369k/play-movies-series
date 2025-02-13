@@ -1,6 +1,4 @@
-import {
-  removeParamsAtUrl,
-} from "@/page/functions";
+import { removeParamsAtUrl } from "@/functions";
 import { createContext, useReducer } from "react";
 
 export interface ReducerDataStateType {

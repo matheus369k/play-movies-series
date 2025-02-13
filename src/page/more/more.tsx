@@ -1,5 +1,5 @@
-import { InfiniteMovieCard } from "../components/infinite-card";
-import { useInfiniteCards } from "../hooks/useInfiniteCards";
+import { InfiniteMovieCard } from "@/components/infinite-card";
+import { useInfiniteCards } from "@/hooks/useInfiniteCards";
 
 export function MoreMoviesSeries() {
   // Custom hook de paginação infinita

@@ -1,6 +1,6 @@
 import { render, fireEvent } from "@testing-library/react";
 import { screen } from "@testing-library/dom"
-import { Header } from "./header";
+import { Header } from "../header";
 import "@testing-library/jest-dom";
 import { TMovieWatch, TMoviesInfoWithPagination } from "../../types";
 import { WatchContextProvider } from "../../context/watch-context";
@@ -18,7 +18,7 @@ jest.mock("react-router", () => ({
 
 const renderComponentHeader = () => {
     const moviesInfoWithPagination: TMoviesInfoWithPagination = { loading: "finnish" };
-    let movieWatch: TMovieWatch = {
+    const movieWatch: TMovieWatch = {
         data: {},
         imdbID: "",
         index: 0,

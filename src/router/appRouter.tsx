@@ -11,38 +11,33 @@ import { Home } from "@/page/home/homes";
 // componente raiz
 import { RootLayout } from "@/root";
 
-// PathName das rotas
-import {
-  HOME_ROUTE,
-  MORE_ROUTE,
-  SEARCH_ROUTE,
-  WATCH_ROUTE,
-} from "./path-routes";
+// rotas
+import * as pathRoutes from "./path-routes";
 
 export const router = createBrowserRouter([
   {
     // Raiz
-    path: HOME_ROUTE,
+    path: pathRoutes.HOME_ROUTE,
     element: <RootLayout />,
     children: [
       {
         // pagina principal
-        path: HOME_ROUTE,
+        path: pathRoutes.HOME_ROUTE,
         element: <Home />,
       },
       {
         // pagina de mais
-        path: MORE_ROUTE,
+        path: pathRoutes.MORE_ROUTE,
         element: <MoreMoviesSeries />,
       },
       {
         // Pagina do filme selecionado
-        path: WATCH_ROUTE,
+        path: pathRoutes.WATCH_ROUTE,
         element: <WatchMovieSeries />,
       },
       {
         // Pagina de pesquisa
-        path: SEARCH_ROUTE,
+        path: pathRoutes.SEARCH_ROUTE,
         element: <Search />,
       },
     ],

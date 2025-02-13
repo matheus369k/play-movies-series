@@ -1,8 +1,13 @@
-import { Footer } from "@/components/footer/footer";
-import { Header } from "@/components/header/header";
+// Components
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
+
+// Contextos
 import { SearchContextProvider } from "@/context/search-context";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WatchContextProvider } from "@/context/watch-context";
+
+// libs
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet } from "react-router-dom";
 
 const queryClient = new QueryClient();

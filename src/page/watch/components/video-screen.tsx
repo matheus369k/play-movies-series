@@ -1,6 +1,7 @@
-import { ButtonPlay } from "@/page/components/button-play";
-import { useState } from "react";
 import { AiOutlineDislike, AiOutlineLike } from "react-icons/ai";
+import { ButtonPlay } from "@/components/button-play";
+import { useState } from "react";
+
 export function VideoScreen({
   Title,
 }: {

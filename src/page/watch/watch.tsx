@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { CategorySection } from "../components/category-section";
-import { randomYearNumber } from "../functions/random-year";
-import { Error } from "../components/error";
-import { WatchContext } from "../../context/watch-context";
+import { CategorySection } from "../../components/category-section";
+import { randomYearNumber } from "@/functions/random-year";
+import { Error } from "@/components/error";
+import { WatchContext } from "@/context/watch-context";
 import { VideoScreen } from "./components/video-screen";
 import { BsStarFill } from "react-icons/bs";
 import { fetchOneOmbdapi } from "@/services/fetch-omdbapi";

@@ -1,6 +1,6 @@
-import { CategorySection } from "../components/category-section";
+import { CategorySection } from "@/components/category-section";
 import { Emphasis } from "./components/emphasis";
-import { randomYearNumber } from "../functions";
+import { randomYearNumber } from "@/functions";
 
 export function Home() {
     return (

@@ -1,11 +1,11 @@
-import { resetScroll } from "@/components/functions/reset-scroll";
+import { TopResetScroll } from "@/functions";
 import { SearchContext } from "@/context/search-context";
 import { WatchContext } from "@/context/watch-context";
 import { MORE_ROUTE } from "@/router/path-routes";
 import { useNavigate } from "react-router";
 import { useContext } from "react";
 
-interface PropsCategorySectionHeader {
+interface CategorySectionHeaderProps {
   type: string;
   title: string;
   year: number;
@@ -15,7 +15,7 @@ export function CategorySectionHeader({
   title,
   type,
   year,
-}: PropsCategorySectionHeader) {
+}: CategorySectionHeaderProps) {
   const { handleResetData } = useContext(WatchContext);
   const { handleResetContext } = useContext(SearchContext);
   const navigate = useNavigate();
@@ -25,9 +25,11 @@ export function CategorySectionHeader({
     handleResetContext();
     handleResetData();
 
-    navigate(MORE_ROUTE+"?title="+title+"&type="+type+"&year="+year);
-    
-    resetScroll();
+    navigate(
+      MORE_ROUTE + "?title=" + title + "&type=" + type + "&year=" + year
+    );
+
+    TopResetScroll();
   }
 
   return (
