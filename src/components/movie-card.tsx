@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { WatchContext } from "@/context/watch-context";
 import { useNavigate } from "react-router";
 import { WATCH_ROUTE } from "@/router/path-routes";
+import { TopResetScroll } from "@/functions";
 
 interface MovieCardProps {
   Poster: string;
@@ -26,8 +27,10 @@ export function MovieCard({
 
   // selecionar o filme
   function handleClickedPlayOnMovie() {
+    TopResetScroll();
+
     handleAddIDBMID({ imdbID });
-    navigate(WATCH_ROUTE+"?id="+imdbID);
+    navigate(WATCH_ROUTE + "?id=" + imdbID);
   }
 
   return (

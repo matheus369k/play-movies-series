@@ -21,15 +21,15 @@ export function CategorySectionHeader({
   const navigate = useNavigate();
 
   function handleGetDataOfMovie() {
+    TopResetScroll();
+
     // Resetar contextos
     handleResetContext();
     handleResetData();
-
+    
     navigate(
       MORE_ROUTE + "?title=" + title + "&type=" + type + "&year=" + year
     );
-
-    TopResetScroll();
   }
 
   return (
