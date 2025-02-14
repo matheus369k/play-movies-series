@@ -40,8 +40,12 @@ export const router = createBrowserRouter([
         path: pathRoutes.SEARCH_ROUTE,
         element: <Search />,
       },
+      {
+        // Pagina de Error
+        path: '*',
+        element: <NotFound />,
+      }
     ],
-    // Pagina de Error
-    errorElement: <NotFound />,
+    
   },
 ]);
