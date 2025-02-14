@@ -32,8 +32,12 @@ export function MoviesCarouselProvider({
           items: 6,
         },
         mobile: {
-          breakpoint: { max: 664, min: 0 },
+          breakpoint: { max: 664, min: 400 },
           items: 4,
+        },
+        smallMobile: {
+          breakpoint: { max: 400, min: 0 },
+          items: 3,
         },
       }}
     >

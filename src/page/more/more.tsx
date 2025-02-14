@@ -1,4 +1,5 @@
 import { InfiniteMovieCard } from "@/components/infinite-card";
+import { SearchMoreContainer } from "@/components/search-more-container";
 import { useInfiniteCards } from "@/hooks/useInfiniteCards";
 
 export function MoreMoviesSeries() {
@@ -8,14 +9,8 @@ export function MoreMoviesSeries() {
   });
 
   return (
-    <section className="flex flex-col justify-between px-2 gap-5 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
-      <span className="pl-3 border-l-4 border-l-red-600 rounded">
-        <h2 className="font-bold capitalize text-4xl max-lg:text-2xl">
-          {title}
-        </h2>
-      </span>
-      
-      {data && (
+    <SearchMoreContainer isFetching={isFetching} title={title}>
+      {data && data.Search && (
         <ul
           data-testid="more-movies"
           className="flex justify-center flex-wrap gap-3 pb-6 w-auto max-sm:gap-1.5"
@@ -34,10 +29,6 @@ export function MoreMoviesSeries() {
           })}
         </ul>
       )}
-
-      {!isFetching && (
-        <p className="px-4 capitalize text-center">carregando...</p>
-      )}
-    </section>
+    </SearchMoreContainer>
   );
 }

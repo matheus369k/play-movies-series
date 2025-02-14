@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
       {
         // Pagina de Error
         path: '*',
-        element: <NotFound />,
+        element: <NotFound text='not found page' />,
       }
     ],
     

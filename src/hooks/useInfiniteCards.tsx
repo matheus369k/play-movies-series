@@ -41,12 +41,13 @@ export function useInfiniteCards({ page }: { page: "more" | "search" }) {
     onSuccess: (data) => {
       PagesRef.current = {
         currentPage: PagesRef.current.currentPage + 1,
-        totalPages: Number(data.totalResults),
+        totalPages: Number(data?.totalResults ?? 1),
       };
     },
     structuralSharing(oldData, newData) {
       // Se não tiver dados anteriores, retorna o novo
       if (!oldData) return newData;
+      if (!newData) return oldData;
 
       // Coletar os ids dos últimos filmes
       const oldDataLastId = oldData.Search[oldData.Search.length - 1].imdbID;
