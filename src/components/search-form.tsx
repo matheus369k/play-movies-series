@@ -12,11 +12,7 @@ import { useFormContext } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { useContext } from "react";
 
-export function SearchForm({
-  currentPageIsHome,
-}: {
-  currentPageIsHome: boolean;
-}) {
+export function SearchForm() {
   const { handleSubmit, reset, register } = useFormContext<UseFormType>();
   const { handleUpdateSearch } = useContext(SearchContext);
   const navigate = useNavigate();
@@ -33,9 +29,7 @@ export function SearchForm({
     <form
       onSubmit={handleSubmit(handleSubmitSearchForm)}
       autoComplete="off"
-      className={`relative text-gray-400 backdrop-blur-sm ${
-        currentPageIsHome && "max-md:mx-auto"
-      }`}
+      className="relative text-gray-400 backdrop-blur-sm"
     >
       <label htmlFor="search">
         <IoSearchOutline className="absolute top-1/2 left-2 -translate-y-1/2 size-8 z-10 max-sm:size-6" />

@@ -2,7 +2,7 @@
 import { SearchForm } from "./search-form";
 
 // components logicos
-import { HOME_ROUTE } from "@/router/path-routes";
+import { HOME_ROUTE, MORE_ROUTE, SEARCH_ROUTE } from "@/router/path-routes";
 
 // libs
 import { FormProvider, useForm } from "react-hook-form";
@@ -22,13 +22,13 @@ export function Header() {
   });
 
   // Verificar se e a home page
-  const currentPageIsHome =
-    pathname === HOME_ROUTE || pathname === HOME_ROUTE + "/";
+  const isSearchOrMore =
+    pathname.includes(MORE_ROUTE) || pathname.includes(SEARCH_ROUTE);
 
   return (
     <header
-      className={`absolute top-0 left-0 w-full p-4 flex justify-between items-center z-50 max-sm:p-2 ${
-        currentPageIsHome && "max-md:gap-6"
+      className={`top-0 left-0 w-full p-4 flex justify-between items-center z-50 max-sm:p-2 ${
+        isSearchOrMore ? "fixed bg-gray-950" : "absolute"
       }`}
     >
       <Link to={HOME_ROUTE} className="flex items-center">
@@ -38,7 +38,7 @@ export function Header() {
         </h1>
       </Link>
       <FormProvider {...hookForm}>
-        <SearchForm currentPageIsHome={currentPageIsHome} />
+        <SearchForm />
       </FormProvider>
     </header>
   );

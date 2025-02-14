@@ -1,4 +1,3 @@
-import { BackTopPage } from "@/components/back-top-page";
 import { InfiniteMovieCard } from "@/components/infinite-card";
 import { useInfiniteCards } from "@/hooks/useInfiniteCards";
 
@@ -10,8 +9,6 @@ export function MoreMoviesSeries() {
 
   return (
     <section className="flex flex-col justify-between px-2 gap-5 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full">
-      <BackTopPage />
-
       <span className="pl-3 border-l-4 border-l-red-600 rounded">
         <h2 className="font-bold capitalize text-4xl max-lg:text-2xl">
           {title}
