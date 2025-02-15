@@ -1,9 +1,12 @@
 import { CategorySectionHeader } from "./category-section-header";
 import { fetchManyOmbdapi } from "@/services/fetch-omdbapi";
-import { MoviesCarouselProvider } from "./movies-carousel";
 import { useQuery } from "@tanstack/react-query";
-import { MovieCard } from "./movie-card";
 import { Error as ErrorComponent } from "./error";
+import { MovieCardLoading } from "./movie-card-loading";
+import { MoviesCarouselProvider } from "./movies-carousel";
+import { lazy, Suspense } from "react";
+
+const CategorySectionCards = lazy(() => import("./category-section-cards"));
 
 interface CategorySectionProps {
   type: string;
@@ -37,15 +40,17 @@ export function CategorySection({
     <div className="max-w-7xl mx-auto h-fit w-full py-4">
       <CategorySectionHeader title={title} type={type} year={year} />
 
-      {data && (
-        <MoviesCarouselProvider>
-          {data.Search.map((MovieSeries) => {
-            return (
-              <MovieCard key={MovieSeries.imdbID} {...MovieSeries} onlyImage />
-            );
-          })}
-        </MoviesCarouselProvider>
-      )}
+      <Suspense
+        fallback={
+          <MoviesCarouselProvider>
+            {Array.from({ length: 8 }).map(() => {
+              return <MovieCardLoading onlyImage />;
+            })}
+          </MoviesCarouselProvider>
+        }
+      >
+        <CategorySectionCards data={data?.Search} />
+      </Suspense>
     </div>
   );
 }

@@ -19,7 +19,7 @@ export function RootLayout() {
         <WatchContextProvider>
           <SearchContextProvider>
             <Header />
-            <main className="min-h-[calc(100vh-9rem)] h-full">
+            <main className="min-h-[calc(100vh-9rem)] h-full animate-soften-render">
               <Outlet />
             </main>
           </SearchContextProvider>

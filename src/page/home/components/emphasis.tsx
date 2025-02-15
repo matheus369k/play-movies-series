@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { useContext } from "react";
 
-export function Emphasis() {
+export default function Emphasis() {
   const { state, handleAddIndex, handleAddIDBMID } = useContext(WatchContext);
   const mainMoviesIds = dbFocusData()[state?.index || 0].imdbid;
   // Requisição a api
@@ -64,12 +64,12 @@ export function Emphasis() {
 
   return (
     <div
-      className={`relative min-h-[60vh] max-lg:min-h-[40vh] p-1 my-2 after:bg-[url('../assets/bg-play-movies.webp')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent`}
+      className="relative min-h-[60vh] max-lg:min-h-[40vh] p-1 my-2 after:bg-[url('../assets/bg-play-movies.webp')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-gray-950 before:to-transparent"
     >
       {data && (
         <div
           key={data.imdbID}
-          className={`relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 z-40 justify-center pt-28`}
+          className="relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 z-40 justify-center pt-28"
           data-testid="movie-emphasis"
         >
           <div className="flex items-center flex-col gap-6 max-w-7xl  text-gray-500">
@@ -82,7 +82,9 @@ export function Emphasis() {
             >
               <img
                 src={data.Poster}
-                className="w-44 h-64 object-cover transition-all opacity-100 group-hover/play:opacity-40 max-sm:w-32 max-sm:h-48"
+                fetchPriority="high"
+                loading="lazy"
+                className="w-44 h-64 object-cover transition-all opacity-100 bg-gray-900 group-hover/play:opacity-40 max-sm:w-32 max-sm:h-48"
                 alt={data.Type + ": " + data.Title}
               />
               <ButtonPlay />

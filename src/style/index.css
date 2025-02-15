@@ -13,6 +13,38 @@
     .remove-scroll::-webkit-scrollbar{
         display: none;
     }
+
+    .animate-soften-render {
+        animation-name: soften-render;
+        animation-duration: .7s;
+        animation-timing-function: ease;
+    }
+
+    .animate-show-header {
+        animation-name: show-header;
+        animation-duration: .7s;
+        animation-timing-function: ease;
+    }
+}
+
+@keyframes soften-render {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes show-header {
+    from {
+        transform: translateY(-101%);
+    }
+    to {
+        transform: translateY(0);
+    }
 }
 
 @media (width < 549px) {
