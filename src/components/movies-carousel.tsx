@@ -1,5 +1,5 @@
 import Carousel from "react-multi-carousel";
-import 'react-multi-carousel/lib/styles.css';
+import "react-multi-carousel/lib/styles.css";
 
 // Configurações da animação "carrocel" dos filmes
 export function MoviesCarouselProvider({
@@ -10,6 +10,7 @@ export function MoviesCarouselProvider({
   const isNotMobile = window.innerWidth > 768;
 
   return (
+    <ul>
     <Carousel
       arrows={isNotMobile}
       autoPlaySpeed={3000}
@@ -44,5 +45,6 @@ export function MoviesCarouselProvider({
     >
       {children}
     </Carousel>
+    </ul>
   );
 }

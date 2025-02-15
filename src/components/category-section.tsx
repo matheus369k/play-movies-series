@@ -2,10 +2,10 @@ import { CategorySectionHeader } from "./category-section-header";
 import { fetchManyOmbdapi } from "@/services/fetch-omdbapi";
 import { useQuery } from "@tanstack/react-query";
 import { Error as ErrorComponent } from "./error";
-import { MovieCardLoading } from "./movie-card-loading";
-import { MoviesCarouselProvider } from "./movies-carousel";
 import { lazy, Suspense } from "react";
+import { CategorySectionCardsLoading } from "./category-section-cards-loading";
 
+// Permitir o uso do Suspense API
 const CategorySectionCards = lazy(() => import("./category-section-cards"));
 
 interface CategorySectionProps {
@@ -40,15 +40,7 @@ export function CategorySection({
     <div className="max-w-7xl mx-auto h-fit w-full py-4">
       <CategorySectionHeader title={title} type={type} year={year} />
 
-      <Suspense
-        fallback={
-          <MoviesCarouselProvider>
-            {Array.from({ length: 8 }).map(() => {
-              return <MovieCardLoading onlyImage />;
-            })}
-          </MoviesCarouselProvider>
-        }
-      >
+      <Suspense fallback={<CategorySectionCardsLoading />}>
         <CategorySectionCards data={data?.Search} />
       </Suspense>
     </div>
