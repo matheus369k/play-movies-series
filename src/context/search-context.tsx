@@ -15,20 +15,16 @@ export function SearchContextProvider({
   children: React.ReactNode;
 }) {
   const [search, setSearch] = useState(() => {
-    const pathName = window.location.pathname;
+    const { pathname } = new URL(window.location.toString());
+    const search = pathname.split("/")[3];
 
     // Verificar se estar na pagina de pesquisa
-    if (pathName === SEARCH_ROUTE || pathName === SEARCH_ROUTE + "/") {
-      return getUrlParams("search")?.replace("+", " ") || "one";
+    if (pathname.includes(SEARCH_ROUTE.split(":search")[0]) && search) {
+      return search;
     }
 
     return "one";
   });
-
-  function getUrlParams(nameParams: string) {
-    const url = new URL(window.location.toString());
-    return url.searchParams.get(nameParams);
-  }
 
   // Atualizar valor do state search
   function handleUpdateSearch({ search }: { search: string }) {

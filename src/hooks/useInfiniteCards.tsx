@@ -25,7 +25,7 @@ export function useInfiniteCards({ page }: { page: "more" | "search" }) {
   if (isSearchPage) {
     QueryRef.current = {
       ...QueryRef.current,
-      title: search,
+      title: search.split("%20").join(" ").toString(),
     };
   }
 

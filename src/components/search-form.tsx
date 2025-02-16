@@ -19,7 +19,7 @@ export function SearchForm() {
 
   // Submit do campo de pesquisa
   function handleSubmitSearchForm({ search }: UseFormType) {
-    navigate(SEARCH_ROUTE + `?search=${search}`);
+    navigate(SEARCH_ROUTE.replace(':search', search));
     handleUpdateSearch({ search });
     TopResetScroll();
     reset();

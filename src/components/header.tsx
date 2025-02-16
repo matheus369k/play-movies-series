@@ -31,7 +31,8 @@ export function Header() {
 
   // Verificar se e a home page
   const isSearchOrMore =
-    pathname.includes(MORE_ROUTE) || pathname.includes(SEARCH_ROUTE);
+    pathname.includes(MORE_ROUTE) ||
+    pathname.includes(SEARCH_ROUTE.split(":search")[0]);
 
   return (
     <header
