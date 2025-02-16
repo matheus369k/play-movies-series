@@ -22,7 +22,7 @@ export function Search() {
                 {...dataSearch}
                 handleFetchMoreData={handleFetchMoreData}
                 elementIdActiveFetch={
-                  data.Search[data.Search.length - 10].imdbID
+                  data.Search[data.Search.length - 10]?.imdbID || ""
                 }
               />
             );
