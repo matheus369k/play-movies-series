@@ -18,7 +18,7 @@ export function useInfiniteCards({ page }: { page: "more" | "search" }) {
   const QueryRef = useRef({
     type: getUrlParams("type") || "",
     year: getUrlParams("year") || "",
-    title: getUrlParams("title")?.replace("+", " ") || "Random",
+    title: window.location.pathname.split("/")[3].toString(),
   });
 
   // Trocar o title da url para o valor do context search, se for uma pagina de busca

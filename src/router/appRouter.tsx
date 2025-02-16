@@ -12,40 +12,56 @@ import { Home } from "@/page/home/homes";
 import { RootLayout } from "@/root";
 
 // rotas
-import * as pathRoutes from "./path-routes";
+import {
+  HOME_ROUTE,
+  MORE_ROUTES,
+  SEARCH_ROUTE,
+  WATCH_ROUTE,
+} from "./path-routes";
 
 export const router = createBrowserRouter([
   {
     // Raiz
-    path: pathRoutes.HOME_ROUTE,
+    path: HOME_ROUTE,
     element: <RootLayout />,
     children: [
       {
         // pagina principal
-        path: pathRoutes.HOME_ROUTE,
+        path: HOME_ROUTE,
         element: <Home />,
       },
+      // pagina de mais
       {
-        // pagina de mais
-        path: pathRoutes.MORE_ROUTE,
+        path: MORE_ROUTES.RECOMMENDATION.path,
+        element: <MoreMoviesSeries />,
+      },
+      {
+        path: MORE_ROUTES.MOVIES.path,
+        element: <MoreMoviesSeries />,
+      },
+      {
+        path: MORE_ROUTES.SERIES.path,
+        element: <MoreMoviesSeries />,
+      },
+      {
+        path: MORE_ROUTES.RELEASE.path,
         element: <MoreMoviesSeries />,
       },
       {
         // Pagina do filme selecionado
-        path: pathRoutes.WATCH_ROUTE,
+        path: WATCH_ROUTE,
         element: <WatchMovieSeries />,
       },
       {
         // Pagina de pesquisa
-        path: pathRoutes.SEARCH_ROUTE,
+        path: SEARCH_ROUTE,
         element: <Search />,
       },
       {
         // Pagina de Error
-        path: '*',
-        element: <NotFound text='not found page' />,
-      }
+        path: "*",
+        element: <NotFound text="not found page" />,
+      },
     ],
-    
   },
 ]);

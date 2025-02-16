@@ -2,9 +2,10 @@ import { CategorySection } from "@/components/category-section";
 import { randomYearNumber } from "@/functions";
 import { lazy, Suspense } from "react";
 import { EmphasisLoading } from "./components/emphasis-loading";
+import { MORE_ROUTES } from "@/router/path-routes";
 
 // Permitir o uso do Suspense API
-const EmphasisLazy = lazy(()=> import("./components/emphasis"))
+const EmphasisLazy = lazy(() => import("./components/emphasis"));
 
 export function Home() {
   return (
@@ -13,23 +14,28 @@ export function Home() {
         <EmphasisLazy />
       </Suspense>
       <div className="flex flex-col gap-8">
-        <CategorySection year={2024} page={1} title="Release" type="" />
         <CategorySection
-          year={randomYearNumber()}
+          year={2024}
           page={1}
-          title="Recommendation"
+          title={MORE_ROUTES.RELEASE.title}
           type=""
         />
         <CategorySection
           year={randomYearNumber()}
           page={1}
-          title="Movies"
+          title={MORE_ROUTES.RECOMMENDATION.title}
+          type=""
+        />
+        <CategorySection
+          year={randomYearNumber()}
+          page={1}
+          title={MORE_ROUTES.MOVIES.title}
           type="movie"
         />
         <CategorySection
           year={randomYearNumber()}
           page={1}
-          title="Series"
+          title={MORE_ROUTES.SERIES.title}
           type="series"
         />
       </div>

@@ -26,9 +26,9 @@ export function CategorySectionHeader({
     // Resetar contextos
     handleResetContext();
     handleResetData();
-    
+
     navigate(
-      MORE_ROUTE + "?title=" + title + "&type=" + type + "&year=" + year
+      MORE_ROUTE.concat(`/${title}`) + "?type=" + type + "&year=" + year
     );
   }
 
