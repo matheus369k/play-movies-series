@@ -1,4 +1,3 @@
-import { removeParamsAtUrl } from "@/functions";
 import { createContext, useReducer } from "react";
 
 export interface ReducerDataStateType {
@@ -95,12 +94,13 @@ const reducer = (
 // Setar o valor inicial do reducer
 const handleInitialReducer = (state: ReducerStateType) => {
   const url = new URL(window.location.toString());
+  const id = url.pathname.split("/")[3];
 
   // Verificar se ha um query parametro id na url
-  if (url.searchParams.has("id")) {
+  if (id) {
     return {
       ...state,
-      imdbID: url.searchParams.get("id") || "",
+      imdbID: id,
     };
   }
 
@@ -125,7 +125,6 @@ export function WatchContextProvider({
 
   function handleResetData() {
     dispatch({ type: ReducerCases.RESET_DATA });
-    removeParamsAtUrl("id");
   }
 
   function handleAddIDBMID({ imdbID }: Pick<ReducerStateType, "imdbID">) {

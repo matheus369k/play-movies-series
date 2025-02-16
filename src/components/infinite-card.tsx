@@ -43,7 +43,7 @@ export function InfiniteMovieCard({
     TopResetScroll();
 
     handleAddIDBMID({ imdbID });
-    navigate(WATCH_ROUTE+"?id="+imdbID);
+    navigate(WATCH_ROUTE.replace(":id", imdbID));
   }
 
   return (

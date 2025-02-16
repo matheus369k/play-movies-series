@@ -30,7 +30,7 @@ export function MovieCard({
     TopResetScroll();
 
     handleAddIDBMID({ imdbID });
-    navigate(WATCH_ROUTE + "?id=" + imdbID);
+    navigate(WATCH_ROUTE.replace(":id", imdbID));
   }
 
   return (
