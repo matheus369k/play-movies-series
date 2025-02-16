@@ -6,12 +6,15 @@ import { MORE_ROUTES } from "@/router/path-routes";
 
 // Permitir o uso do Suspense API
 const EmphasisLazy = lazy(() => import("./components/emphasis"));
+const EmphasisContainer = lazy(() => import("./components/emphasis-container"));
 
 export function Home() {
   return (
     <section className="flex flex-col gap-6 max-xl:px-4">
       <Suspense fallback={<EmphasisLoading />}>
-        <EmphasisLazy />
+        <EmphasisContainer>
+          <EmphasisLazy />
+        </EmphasisContainer>
       </Suspense>
       <div className="flex flex-col gap-8">
         <CategorySection
