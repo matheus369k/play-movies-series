@@ -5,19 +5,23 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx",
     "strict": true,
-
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     }
   },
-  "include": ["vite.config.ts"],
+  "include": [
+    "vite.config.ts",
+    "jest.config.ts",
+    "./**/*.ts",
+    "./**/*.tsx",
+  ],
   "exclude": [
     "node_modules",
-    "src/**/*.spec.ts",
-    "src/**/*.spec.tsx",
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx"
+    "dist",
   ]
 }
