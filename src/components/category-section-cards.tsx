@@ -7,10 +7,10 @@ export default function CategorySectionCards({
 }: {
   data?: MoviesInfoType[];
 }) {
-  if(!data) {
+  if (!data || data.length === 0) {
     return null;
   }
-  
+
   return (
     <MoviesCarouselProvider>
       {data.map((MovieSeries) => {

@@ -36,8 +36,8 @@ export function MovieCard({
   return (
     <li
       onClick={handleClickedPlayOnMovie}
-      className={`flex flex-col items-center bg-gray-900 rounded border border-gray-800 max-w-52 max-sm:w-32 w-full  ${
-        onlyImage ? "" : " p-2"
+      className={`flex flex-col items-center bg-gray-900 rounded border border-gray-800 max-w-52 max-sm:w-32 w-full ${
+        onlyImage ? "" : "p-2"
       }`}
     >
       <div className="relative group/play bg-black/50 z-50 rounded cursor-pointer aspect-[3/4] overflow-hidden min-h-full">

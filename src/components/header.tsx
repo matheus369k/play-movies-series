@@ -29,7 +29,7 @@ export function Header() {
     navigate(HOME_ROUTE);
   }
 
-  // Verificar se e a home page
+  // Verificar se estar na pagina de pesquisa ou mais
   const isSearchOrMore =
     pathname.includes(MORE_ROUTE) ||
     pathname.includes(SEARCH_ROUTE.split(":search")[0]);
