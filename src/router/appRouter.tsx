@@ -6,7 +6,7 @@ import { WatchMovieSeries } from "@/page/watch/watch";
 import { MoreMoviesSeries } from "@/page/more/more";
 import { NotFound } from "@/components/NotFound";
 import { Search } from "@/page/search/search";
-import { Home } from "@/page/home/homes";
+import { Home } from "@/page/home/home";
 
 // componente raiz
 import { RootLayout } from "@/root";

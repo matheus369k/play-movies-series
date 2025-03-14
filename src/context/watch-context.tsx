@@ -9,7 +9,7 @@ export interface ReducerStateType {
 }
 
 // Context types
-interface ContextMovieWatchType {
+export interface ContextMovieWatchType {
   state: ReducerStateType;
   handleResetData: () => void;
   handleAddIDBMID: ({ imdbID }: Pick<ReducerStateType, "imdbID">) => void;
