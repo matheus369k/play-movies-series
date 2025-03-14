@@ -1,126 +1,144 @@
+import { render, screen } from "@testing-library/react";
 import { MoreMoviesSeries } from "./more";
-import { render, fireEvent } from "@testing-library/react";
-import { screen } from "@testing-library/dom";
-import { TMovieWatch, TMoviesInfoWithPagination } from "../../types";
-import "@testing-library/jest-dom";
-import { WatchContextProvider } from "../../context/watch-context";
-import { PaginationContextProvider } from "../../context/pagination-context";
-import React from "react";
+import { useInfiniteCards } from "@/hooks/useInfiniteCards";
+import { InfiniteMovieCard } from "@/components/infinite-card";
+import { SearchMoreContainer } from "@/components/search-more-container";
 
-const mockNavigate = jest.fn();
-const mockHandleGetIdMovie = jest.fn();
-const mockFeatchApiPagination = jest.fn();
+jest.mock("@/hooks/useInfiniteCards");
+jest.mock("@/components/infinite-card");
 
-const spyState = jest.spyOn(React, "useState");
+jest.mock("@/components/search-more-container");
 
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  useNavigate: () => mockNavigate,
-}));
+describe("MoreMoviesSeries Additional Tests", () => {
+  const mockUseInfiniteCards = useInfiniteCards as jest.Mock;
+  const mockSearchMoreContainer = SearchMoreContainer as jest.Mock;
+  const mockInfiniteMovieCard = InfiniteMovieCard as jest.Mock;
 
-jest.mock("../hooks/fetch-api", () => ({
-  ...jest.requireActual("../hooks/fetch-api"),
-  FeatchApiPagination: () => mockFeatchApiPagination.mockReturnValue(true),
-}));
-
-jest.mock("../functions/get-id-movies", () => ({
-  ...jest.requireActual("../functions/get-id-movies"),
-  handleGetIdMovie: () => mockHandleGetIdMovie.mockReturnValue(() => true),
-}));
-
-const renderComponentMore = (
-  moviesInfoWithPagination: TMoviesInfoWithPagination
-) => {
-  const movieWatch: TMovieWatch = {
-    data: {},
-    imdbID: "",
-    index: 0,
-    loading: "finnish",
-  };
-
-  const setMovieWatch = jest.fn();
-  const setMoviesInfoWithPagination = jest.fn();
-
-  spyState
-    .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-    .mockImplementationOnce(() => [
-      moviesInfoWithPagination,
-      setMoviesInfoWithPagination,
-    ]);
-
-  render(
-    <WatchContextProvider>
-      <PaginationContextProvider>
-        <MoreMoviesSeries />
-      </PaginationContextProvider>
-    </WatchContextProvider>
-  );
-
-  return { setMovieWatch, setMoviesInfoWithPagination };
-};
-
-describe("MoreMoviesSeries", () => {
-  it("should render loading display", () => {
-    const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-      loading: "loading",
-    };
-
-    renderComponentMore(moviesInfoWithPagination);
-
-    expect(screen.getByText("Carregando")).toBeInTheDocument();
+  beforeEach(() => {
+    mockSearchMoreContainer.mockImplementation(({ children }) => {
+      return <div data-testid="container">{children}</div>;
+    });
   });
 
-  it("should render error display", () => {
-    const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-      loading: "error",
-    };
+  it("should handle empty data state", () => {
+    mockUseInfiniteCards.mockReturnValue({
+      data: null,
+      handleFetchMoreData: jest.fn(),
+      title: "Movies",
+      isFetching: false,
+    });
 
-    renderComponentMore(moviesInfoWithPagination);
+    render(<MoreMoviesSeries />);
 
-    expect(screen.getByText("Erro ao tentar carregar")).toBeInTheDocument();
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
   });
 
-  it("should render main display", () => {
-    const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-      loading: "finnish",
-    };
+  it("should handle null Search property", () => {
+    mockUseInfiniteCards.mockReturnValue({
+      data: { Search: null },
+      handleFetchMoreData: jest.fn(),
+      title: "Movies",
+      isFetching: false,
+    });
 
-    renderComponentMore(moviesInfoWithPagination);
+    render(<MoreMoviesSeries />);
 
-    expect(screen.getByTestId("more-movies")).toBeInTheDocument();
-    expect(screen.getByTestId("btn-switch-page")).toBeInTheDocument();
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
   });
 
-  it("clicking to play movie", () => {
-    const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-      data: [
-        {
-          Poster: "https://",
-          Title: "Transformers",
-          imdbID: "h785k673j464",
-          Type: "movie",
-          Year: "2008",
-        },
-      ],
-      loading: "finnish",
-    };
+  it("should render InfiniteMovieCard with corrected properly", () => {
+    mockUseInfiniteCards.mockReturnValue({
+      data: {
+        Search: [
+          {
+            Title: "Movie 1",
+            Year: "2023",
+            imdbID: "1",
+            Type: "movie",
+            Poster: "poster1.jpg",
+          },
+          {
+            Title: "Movie 2",
+            Year: "2023",
+            imdbID: "2",
+            Type: "movie",
+            Poster: "poster2.jpg",
+          },
+        ],
+      },
+      handleFetchMoreData: jest.fn(),
+      title: "Movies",
+      isFetching: false,
+    });
 
-    renderComponentMore(moviesInfoWithPagination);
+    render(<MoreMoviesSeries />);
 
-    const moviePlay = screen.getByTestId("more-movie-play");
-
-    fireEvent.click(moviePlay);
-
-    expect(mockHandleGetIdMovie()).toBeTruthy();
+    expect(mockInfiniteMovieCard).toHaveBeenNthCalledWith(
+      1,
+      {
+        Title: "Movie 1",
+        Year: "2023",
+        imdbID: "1",
+        Type: "movie",
+        Poster: "poster1.jpg",
+        handleFetchMoreData: expect.any(Function),
+        elementIdActiveFetch: "",
+      },
+      {}
+    );
+    expect(mockInfiniteMovieCard).toHaveBeenNthCalledWith(
+      2,
+      {
+        Title: "Movie 2",
+        Year: "2023",
+        imdbID: "2",
+        Type: "movie",
+        Poster: "poster2.jpg",
+        handleFetchMoreData: expect.any(Function),
+        elementIdActiveFetch: "",
+      },
+      {}
+    );
   });
 
-  it("Call to hook function FeatchApiPagination", () => {
-    const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-      loading: "loading",
-    };
+  it("should render SearchMoreContainer with correct props", () => {
+    mockUseInfiniteCards.mockReturnValue({
+      data: {
+        Search: [
+          {
+            Title: "Movie 1",
+            Year: "2023",
+            imdbID: "1",
+            Type: "movie",
+            Poster: "poster1.jpg",
+          },
+        ],
+      },
+      handleFetchMoreData: jest.fn(),
+      title: "Movies",
+      isFetching: false,
+    });
 
-    renderComponentMore(moviesInfoWithPagination);
+    render(<MoreMoviesSeries />);
 
-    expect(mockFeatchApiPagination()).toBeTruthy();
+    expect(mockSearchMoreContainer).toHaveBeenLastCalledWith(
+      {
+        isFetching: false,
+        title: "Movies",
+        children: expect.anything(),
+      },
+      {}
+    );
+    expect(screen.getByRole("list").parentNode).toEqual(
+      screen.getByTestId("container")
+    );
+  });
+
+  it("should call useInfiniteCards hook with corrected props", () => {
+    render(<MoreMoviesSeries />);
+
+    expect(mockUseInfiniteCards).toHaveBeenCalledWith({
+      page: "more",
+    });
   });
 });
