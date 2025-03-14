@@ -1,148 +1,163 @@
-import { render, fireEvent } from "@testing-library/react";
-import { screen } from "@testing-library/dom";
-import { Emphasis } from "./emphasis";
-import React from "react";
-import "@testing-library/jest-dom";
-import { TMovieWatch } from "../../../types";
-import { WatchContextProvider } from "../../../context/watch-context";
+import { render, fireEvent, waitFor, screen } from "@testing-library/react";
+import { WATCH_ROUTE } from "@/router/path-routes";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { dbFocusData } from "@/data/movies-id";
+import React, { act } from "react";
+import Emphasis from "./emphasis";
+import { fetchOneOmbdapi } from "@/services/fetch-omdbapi";
+import { WatchContext } from "@/context/watch-context";
+import { Error as ErrorComponent } from "@/components/error";
+
+jest.mock("@/services/fetch-omdbapi");
+jest.mock("@/components/error");
+jest.mock("@/data/movies-id");
 
 const mockNavigate = jest.fn();
-const mockFeatchApiOneData = jest.fn();
-const mockHandleGetIdMovie = jest.fn();
-
-const spyState = jest.spyOn(React, "useState");
-
 jest.mock("react-router", () => ({
   ...jest.requireActual("react-router"),
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock("../../hooks/fetch-api", () => ({
-  ...jest.requireActual("../../hooks/fetch-api"),
-  FeatchApiOneData: () => mockFeatchApiOneData.mockReturnValue(true),
-}));
+const mockHandleAddIndex = jest.fn();
+const mockHandleAddIDBMID = jest.fn();
+const queryClient = new QueryClient();
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={queryClient}>
+    <WatchContext.Provider
+      value={{
+        state: { index: 1, imdbID: "tt83738" },
+        handleAddIndex: mockHandleAddIndex,
+        handleAddIDBMID: mockHandleAddIDBMID,
+        handleResetData: jest.fn(),
+      }}
+    >
+      {children}
+    </WatchContext.Provider>
+  </QueryClientProvider>
+);
 
-jest.mock("../../functions/get-id-movies", () => ({
-  handleGetIdMovie: () => mockHandleGetIdMovie.mockReturnValue(true),
-}));
+describe("Emphasis Component", () => {
+  const mockDbFocusData = dbFocusData as unknown as jest.Mock;
+  const mockFetchOneOmbdapi = fetchOneOmbdapi as jest.Mock;
 
-const renderComponentEmphasis = (movieWatch: TMovieWatch) => {
-  const setMovieWatch = jest.fn();
+  const defaultData = {
+    imdbID: "tt83738",
+    Poster: "test-poster.jpg",
+    Genre: "Action",
+    Released: "2021",
+    imdbRating: "8.0",
+    Plot: "Test plot",
+    Type: "movie",
+    Title: "Test Movie",
+  };
 
-  spyState.mockImplementationOnce(() => [movieWatch, setMovieWatch]);
+  beforeEach(() => {
+    mockFetchOneOmbdapi.mockResolvedValue(defaultData);
 
-  render(
-    <WatchContextProvider>
-      <Emphasis />
-    </WatchContextProvider>
-  );
-
-  return { setMovieWatch };
-};
-
-describe("Emphasis", () => {
-  it("should render loading display", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "loading",
-    };
-
-    renderComponentEmphasis(movieWatch);
-
-    expect(screen.getByText("Carregando")).toBeInTheDocument();
+    mockDbFocusData.mockReturnValue([
+      {
+        imdbid: "tt83738",
+      },
+      {
+        imdbid: "tt83739",
+      },
+      {
+        imdbid: "tt83740",
+      },
+    ]);
   });
 
-  it("should render error display", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "error",
-    };
-
-    renderComponentEmphasis(movieWatch);
-
-    expect(screen.getByText("Erro ao tentar carregar")).toBeInTheDocument();
+  afterEach(() => {
+    jest.clearAllMocks();
+    queryClient.clear();
   });
 
-  it("should render main display", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "finnish",
-    };
+  it("should render the Emphasis component", async () => {
+    const { container } = render(<Emphasis />, { wrapper });
 
-    renderComponentEmphasis(movieWatch);
-
-    expect(screen.getByTestId("movie-emphasis")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(container.firstChild).toBeVisible();
+    });
   });
 
-  it("clicking to pass next movie", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 1,
-      loading: "finnish",
-    };
+  it("should display movie details", async () => {
+    const { getByText } = render(<Emphasis />, { wrapper });
 
-    const { setMovieWatch } = renderComponentEmphasis(movieWatch);
-
-    const btnNextMovie = screen.getByTestId("btn-next");
-
-    fireEvent.click(btnNextMovie);
-
-    expect(setMovieWatch).toHaveBeenCalled();
-    expect(setMovieWatch.mock.lastCall[0]).toHaveProperty("index", 2);
+    await waitFor(() => {
+      expect(getByText(/Genre:/)).toBeVisible();
+      expect(getByText(/Action/)).toBeVisible();
+      expect(getByText(/- Release:/)).toBeVisible();
+      expect(getByText(/2021/)).toBeVisible();
+      expect(getByText(/- Note:/)).toBeVisible();
+      expect(getByText(/8.0/)).toBeVisible();
+      expect(getByText("Test plot")).toBeVisible();
+    });
   });
 
-  it("clicking to pass previous movie", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 1,
-      loading: "finnish",
-    };
+  it("should save id movie and redirection to watch page when clicked play button", async () => {
+    render(<Emphasis />, { wrapper });
 
-    const { setMovieWatch } = renderComponentEmphasis(movieWatch);
+    await waitFor(() => {
+      const imageElement = screen.getByRole("img").parentNode as Element;
 
-    const btnPreviousMovie = screen.getByTestId("btn-previous");
+      act(() => {
+        fireEvent.click(imageElement);
+      });
+    });
 
-    fireEvent.click(btnPreviousMovie);
-
-    expect(setMovieWatch).toHaveBeenCalled();
-    expect(setMovieWatch.mock.lastCall[0]).toHaveProperty("index", 0);
+    expect(mockNavigate).toHaveBeenCalledWith(
+      WATCH_ROUTE.replace(":id", defaultData.imdbID)
+    );
+    expect(mockHandleAddIDBMID).toHaveBeenCalledWith({
+      imdbID: defaultData.imdbID,
+    });
   });
 
-  it("clicking to play movie", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "finnish",
-    };
+  it("should handle next when clicking on the next button", async () => {
+    render(<Emphasis />, { wrapper });
 
-    renderComponentEmphasis(movieWatch);
+    await waitFor(() => {
+      const buttonElement = screen.getByRole("button", { name: "Avançar" });
 
-    const moviePlay = screen.getByTestId("emphasis-play-movie");
+      act(() => {
+        fireEvent.click(buttonElement);
+      });
+    });
 
-    fireEvent.click(moviePlay);
-
-    expect(mockHandleGetIdMovie()).toBeTruthy();
+    expect(mockHandleAddIndex).toHaveBeenCalledWith({ index: 2 });
   });
 
-  it("Call hook function FeatchApiPagination", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 1,
-      loading: "finnish",
-    };
+  it("should handle previous when clicking on the previous button", async () => {
+    render(<Emphasis />, { wrapper });
 
-    renderComponentEmphasis(movieWatch);
+    await waitFor(() => {
+      const buttonElement = screen.getByRole("button", { name: "Volta" });
 
-    expect(mockFeatchApiOneData()).toBeTruthy();
+      act(() => {
+        fireEvent.click(buttonElement);
+      });
+    });
+
+    expect(mockHandleAddIndex).toHaveBeenLastCalledWith({ index: 0 });
+  });
+
+  it("should display error message on API error", async () => {
+    mockFetchOneOmbdapi.mockResolvedValueOnce(null);
+
+    render(<Emphasis />, { wrapper });
+
+    await waitFor(() => {
+      expect(ErrorComponent).toHaveBeenCalled();
+    });
+  });
+
+  it("should call fetchOneOmbdapi with the correct ID", async () => {
+    render(<Emphasis />, { wrapper });
+
+    await waitFor(() => {
+      expect(mockFetchOneOmbdapi).toHaveBeenCalledWith({
+        id: "tt83739",
+      });
+    });
   });
 });
