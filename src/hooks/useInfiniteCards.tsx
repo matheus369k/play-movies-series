@@ -84,7 +84,7 @@ export function useInfiniteCards({ page }: { page: "more" | "search" }) {
         totalPages: 1,
       };
     }
-    
+
     const isFirstLoadPage = PagesRef.current.totalPages === 1;
 
     if (isFirstLoadPage && isSearchPage && !isFetching) {
