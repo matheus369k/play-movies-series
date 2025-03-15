@@ -11,10 +11,7 @@ export function Search() {
   return (
     <SearchMoreContainer isFetching={isFetching} title={title}>
       {data && data.Search && (
-        <ul
-          data-testid="search-movies"
-          className="flex justify-center flex-wrap gap-3 pb-6 w-auto max-sm:gap-1.5"
-        >
+        <ul className="flex justify-center flex-wrap gap-3 pb-6 w-auto max-sm:gap-1.5">
           {data.Search.map((dataSearch) => {
             return (
               <InfiniteMovieCard
