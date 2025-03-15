@@ -2,11 +2,7 @@ import { AiOutlineDislike, AiOutlineLike } from "react-icons/ai";
 import { ButtonPlay } from "@/components/button-play";
 import { useState } from "react";
 
-export function VideoScreen({
-  Title,
-}: {
-  Title: string;
-}) {
+export function VideoScreen({ Title }: { Title: string }) {
   const [isLike, setIsLike] = useState<"like" | "dislike" | null>(null);
 
   const handleLike = () => {
@@ -21,13 +17,14 @@ export function VideoScreen({
     <div className="absolute top-0 left-0 w-full h-[400px] bg-[url(@/assets/bg-play-movies.webp)] bg-cover aspect-video overflow-hidden cursor-pointer group/play max-sm:h-[200px]">
       <div
         id="videoScreen"
-        data-testid="watch-screen-movie"
-        className=" w-full h-full relative flex items-end bg-gradient-to-b from-[#1b1a1fa4] to-gray-950 m-auto p-4"
+        className="w-full h-full relative flex items-end bg-gradient-to-b from-[#1b1a1fa4] to-gray-950 m-auto p-4"
       >
-        <ButtonPlay data-testid="watch-play-movie" />
+        <ButtonPlay />
 
         <div className="mx-auto flex justify-between max-w-7xl w-full">
-          <h3 className="font-bold text-4xl transition-all text-nowrap text-ellipsis overflow-hidden">{Title}</h3>
+          <h3 className="font-bold text-4xl transition-all text-nowrap text-ellipsis overflow-hidden">
+            {Title}
+          </h3>
 
           <div className="flex gap-4">
             <button

@@ -1,253 +1,157 @@
-import { WatchContextProvider } from "../../context/watch-context";
-import { PaginationContextProvider } from "../../context/pagination-context";
-import { TMovieWatch, TMoviesInfoWithPagination } from "../../types";
-import { render, fireEvent } from "@testing-library/react";
-import { screen } from "@testing-library/dom";
+import {
+  WatchContext,
+  type ContextMovieWatchType,
+} from "@/context/watch-context";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { render, screen, waitFor } from "@testing-library/react";
 import { WatchMovieSeries } from "./watch";
-import "@testing-library/jest-dom";
-import React from "react";
+import { fetchOneOmbdapi } from "@/services/fetch-omdbapi";
+import { CategorySection } from "@/components/category-section";
+import { randomYearNumber } from "@/functions";
 
-const spyState = jest.spyOn(React, "useState");
+jest.mock("@/services/fetch-omdbapi");
+jest.mock("@/functions/random-year");
 
-const mockNavigate = jest.fn();
-const mockFeatchApiOneData = jest.fn();
-
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  useNavigate: () => mockNavigate,
+jest.mock("@/components/category-section", () => ({
+  CategorySection: jest.fn(() => <div>CategorySection</div>),
+}));
+jest.mock("./components/video-screen", () => ({
+  VideoScreen: jest.fn(({ Title }: { Title: string }) => <div>{Title}</div>),
 }));
 
-jest.mock("../hooks/fetch-api", () => ({
-  ...jest.requireActual("../hooks/fetch-api"),
-  FeatchApiOneData: () => mockFeatchApiOneData.mockReturnValue(true),
-}));
+const queryClient = new QueryClient();
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={queryClient}>
+    <WatchContext.Provider
+      value={
+        {
+          state: { imdbID: "tt5649", index: 1 },
+          handleAddIDBMID: jest.fn(),
+          handleAddIndex: jest.fn(),
+          handleResetData: jest.fn(),
+        } as ContextMovieWatchType
+      }
+    >
+      {children}
+    </WatchContext.Provider>
+  </QueryClientProvider>
+);
 
-const renderComponentWatch = (movieWatch: TMovieWatch) => {
-  const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-    loading: "finnish",
+describe("WatchMovieSeries Data Display", () => {
+  const mockFetchOneOmbdapi = fetchOneOmbdapi as jest.Mock;
+
+  const defaultProps = {
+    Title: "Test Movie",
+    Type: "movie",
+    Genre: "Action, Drama",
+    imdbRating: "8.5",
+    Runtime: "120 min",
+    Released: "2023-01-01",
+    Poster: "https://example.com/poster.jpg",
+    Plot: "Test plot description",
   };
 
-  const setMovieWatch = jest.fn();
-  const setMoviesInfoWithPagination = jest.fn();
-
-  spyState
-    .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-    .mockImplementationOnce(() => [
-      moviesInfoWithPagination,
-      setMoviesInfoWithPagination,
-    ]);
-
-  render(
-    <WatchContextProvider>
-      <PaginationContextProvider>
-        <WatchMovieSeries />
-      </PaginationContextProvider>
-    </WatchContextProvider>
-  );
-
-  return { setMovieWatch, setMoviesInfoWithPagination };
-};
-
-const renderComponentWatchWithScreenMode = (
-  movieWatch: TMovieWatch,
-  watchAction: object
-) => {
-  const moviesInfoWithPagination: TMoviesInfoWithPagination = {
-    loading: "finnish",
-  };
-
-  const setMovieWatch = jest.fn();
-  const setWatchAction = jest.fn();
-  const setMoviesInfoWithPagination = jest.fn();
-
-  spyState
-    .mockImplementationOnce(() => [movieWatch, setMovieWatch])
-    .mockImplementationOnce(() => [
-      moviesInfoWithPagination,
-      setMoviesInfoWithPagination,
-    ])
-    .mockImplementationOnce(() => [watchAction, setWatchAction]);
-
-  render(
-    <WatchContextProvider>
-      <PaginationContextProvider>
-        <WatchMovieSeries />
-      </PaginationContextProvider>
-    </WatchContextProvider>
-  );
-
-  return { setMovieWatch, setWatchAction, setMoviesInfoWithPagination };
-};
-
-describe("WatchMovieSeries", () => {
-  it("should render loading display", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "loading",
-    };
-
-    renderComponentWatch(movieWatch);
-
-    expect(screen.getByText("Carregando")).toBeInTheDocument();
+  beforeEach(() => {
+    mockFetchOneOmbdapi.mockResolvedValue(defaultProps);
   });
 
-  it("should render error display", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "error",
-    };
-
-    renderComponentWatch(movieWatch);
-
-    expect(screen.getByText("Erro ao tentar carregar")).toBeInTheDocument();
+  afterEach(() => {
+    jest.clearAllMocks();
+    queryClient.clear();
   });
 
-  it("should render main display", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "finnish",
-    };
+  it("should render movie details when data is available", async () => {
+    render(<WatchMovieSeries />, { wrapper });
 
-    renderComponentWatch(movieWatch);
-
-    expect(screen.getByTestId("watch-screen-movie")).toBeInTheDocument();
-    expect(screen.getByTestId("watch-post-infor-movie")).toBeInTheDocument();
-    expect(screen.getByText("Veja também")).toBeInTheDocument();
-  });
-
-  it("call to hook function FeatchApiOneData", () => {
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "finnish",
-    };
-
-    renderComponentWatch(movieWatch);
-
-    expect(mockFeatchApiOneData()).toBeTruthy();
-  });
-
-  it("clicking button to enter on the fullScreen", () => {
-    const watchAction = { isLoading: false, isFullScreen: false };
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "finnish",
-    };
-
-    const mockRequestFullscreen =
-      (window.HTMLBodyElement.prototype.requestFullscreen = jest.fn());
-    mockRequestFullscreen.mockImplementation(() => {
-      return {
-        catch: jest.fn(),
-      };
-    });
-
-    const { setWatchAction } = renderComponentWatchWithScreenMode(
-      movieWatch,
-      watchAction
-    );
-
-    const btnFullScreen = screen.getByTestId("watch-btn-fullScreen");
-
-    fireEvent.click(btnFullScreen);
-
-    expect(mockRequestFullscreen).toHaveBeenCalledTimes(1);
-    expect(setWatchAction.mock.lastCall[0]).toEqual({
-      isLoading: false,
-      isFullScreen: true,
+    await waitFor(() => {
+      expect(screen.queryByText(defaultProps.Plot)).toBeVisible();
+      expect(screen.queryByText(defaultProps.Title)).toBeVisible();
+      expect(screen.queryByText(defaultProps.Type)).toBeVisible();
+      expect(
+        screen.queryByText(defaultProps.Genre.split(", ")[0])
+      ).toBeVisible();
+      expect(
+        screen.queryByText(defaultProps.Genre.split(", ")[1])
+      ).toBeVisible();
+      expect(screen.queryByText(defaultProps.imdbRating)).toBeVisible();
+      expect(screen.queryByText(defaultProps.Runtime)).toBeVisible();
+      expect(screen.queryByText(defaultProps.Released)).toBeVisible();
+      expect(screen.queryByRole("img")).toBeVisible();
+      expect(screen.queryByRole("img")).toHaveAttribute(
+        "src",
+        defaultProps.Poster
+      );
     });
   });
 
-  it("clicking button to exit on the fullScreen", () => {
-    const watchAction = { isLoading: false, isFullScreen: true };
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "finnish",
-    };
-
-    const mockExitFullscreen = (window.document.exitFullscreen = jest.fn());
-    mockExitFullscreen.mockImplementation(() => {
-      return {
-        catch: jest.fn(),
-      };
+  it("should handle missing optional data fields", async () => {
+    mockFetchOneOmbdapi.mockResolvedValueOnce({
+      ...defaultProps,
+      imdbRating: "N/A",
+      Runtime: "N/A",
+      Released: "N/A",
     });
 
-    const { setWatchAction } = renderComponentWatchWithScreenMode(
-      movieWatch,
-      watchAction
-    );
+    render(<WatchMovieSeries />, { wrapper });
 
-    const btnFullScreen = screen.getByTestId("watch-btn-fullScreen");
-
-    fireEvent.click(btnFullScreen);
-
-    expect(mockExitFullscreen).toHaveBeenCalledTimes(1);
-    expect(setWatchAction.mock.lastCall[0]).toEqual({
-      isLoading: false,
-      isFullScreen: false,
+    await waitFor(() => {
+      expect(screen.queryByText(/N\/A/)).toBeNull();
     });
   });
 
-  it("clicking to play movie", () => {
-    const watchAction = { isLoading: false, isFullScreen: false };
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "finnish",
-    };
+  it("should return null when fetching data", () => {
+    render(<WatchMovieSeries />, { wrapper });
 
-    const { setWatchAction } = renderComponentWatchWithScreenMode(
-      movieWatch,
-      watchAction
-    );
+    expect(screen.queryByRole("separator")).toBeNull();
+  });
 
-    const buttonPlayPauseMovie = screen.getByTestId("watch-play-pause-movie");
-    const btnPlayMovie = screen.getByTestId("watch-play-movie");
+  it("call fetchOneOmbdapi with correct id", async () => {
+    render(<WatchMovieSeries />, { wrapper });
 
-    fireEvent.click(buttonPlayPauseMovie);
-    fireEvent.click(btnPlayMovie);
-
-    expect(setWatchAction).toHaveBeenCalledTimes(2);
-    expect(setWatchAction.mock.lastCall[0]).toEqual({
-      isLoading: true,
-      isFullScreen: false,
+    await waitFor(() => {
+      expect(fetchOneOmbdapi).toHaveBeenCalledWith({ id: "tt5649" });
     });
   });
 
-  it("clicking to pause movie", () => {
-    const watchAction = { isLoading: true, isFullScreen: false };
-    const movieWatch: TMovieWatch = {
-      data: {},
-      imdbID: "",
-      index: 0,
-      loading: "finnish",
-    };
+  it("should handle empty genre list", async () => {
+    mockFetchOneOmbdapi.mockResolvedValueOnce({
+      ...defaultProps,
+      Genre: "",
+    });
 
-    const { setWatchAction } = renderComponentWatchWithScreenMode(
-      movieWatch,
-      watchAction
-    );
+    render(<WatchMovieSeries />, { wrapper });
 
-    const buttonPlayPauseMovie = screen.getByTestId("watch-play-pause-movie");
+    await waitFor(() => {
+      expect(screen.getByRole("list")).toBeVisible();
+      expect(screen.getAllByRole("listitem")).toHaveLength(1);
+      expect(screen.getByText("movie")).toBeVisible();
+    });
+  });
 
-    fireEvent.click(buttonPlayPauseMovie);
+  it("should call VideoScreen with correct title", async () => {
+    render(<WatchMovieSeries />, { wrapper });
 
-    expect(setWatchAction).toHaveBeenCalledTimes(1);
-    expect(setWatchAction.mock.lastCall[0]).toEqual({
-      isLoading: false,
-      isFullScreen: false,
+    await waitFor(() => {
+      expect(screen.getByText("Test Movie")).toBeVisible();
+    });
+  });
+
+  it("render CategorySection component and invite correct props", async () => {
+    (randomYearNumber as jest.Mock).mockReturnValue(2023);
+
+    render(<WatchMovieSeries />, { wrapper });
+
+    await waitFor(() => {
+      expect(screen.getByText("CategorySection")).toBeVisible();
+      expect(CategorySection).toHaveBeenCalledWith(
+        {
+          year: 2023,
+          title: "See also",
+          type: "",
+          page: 1,
+        },
+        {}
+      );
     });
   });
 });
