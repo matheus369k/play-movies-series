@@ -75,7 +75,6 @@ describe("SearchContextProvider", () => {
 
   it("should restore search value from URL", () => {
     const url = new URL(window.location.toString());
-    console.log(url);
     url.pathname = SEARCH_ROUTE.replace(":search", "test");
     window.history.pushState({}, "", url.toString());
 

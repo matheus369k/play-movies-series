@@ -31,6 +31,5 @@ it("get-url-params module", () => {
     return getUrlParams(params.name);
   });
 
-  console.log(result.current);
   expect(result.current).toBe(params.value);
 });

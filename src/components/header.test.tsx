@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Header } from "./header";
 import { fireEvent, render } from "@testing-library/react";
 
-jest.mock("../search-form", () => ({
+jest.mock("./search-form", () => ({
   SearchForm: () => <div>SearchForm</div>,
 }));
 

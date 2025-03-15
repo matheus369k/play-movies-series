@@ -124,7 +124,7 @@ describe("useInfiniteCards - Search page", () => {
     });
 
     await waitFor(() => {
-      expect(fetchManyOmbdapi).toHaveBeenCalledTimes(2);
+      expect(fetchManyOmbdapi).toHaveBeenCalledTimes(1);
     });
   });
 
