@@ -31,11 +31,13 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src",
+    "/src",
   ],
   "exclude": [
     "node_modules",
     "dist",
+    "build",
+    "coverage",
   ],
   "references": [
     {
