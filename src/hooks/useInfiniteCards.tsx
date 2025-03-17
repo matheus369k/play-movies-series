@@ -30,7 +30,7 @@ export function useInfiniteCards({ page }: { page: "more" | "search" }) {
   }
 
   // Requisição para os dados da API
-  const { data, isFetching, refetch } = useQuery({
+  const { data, isFetching, refetch, remove } = useQuery({
     queryFn: async () =>
       await fetchManyOmbdapi({
         params: `?s=${search}&type=${QueryRef.current.type}&y=${QueryRef.current.year}&page=${PagesRef.current.currentPage}`,
@@ -94,6 +94,7 @@ export function useInfiniteCards({ page }: { page: "more" | "search" }) {
         year: "",
       };
 
+      remove();
       refetch();
     }
   }, [search]);
