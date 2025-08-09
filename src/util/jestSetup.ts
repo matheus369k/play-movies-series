@@ -1,12 +1,14 @@
-import "@testing-library/jest-dom";
+import { cleanup } from '@testing-library/react'
+import '@testing-library/jest-dom'
 
-jest.mock("@/util/env.ts", () => ({
+jest.mock('@/util/env.ts', () => ({
   env: {
-    VITE_API_OMDBAPI: "https://www.omdbapi.com/",
-    VITE_API_OMDBAPI_KEY: "12345678",
+    VITE_API_OMDBAPI: 'https://www.omdbapi.com/',
+    VITE_API_OMDBAPI_KEY: '12345678',
   },
-}));
+}))
 
 beforeEach(() => {
-  jest.clearAllMocks();
-});
+  jest.clearAllMocks()
+  cleanup()
+})

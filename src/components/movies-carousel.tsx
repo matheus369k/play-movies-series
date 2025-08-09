@@ -1,16 +1,13 @@
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
+import Carousel from 'react-multi-carousel'
 
-// Configurações da animação "carrocel" dos filmes
 export function MoviesCarouselProvider({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const isNotMobile = window.innerWidth > 768;
+  const isNotMobile = window.innerWidth > 768
 
   return (
-    <ul>
     <Carousel
       arrows={isNotMobile}
       autoPlaySpeed={3000}
@@ -20,7 +17,7 @@ export function MoviesCarouselProvider({
       pauseOnHover
       renderArrowsWhenDisabled={false}
       renderButtonGroupOutside={false}
-      itemClass="px-1"
+      itemClass='px-1'
       shouldResetAutoplay
       slidesToSlide={3}
       swipeable
@@ -45,6 +42,5 @@ export function MoviesCarouselProvider({
     >
       {children}
     </Carousel>
-    </ul>
-  );
+  )
 }

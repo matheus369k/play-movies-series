@@ -1,36 +1,27 @@
-// lib
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from 'react-router-dom'
+import { WatchMovieSeries } from '@/pages/watch'
+import { MoreMoviesSeries } from '@/pages/more'
+import { NotFound } from '@/components/NotFound'
+import { Search } from '@/pages/search'
+import { Home } from '@/pages/home'
+import { RootLayout } from '@/root'
 
-// componentes das rotas
-import { WatchMovieSeries } from "@/page/watch/watch";
-import { MoreMoviesSeries } from "@/page/more/more";
-import { NotFound } from "@/components/NotFound";
-import { Search } from "@/page/search/search";
-import { Home } from "@/page/home/home";
-
-// componente raiz
-import { RootLayout } from "@/root";
-
-// rotas
 import {
   HOME_ROUTE,
   MORE_ROUTES,
   SEARCH_ROUTE,
   WATCH_ROUTE,
-} from "./path-routes";
+} from './path-routes'
 
 export const router = createBrowserRouter([
   {
-    // Raiz
     path: HOME_ROUTE,
     element: <RootLayout />,
     children: [
       {
-        // pagina principal
         path: HOME_ROUTE,
         element: <Home />,
       },
-      // pagina de mais
       {
         path: MORE_ROUTES.RECOMMENDATION.path,
         element: <MoreMoviesSeries />,
@@ -48,20 +39,21 @@ export const router = createBrowserRouter([
         element: <MoreMoviesSeries />,
       },
       {
-        // Pagina do filme selecionado
+        path: MORE_ROUTES.SEE_ALSO.path,
+        element: <MoreMoviesSeries />,
+      },
+      {
         path: WATCH_ROUTE,
         element: <WatchMovieSeries />,
       },
       {
-        // Pagina de pesquisa
         path: SEARCH_ROUTE,
         element: <Search />,
       },
       {
-        // Pagina de Error
-        path: "*",
-        element: <NotFound text="not found page" />,
+        path: '*',
+        element: <NotFound text='not found page' />,
       },
     ],
   },
-]);
+])

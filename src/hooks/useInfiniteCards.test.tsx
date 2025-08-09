@@ -1,253 +1,248 @@
-import { renderHook, waitFor } from "@testing-library/react";
-import { useInfiniteCards } from "./useInfiniteCards";
-import { SearchContext } from "@/context/search-context";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fetchManyOmbdapi } from "@/services/fetch-omdbapi";
-import React, { act } from "react";
-import { MORE_ROUTES, SEARCH_ROUTE } from "@/router/path-routes";
+import { renderHook, waitFor } from '@testing-library/react'
+import { useInfiniteCards } from './useInfiniteCards'
+import { SearchContextProvider } from '@/context/search-context'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import React, { act } from 'react'
+import AxiosMockAdapter from 'axios-mock-adapter'
+import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { faker } from '@faker-js/faker/locale/pt_BR'
+import { MORE_ROUTE, SEARCH_ROUTE } from '@/router/path-routes'
 
-jest.mock("@/services/fetch-omdbapi");
-
-const queryClient = new QueryClient();
-const mockHandleUpdateSearch = jest.fn();
-const mockHandleResetContext = jest.fn();
-const mockSearchValue = jest.fn();
+const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>
-    <SearchContext.Provider
-      value={{
-        search: mockSearchValue(),
-        handleResetContext: mockHandleResetContext,
-        handleUpdateSearch: mockHandleUpdateSearch,
-      }}
-    >
-      {children}
-    </SearchContext.Provider>
+    <SearchContextProvider>{children}</SearchContextProvider>
   </QueryClientProvider>
-);
+)
 
-const mockFetchManyOmbdapiResolver = ({
-  Search,
-  totalResults,
+const insertMoreURLRoute = ({
+  type,
+  year,
+  title,
 }: {
-  Search: object[];
-  totalResults: string;
+  type: string
+  year: string
+  title: string
 }) => {
-  (fetchManyOmbdapi as jest.Mock).mockResolvedValue({
-    Search,
-    totalResults,
-  });
-};
+  const url = new URL(window.location.origin.toString())
+  url.pathname = `${MORE_ROUTE}/${title.split(' ').join('-')}`
+  url.searchParams.set('type', type)
+  url.searchParams.set('year', year)
+  window.history.pushState({}, '', url)
+}
 
-const createUrlRoute = (props: {
-  route: string;
-  type?: string;
-  year?: string;
-}) => {
-  const { route, type, year } = props;
-  const url = new URL("http://localhost");
+const insertSearchURLRoute = ({ title }: { title: string }) => {
+  const url = new URL(window.location.origin.toString())
+  url.pathname = SEARCH_ROUTE.replace(':search', title.split(' ').join('-'))
+  window.history.pushState({}, '', url)
+}
 
-  url.pathname = route;
-  url.searchParams.set("type", type || "");
-  url.searchParams.set("year", year || "");
-
-  window.history.pushState({}, "", url.toString());
-};
-
-describe("useInfiniteCards - Search page", () => {
-  const defaultProps = {
-    page: "search" as "search" | "more",
-    queryParam: "test search",
-    datas: {
-      Search: [{ imdbID: "1" }],
-      totalResults: "10",
-    },
-  };
-
-  beforeEach(() => {
-    createUrlRoute({
-      route: SEARCH_ROUTE.replace(":search", defaultProps.queryParam),
-    });
-    mockFetchManyOmbdapiResolver(defaultProps.datas);
-
-    mockSearchValue.mockReturnValue("test%20search");
-  });
+describe('useInfiniteCards', () => {
+  const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
+  const { page, type, year, title } = {
+    year: '2004',
+    type: '',
+    page: 1,
+    title: 'transformers: the last of knight',
+  }
+  const movies = Array.from({ length: 20 }).map(() => {
+    return {
+      Title: faker.book.title(),
+      Year: faker.music.album(),
+      Rated: faker.number.float({ min: 0, max: 10 }),
+      Released: faker.date.recent().toString(),
+      Runtime: faker.number.int({ min: 70, max: 180 }) + 'minutes',
+      Genre:
+        faker.book.genre() +
+        ', ' +
+        faker.book.genre() +
+        ' and ' +
+        faker.book.genre(),
+      Poster: faker.image.url(),
+      imdbID: faker.database.mongodbObjectId(),
+      Type: 'movie',
+      totalSeasons: faker.number.int({ max: 34 }),
+    }
+  })
 
   afterEach(() => {
-    jest.clearAllMocks();
-    queryClient.clear();
-  });
+    MockAxiosOmbdapi.reset()
+    queryClient.clear()
+  })
 
-  it("should initialize with correct values", async () => {
-    const { result } = renderHook(
-      () => useInfiniteCards({ page: defaultProps.page }),
-      {
-        wrapper,
-      }
-    );
+  it('should initialized with correct return in more page', async () => {
+    insertMoreURLRoute({ title, type, year })
+    MockAxiosOmbdapi.onGet(
+      `?s=one&type=${type}&y=${year}&page=${page}`
+    ).replyOnce(200, {
+      Search: movies,
+      totalResults: '20',
+    })
+    const { result } = renderHook(() => useInfiniteCards({ page: 'more' }), {
+      wrapper,
+    })
 
-    expect(result.current.title).toBe(defaultProps.queryParam);
-    expect(result.current.data).toBeUndefined();
+    expect(result.current).toMatchObject({
+      title,
+      isFetching: true,
+      data: undefined,
+    })
     await waitFor(() => {
-      expect(result.current.isFetching).toBe(false);
-    });
-  });
+      expect(result.current).toMatchObject({
+        title,
+        isFetching: false,
+        data: { Search: movies, totalResults: '20' },
+      })
+    })
+  })
 
-  it("should fetch data on mount", async () => {
-    const { result } = renderHook(
-      () => useInfiniteCards({ page: defaultProps.page }),
-      {
-        wrapper,
-      }
-    );
+  it('should initialized with correct return in search page', async () => {
+    const data = {
+      Search: movies.filter((movie, index) => {
+        if (index < 10) return movie
+      }),
+      totalResults: '20',
+    }
+    insertSearchURLRoute({ title })
+    MockAxiosOmbdapi.onGet(
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`
+    ).replyOnce(200, data)
+    const { result } = renderHook(() => useInfiniteCards({ page: 'search' }), {
+      wrapper,
+    })
+
+    expect(result.current).toMatchObject({
+      title,
+      isFetching: true,
+      data: undefined,
+    })
+    await waitFor(() => {
+      expect(result.current).toMatchObject({
+        title,
+        isFetching: false,
+        data,
+      })
+    })
+  })
+
+  it("shouldn't insert equal datas when is request more one time", async () => {
+    const data = {
+      Search: movies.filter((movie, index) => {
+        if (index < 10) return movie
+      }),
+      totalResults: '20',
+    }
+    insertSearchURLRoute({ title })
+    MockAxiosOmbdapi.onGet(
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`
+    ).reply(200, data)
+    MockAxiosOmbdapi.onGet(
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page + 1}`
+    ).reply(200, data)
+    const { result } = renderHook(() => useInfiniteCards({ page: 'search' }), {
+      wrapper,
+    })
 
     await waitFor(() => {
-      expect(fetchManyOmbdapi).toHaveBeenCalledWith({
-        params: "?s=test%20search&type=&y=&page=1",
-      });
-      expect(result.current.data).toEqual(defaultProps.datas);
-    });
-  });
-
-  it("should handle fetch more data", async () => {
-    const { result } = renderHook(
-      () => useInfiniteCards({ page: defaultProps.page }),
-      {
-        wrapper,
-      }
-    );
-
-    expect(fetchManyOmbdapi).toHaveBeenCalledTimes(1);
+      expect(result.current).toMatchObject({
+        title,
+        isFetching: false,
+        data,
+      })
+    })
 
     act(() => {
-      result.current.handleFetchMoreData();
-    });
+      result.current.handleFetchMoreData()
+    })
 
     await waitFor(() => {
-      expect(fetchManyOmbdapi).toHaveBeenCalledTimes(1);
-    });
-  });
+      expect(result.current).toMatchObject({
+        title,
+        isFetching: false,
+        data,
+      })
+    })
+  })
 
-  it("should reset data on search change", async () => {
-    const { result, rerender } = renderHook(
-      ({ page }: { page: "search" | "more" }) => useInfiniteCards({ page }),
-      {
-        initialProps: { page: defaultProps.page },
-        wrapper,
-      }
-    );
+  it('should accumulate datas when is make a new request', async () => {
+    const data = {
+      Search: [
+        movies.filter((movie, index) => {
+          if (index < 10) return movie
+        }),
+        movies.filter((movie, index) => {
+          if (index > 10) return movie
+        }),
+      ],
+      totalResults: '20',
+    }
+    insertSearchURLRoute({ title })
+    MockAxiosOmbdapi.onGet(
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`
+    ).reply(200, {
+      Search: data.Search[0],
+      totalResults: data.totalResults,
+    })
+    MockAxiosOmbdapi.onGet(
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page + 1}`
+    ).reply(200, {
+      Search: data.Search[1],
+      totalResults: data.totalResults,
+    })
+    const { result } = renderHook(() => useInfiniteCards({ page: 'search' }), {
+      wrapper,
+    })
 
-    expect(result.current.title).toBe(defaultProps.queryParam);
     await waitFor(() => {
-      expect(result.current.isFetching).toBe(false);
-    });
-
-    createUrlRoute({
-      route: SEARCH_ROUTE.replace(":search", "new search"),
-    });
-    mockSearchValue.mockReturnValue("new%20search");
+      expect(result.current).toMatchObject({
+        title,
+        isFetching: false,
+        data: {
+          Search: data.Search[0],
+          totalResults: data.totalResults,
+        },
+      })
+    })
 
     act(() => {
-      rerender({ page: defaultProps.page });
-    });
-
-    expect(result.current.title).toBe("new search");
-    expect(result.current.data).toBeUndefined();
-    await waitFor(() => {
-      expect(result.current.isFetching).toBe(false);
-      expect(result.current.data).toEqual(defaultProps.datas);
-    });
-  });
-
-  it("should group old datas with new datas when fetching more data", async () => {
-    const { result } = renderHook(
-      () => useInfiniteCards({ page: defaultProps.page }),
-      {
-        wrapper,
-      }
-    );
-
-    mockFetchManyOmbdapiResolver({
-      Search: [{ imdbID: "2" }],
-      totalResults: "10",
-    });
+      result.current.handleFetchMoreData()
+    })
 
     await waitFor(() => {
-      act(() => {
-        result.current.handleFetchMoreData();
-      });
+      expect(result.current).toMatchObject({
+        title,
+        isFetching: false,
+        data: {
+          Search: [...data.Search[0], ...data.Search[1]],
+          totalResults: data.totalResults,
+        },
+      })
+    })
+  })
 
-      expect(result.current.data).toEqual({
-        Search: [...defaultProps.datas.Search, { imdbID: "2" }],
-        totalResults: "10",
-      });
-    });
-  });
-});
+  it("shouldn't maker a new request when is not have more movies", async () => {
+    insertSearchURLRoute({ title })
+    MockAxiosOmbdapi.onGet(
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`
+    ).reply(200, {
+      Search: movies.filter((movie, index) => {
+        if (index > 10) return movie
+      }),
+      totalResults: '10',
+    })
+    const { result } = renderHook(() => useInfiniteCards({ page: 'search' }), {
+      wrapper,
+    })
 
-describe("useInfiniteCards - More page", () => {
-  const defaultProps = {
-    page: "more" as "search" | "more",
-    queryParam: "test more",
-    datas: {
-      Search: [{ imdbID: "1" }],
-      totalResults: "10",
-    },
-  };
-
-  beforeEach(() => {
-    createUrlRoute({
-      route: MORE_ROUTES.RECOMMENDATION.path,
-    });
-    mockFetchManyOmbdapiResolver(defaultProps.datas);
-
-    mockSearchValue.mockReturnValue(MORE_ROUTES.RECOMMENDATION.title);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-    queryClient.clear();
-  });
-
-  it("should fetch data on mount", async () => {
-    const { result } = renderHook(
-      () => useInfiniteCards({ page: defaultProps.page }),
-      {
-        wrapper,
-      }
-    );
-
+    expect(MockAxiosOmbdapi.history).toHaveLength(1)
     await waitFor(() => {
-      expect(fetchManyOmbdapi).toHaveBeenCalledWith({
-        params: "?s=recommendation&type=&y=&page=1",
-      });
-      expect(result.current.data).toEqual(defaultProps.datas);
-    });
-  });
-
-  it("should not reset datas when context change is not search page", async () => {
-    const { result, rerender } = renderHook(
-      ({ page }: { page: "search" | "more" }) => useInfiniteCards({ page }),
-      {
-        initialProps: { page: defaultProps.page },
-        wrapper,
-      }
-    );
-
-    expect(result.current.title).toBe(MORE_ROUTES.RECOMMENDATION.title);
-    await waitFor(() => {
-      expect(result.current.data).toEqual(defaultProps.datas);
-    });
-
-    mockSearchValue.mockReturnValue(MORE_ROUTES.MOVIES.path);
+      expect(result.current.isFetching).toEqual(false)
+    })
 
     act(() => {
-      rerender({ page: "more" });
-    });
+      result.current.handleFetchMoreData()
+    })
 
-    expect(result.current.title).toBe(MORE_ROUTES.RECOMMENDATION.title);
-    await waitFor(() => {
-      expect(result.current.data).toEqual(defaultProps.datas);
-    });
-  });
-});
+    expect(MockAxiosOmbdapi.history).toHaveLength(1)
+  })
+})

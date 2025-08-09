@@ -1,25 +1,21 @@
 // Components
-import { Footer } from "@/components/footer";
-import { Header } from "@/components/header";
+import { Footer } from '@/components/footer'
+import { Header } from '@/components/header'
+import { SearchContextProvider } from '@/context/search-context'
+import { WatchContextProvider } from '@/context/watch-context'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Outlet } from 'react-router-dom'
 
-// Contextos
-import { SearchContextProvider } from "@/context/search-context";
-import { WatchContextProvider } from "@/context/watch-context";
-
-// libs
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet } from "react-router-dom";
-
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
 export function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="bg-gray-950 text-gray-100 min-h-screen font-inter tracking-wider">
+      <div className='bg-gray-950 text-gray-100 min-h-screen font-inter tracking-wider'>
         <WatchContextProvider>
           <SearchContextProvider>
             <Header />
-            <main className="min-h-[calc(100vh-9rem)] h-full animate-soften-render">
+            <main className='min-h-[calc(100vh-9rem)] h-full animate-soften-render'>
               <Outlet />
             </main>
           </SearchContextProvider>
@@ -27,5 +23,5 @@ export function RootLayout() {
         </WatchContextProvider>
       </div>
     </QueryClientProvider>
-  );
+  )
 }

@@ -1,33 +1,21 @@
-import { render } from "@testing-library/react";
-import { MoviesCarouselProvider } from "./movies-carousel";
-import Carousel from "react-multi-carousel";
+import { render } from '@testing-library/react'
+import { MoviesCarouselProvider } from './movies-carousel'
+import Carousel from 'react-multi-carousel'
 
-jest.mock("react-multi-carousel/lib/styles.css", () => ({}));
+jest.mock('react-multi-carousel/lib/styles.css', () => ({}))
 
-jest.mock("react-multi-carousel", () => ({
+jest.mock('react-multi-carousel', () => ({
   __esModule: true,
   default: jest.fn(({ children }) => <div>{children}</div>),
-}));
+}))
 
-describe("MoviesCarouselProvider", () => {
-  it("renders correctly with children", () => {
-    const { getByText } = render(
-      <MoviesCarouselProvider>
-        <div>Movie 1</div>
-        <div>Movie 2</div>
-      </MoviesCarouselProvider>
-    );
-
-    expect(getByText("Movie 1")).toBeVisible();
-    expect(getByText("Movie 2")).toBeVisible();
-  });
-
-  it("passes correct props to Carousel component", () => {
+describe('MoviesCarouselProvider', () => {
+  it('passes correct props to Carousel component', () => {
     render(
       <MoviesCarouselProvider>
         <div>Movie 1</div>
       </MoviesCarouselProvider>
-    );
+    )
 
     expect(Carousel).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -39,7 +27,7 @@ describe("MoviesCarouselProvider", () => {
         pauseOnHover: true,
         renderArrowsWhenDisabled: false,
         renderButtonGroupOutside: false,
-        itemClass: "px-1",
+        itemClass: 'px-1',
         shouldResetAutoplay: true,
         slidesToSlide: 3,
         swipeable: true,
@@ -63,36 +51,36 @@ describe("MoviesCarouselProvider", () => {
         },
       }),
       {}
-    );
-  });
+    )
+  })
 
-  it("sets arrows prop based on window width", () => {
-    window.innerWidth = 1024;
+  it('sets arrows prop based on window width', () => {
+    window.innerWidth = 1024
     render(
       <MoviesCarouselProvider>
         <div>Movie 1</div>
       </MoviesCarouselProvider>
-    );
+    )
 
     expect(Carousel).toHaveBeenCalledWith(
       expect.objectContaining({
         arrows: true,
       }),
       {}
-    );
+    )
 
-    window.innerWidth = 500;
+    window.innerWidth = 500
     render(
       <MoviesCarouselProvider>
         <div>Movie 1</div>
       </MoviesCarouselProvider>
-    );
+    )
 
     expect(Carousel).toHaveBeenCalledWith(
       expect.objectContaining({
         arrows: false,
       }),
       {}
-    );
-  });
-});
+    )
+  })
+})

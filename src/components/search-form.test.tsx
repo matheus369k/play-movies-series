@@ -1,80 +1,63 @@
-import { render, fireEvent } from "@testing-library/react";
-import { SearchForm } from "./search-form";
-import { SEARCH_ROUTE } from "@/router/path-routes";
-import { type FieldValues, type UseFormReturn } from "react-hook-form";
-import { SearchContextProvider } from "@/context/search-context";
-import React from "react";
-import type { UseFormType } from "./header";
+import { render, screen, act } from '@testing-library/react'
+import { SearchForm } from './search-form'
+import { SearchContext } from '@/context/search-context'
+import { type ReactNode } from 'react'
+import { userEvent } from '@testing-library/user-event'
+import { SEARCH_ROUTE } from '@/router/path-routes'
 
-const mockNavigate = jest.fn();
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
+const mockNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-}));
+}))
 
-const mockTopResetScroll = jest.fn();
-jest.mock("@/functions", () => ({
-  TopResetScroll: () => mockTopResetScroll(),
-}));
+const MockHandleUpdateSearch = jest.fn()
+const wrapper = ({ children }: { children: ReactNode }) => {
+  return (
+    <SearchContext.Provider
+      value={{
+        search: 'one',
+        handleUpdateSearch: MockHandleUpdateSearch,
+        handleResetContext: jest.fn(),
+      }}
+    >
+      {children}
+    </SearchContext.Provider>
+  )
+}
 
-const mockHandleUpdateSearch = jest.fn();
-jest.spyOn(React, "useContext").mockImplementation(() => ({
-  handleUpdateSearch: mockHandleUpdateSearch,
-}));
+describe('SearchForm', () => {
+  const user = userEvent.setup()
 
-const mockReset = jest.fn();
-const mockRegister = jest.fn();
-jest.mock("react-hook-form", () => ({
-  ...jest.requireActual("react-hook-form"),
-  useFormContext: () =>
-    ({
-      handleSubmit: (fn: (data: UseFormType) => void) => {
-        fn({
-          search: "test search",
-        });
-      },
-      reset: mockReset,
-      register: mockRegister,
-    } as unknown as UseFormReturn<
-      FieldValues,
-      unknown,
-      FieldValues | undefined
-    >),
-}));
+  it('should render correctly', () => {
+    render(<SearchForm />, { wrapper })
 
-describe("SearchForm", () => {
-  it("should render correctly", () => {
-    const { getByRole, getByPlaceholderText, container } = render(
-      <SearchContextProvider>
-        <SearchForm />
-      </SearchContextProvider>
-    );
+    screen.getByPlaceholderText(/Search.../i)
+  })
 
-    expect(container.firstChild).toBeVisible();
-    expect(getByPlaceholderText("Search...")).toBeVisible();
-    expect(getByRole("searchbox").previousSibling).toHaveAttribute(
-      "for",
-      "search"
-    );
-    expect(mockRegister).toHaveBeenCalledWith("search");
-  });
+  it('should submitted value from form, rest field, reset scroll and redirection to search page', async () => {
+    const SpyScrollTo = jest
+      .spyOn(window, 'scrollTo')
+      .mockImplementationOnce(() => jest.fn())
+    act(() => {
+      render(<SearchForm />, { wrapper })
+    })
+    const inputSearch = screen.getByRole('searchbox')
+    const btnSubmit = document.createElement('input')
+    btnSubmit.setAttribute('type', 'submit')
+    inputSearch.appendChild(btnSubmit)
 
-  it("should call handleSubmitSearchForm corrected when submitted form", () => {
-    const { container } = render(
-      <SearchContextProvider>
-        <SearchForm />
-      </SearchContextProvider>
-    );
+    await user.type(inputSearch, 'transformers')
+    expect(inputSearch).toHaveValue('transformers')
+    await user.click(screen.getByRole('button'))
 
-    fireEvent.submit(container.firstChild as Element);
-
+    expect(SpyScrollTo).toHaveBeenCalledTimes(1)
+    expect(MockHandleUpdateSearch).toHaveBeenCalledWith({
+      search: 'transformers',
+    })
     expect(mockNavigate).toHaveBeenCalledWith(
-      SEARCH_ROUTE.replace(":search", "test search")
-    );
-    expect(mockHandleUpdateSearch).toHaveBeenCalledWith({
-      search: "test search",
-    });
-    expect(mockTopResetScroll).toHaveBeenCalledTimes(1);
-    expect(mockReset).toHaveBeenCalledTimes(1);
-  });
-});
+      SEARCH_ROUTE.replace(':search', 'transformers')
+    )
+    expect(inputSearch).toHaveValue('')
+  })
+})

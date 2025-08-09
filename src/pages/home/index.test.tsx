@@ -1,0 +1,225 @@
+import { render, screen } from '@testing-library/react'
+import { Home } from '.'
+import { MORE_ROUTES, WATCH_ROUTE } from '@/router/path-routes'
+import type { ReactNode } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import AxiosMockAdapter from 'axios-mock-adapter'
+import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { faker } from '@faker-js/faker/locale/pt_BR'
+import { dbFocusData } from '@/data/movies-id'
+import { WatchContext, WatchContextProvider } from '@/context/watch-context'
+import { SearchContextProvider } from '@/context/search-context'
+import userEvent from '@testing-library/user-event'
+
+const MockNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => MockNavigate,
+}))
+
+const queryClient = new QueryClient()
+const wrapper = ({ children }: { children: ReactNode }) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <SearchContextProvider>
+        <WatchContextProvider>{children}</WatchContextProvider>
+      </SearchContextProvider>
+    </QueryClientProvider>
+  )
+}
+
+describe('Home', () => {
+  const user = userEvent.setup()
+  jest.spyOn(Math, 'random').mockImplementation(() => 0.96)
+  const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
+  const movies = Array.from({ length: dbFocusData.length }).map((_, index) => {
+    return {
+      Title: faker.book.title(),
+      Year: faker.music.album(),
+      imdbRating: faker.number.float({ min: 0, max: 10 }),
+      Released: faker.date.recent().toString(),
+      Runtime: faker.number.int({ min: 70, max: 180 }) + 'minutes',
+      Genre: `${faker.book.genre()}, ${faker.book.genre()} and ${faker.book.genre()}`,
+      Poster: faker.image.url(),
+      imdbID: dbFocusData[index].imdbid,
+      Plot: faker.lorem.paragraph(1),
+      Type: 'movie',
+      totalSeasons: faker.number.int({ max: 34 }),
+    }
+  })
+
+  beforeEach(() => {
+    const params = '?s=one&plot=full&y=2024&type=_&page=1'
+    MockAxiosOmbdapi.onGet(params.replace('_', 'movie')).reply(200, {
+      Search: movies,
+      totalResults: '10',
+    })
+    MockAxiosOmbdapi.onGet(params.replace('_', '')).reply(200, {
+      Search: movies,
+      totalResults: '10',
+    })
+    MockAxiosOmbdapi.onGet(params.replace('_', 'series')).reply(200, {
+      Search: movies,
+      totalResults: '10',
+    })
+  })
+
+  afterEach(() => {
+    MockAxiosOmbdapi.reset()
+    queryClient.clear()
+  })
+
+  it('should renders corrected', async () => {
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+      ...movies[0],
+    })
+    render(<Home />, { wrapper })
+
+    screen.getByText(MORE_ROUTES.RELEASE.title)
+    screen.getByText(MORE_ROUTES.RECOMMENDATION.title)
+    screen.getByText(MORE_ROUTES.MOVIES.title)
+    screen.getByText(MORE_ROUTES.SERIES.title)
+    await screen.findByText(movies[0].Plot)
+  })
+
+  it('should render ErrorComponents when is request fail or return nothing', async () => {
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(500, undefined)
+
+    render(<Home />, { wrapper })
+
+    await screen.findByText(MORE_ROUTES.RELEASE.title)
+    await screen.findByText(/Erro ao tentar carregar/i)
+    expect(screen.queryByText(MORE_ROUTES.RELEASE.title)).toBeNull()
+  })
+
+  it('should render LoadingEmphasis when is not complete request', () => {
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+      ...movies[0],
+    })
+    render(<Home />, { wrapper })
+
+    screen.getByText(
+      /During the '90s, a new faction of Transformers - the Maximals - join the Autobots as allies in the battle for Earth./i
+    )
+  })
+
+  it('should redirection to watch page from movie when is clicked in cap movie', async () => {
+    const MockHandleAddIDBMID = jest.fn()
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+      ...movies[0],
+    })
+    render(
+      <WatchContext.Provider
+        value={{
+          handleAddIDBMID: MockHandleAddIDBMID,
+          handleAddIndex: jest.fn(),
+          handleResetData: jest.fn(),
+          state: { imdbID: '', index: 0 },
+        }}
+      >
+        <Home />
+      </WatchContext.Provider>,
+      { wrapper }
+    )
+
+    await screen.findByText(movies[0].Plot)
+    await user.click(screen.getByRole('img').parentElement!)
+
+    expect(MockNavigate).toHaveBeenCalledWith(
+      WATCH_ROUTE.replace(':id', movies[0].imdbID)
+    )
+    expect(MockHandleAddIDBMID).toHaveBeenCalledWith({
+      imdbID: movies[0].imdbID,
+    })
+  })
+
+  it('should redirection to watch page from movie when is clicked in play button', async () => {
+    const MockHandleAddIDBMID = jest.fn()
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+      ...movies[0],
+    })
+    render(
+      <WatchContext.Provider
+        value={{
+          handleAddIDBMID: MockHandleAddIDBMID,
+          handleAddIndex: jest.fn(),
+          handleResetData: jest.fn(),
+          state: { imdbID: '', index: 0 },
+        }}
+      >
+        <Home />
+      </WatchContext.Provider>,
+      { wrapper }
+    )
+
+    await screen.findByText(movies[0].Plot)
+    await user.click(screen.getAllByRole('button')[1].parentElement!)
+
+    expect(MockNavigate).toHaveBeenCalledWith(
+      WATCH_ROUTE.replace(':id', movies[0].imdbID)
+    )
+    expect(MockHandleAddIDBMID).toHaveBeenCalledWith({
+      imdbID: movies[0].imdbID,
+    })
+  })
+
+  it('should switch emphasis movie when clicked in next arrow', async () => {
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+      ...movies[0],
+    })
+    MockAxiosOmbdapi.onGet(`?i=${movies[1].imdbID}`).reply(200, {
+      ...movies[1],
+    })
+    render(<Home />, { wrapper })
+
+    await screen.findByText(movies[0].Plot)
+    await user.click(screen.getByTitle(/Avançar/i))
+
+    await screen.findByText(movies[1].Plot)
+  })
+
+  it('should switch emphasis movie when clicked in previous arrow', async () => {
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+      ...movies[0],
+    })
+    MockAxiosOmbdapi.onGet(`?i=${movies[1].imdbID}`).reply(200, {
+      ...movies[1],
+    })
+    render(<Home />, { wrapper })
+
+    await screen.findByText(movies[0].Plot)
+    await user.click(screen.getByTitle(/Avançar/i))
+
+    await screen.findByText(movies[1].Plot)
+    await user.click(screen.getByTitle(/Volta/i))
+
+    await screen.findByText(movies[0].Plot)
+  })
+
+  it("should disabled next button when he's fifth movie emphasis", async () => {
+    for (let index = 0; index <= 5; index++) {
+      MockAxiosOmbdapi.onGet(`?i=${movies[index].imdbID}`).reply(200, {
+        ...movies[index],
+      })
+    }
+    render(<Home />, { wrapper })
+
+    for (let index = 0; index <= 5; index++) {
+      await screen.findByText(movies[index].Plot)
+      await user.click(screen.getByTitle(/Avançar/i))
+    }
+
+    await screen.findByText(movies[5].Plot)
+    expect(screen.getByTitle(/Avançar/i)).toBeDisabled()
+  })
+
+  it('should disabled previous button when is first movie emphasis', async () => {
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+      ...movies[0],
+    })
+    render(<Home />, { wrapper })
+
+    await screen.findByText(movies[0].Plot)
+    expect(screen.getByTitle(/Volta/i)).toBeDisabled()
+  })
+})

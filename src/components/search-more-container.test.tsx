@@ -1,48 +1,27 @@
-import { render } from "@testing-library/react";
-import { SearchMoreContainer } from "./search-more-container";
+import { render, screen } from '@testing-library/react'
+import { SearchMoreContainer } from './search-more-container'
 
-describe("SearchMoreContainer", () => {
-  test("renders title correctly when children is undefined", () => {
-    const { getByText } = render(
-      <SearchMoreContainer isFetching={false} title="Test Title" />
-    );
-
-    expect(getByText("Test Title")).toBeVisible();
-  });
-
-  test("renders title correctly when has children", () => {
-    const { getByText } = render(
-      <SearchMoreContainer isFetching={false} title="Test Title">
-        <div>Child Component</div>
+describe('SearchMoreContainer', () => {
+  it('should render corrected', () => {
+    render(
+      <SearchMoreContainer isFetching={false} title='Testing'>
+        TestingChildren
       </SearchMoreContainer>
-    );
+    )
 
-    expect(getByText("Test Title")).toBeVisible();
-  });
+    screen.getByRole('heading', { level: 2, name: /Testing/i })
+    screen.getByText(/TestingChildren/i)
+  })
 
-  test("renders children when provided", () => {
-    const { getByText } = render(
-      <SearchMoreContainer isFetching={false} title="Test Title">
-        <div>Child Component</div>
-      </SearchMoreContainer>
-    );
+  it('should render loading state when fetching is true', () => {
+    render(<SearchMoreContainer isFetching={true} title='Testing' />)
 
-    expect(getByText("Child Component")).toBeVisible();
-  });
+    screen.getByText(/carregando.../i)
+  })
 
-  test('renders "not found" when no children and not fetching', () => {
-    const { getByText } = render(
-      <SearchMoreContainer isFetching={false} title="Test Title" />
-    );
+  it('should render not found state when fetching is false and without receive children', () => {
+    render(<SearchMoreContainer isFetching={false} title='Testing' />)
 
-    expect(getByText("not found")).toBeVisible();
-  });
-
-  test('renders "carregando..." when fetching', () => {
-    const { getByText } = render(
-      <SearchMoreContainer isFetching={true} title="Test Title" />
-    );
-
-    expect(getByText("carregando...")).toBeVisible();
-  });
-});
+    screen.getByText(/not found/i)
+  })
+})

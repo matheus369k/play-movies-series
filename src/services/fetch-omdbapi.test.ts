@@ -1,118 +1,100 @@
-import { renderHook } from "@testing-library/react";
-import { AxiosOmbdapi } from "@/util/axios-omdbapi";
-import { fetchOneOmbdapi, fetchManyOmbdapi } from "./fetch-omdbapi";
+import { renderHook } from '@testing-library/react'
+import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { fetchOneOmbdapi, fetchManyOmbdapi } from './fetch-omdbapi'
+import AxiosMockAdapter from 'axios-mock-adapter'
 
-jest.mock("@/util/axios-omdbapi");
+const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
 
-describe("fetchOneOmbdapi", () => {
-  const defaultResponseOne = {
-    Search: {
-      Title: "Test Movie",
-      Type: "movie",
-      Genre: "Action, Drama",
-      imdbRating: "8.5",
-      Runtime: "120 min",
-      Released: "2023-01-01",
-      Poster: "https://example.com/poster.jpg",
-      Plot: "Test plot description",
-    },
-    totalResults: "10",
-  };
+describe('fetchOneOmbdapi', () => {
+  const movie = {
+    Title: 'Test Movie',
+    Type: 'movie',
+    Genre: 'Action, Drama',
+    imdbID: `tt1234567`,
+    imdbRating: '8.5',
+    Runtime: '120 min',
+    Released: '2023-01-01',
+    Poster: 'https://example.com/poster.jpg',
+    Plot: 'Test plot description',
+    Response: 'True',
+  }
 
-  it("should fetch single movie data successfully", async () => {
-    (AxiosOmbdapi.get as jest.Mock).mockResolvedValueOnce({
-      data: defaultResponseOne,
-    });
+  afterEach(() => {
+    MockAxiosOmbdapi.reset()
+  })
 
-    const { result } = renderHook(
-      async () => await fetchOneOmbdapi({ id: "tt1234567" })
-    );
+  it('should fetch single movie data successfully', async () => {
+    MockAxiosOmbdapi.onGet(`?i=${movie.imdbID}`).replyOnce(200, { ...movie })
+    const { result } = renderHook(() => fetchOneOmbdapi({ id: movie.imdbID }))
 
-    expect(await result.current).toEqual(defaultResponseOne);
-    expect(AxiosOmbdapi.get).toHaveBeenCalledWith("?i=tt1234567");
-  });
+    expect(await result.current).toEqual(movie)
+  })
 
-  it("should handle error when fetching single movie data", async () => {
-    const consoleSpy = jest.spyOn(console, "log");
-    (AxiosOmbdapi.get as jest.Mock).mockRejectedValueOnce(
-      new Error("API Error")
-    );
+  it('should handle error when fetching single movie data', async () => {
+    const consoleSpy = jest.spyOn(console, 'log')
+    MockAxiosOmbdapi.onGet(`?i=${movie.imdbID}`).replyOnce(500, undefined)
+    const { result } = renderHook(() => fetchOneOmbdapi({ id: 'invalid' }))
 
-    const { result } = renderHook(
-      async () => await fetchOneOmbdapi({ id: "invalid" })
-    );
+    expect(await result.current).toBeUndefined()
+    expect(consoleSpy).toHaveBeenCalled()
+  })
 
-    expect(await result.current).toBeUndefined();
-    expect(consoleSpy).toHaveBeenCalled();
-  });
-
-  it("should handle empty response when fetching single movie data", async () => {
-    const consoleSpy = jest.spyOn(console, "log");
-    (AxiosOmbdapi.get as jest.Mock).mockResolvedValueOnce({
-      data: undefined,
-    });
+  it('should handle empty response when fetching single movie data', async () => {
+    const consoleSpy = jest.spyOn(console, 'log')
+    MockAxiosOmbdapi.onGet(`?i=${movie.imdbID}`).replyOnce(200, undefined)
 
     const { result } = renderHook(
-      async () => await fetchOneOmbdapi({ id: "invalid" })
-    );
+      async () => await fetchOneOmbdapi({ id: 'invalid' })
+    )
 
-    expect(await result.current).toBeUndefined();
-    expect(consoleSpy).toHaveBeenCalled();
-  });
-});
+    expect(await result.current).toBeUndefined()
+    expect(consoleSpy).toHaveBeenCalled()
+  })
+})
 
-describe("fetchManyOmbdapi", () => {
-  const defaultResponseMany = {
+describe('fetchManyOmbdapi', () => {
+  const movies = {
     Search: Array.from({ length: 10 }).map((_, index) => {
       return {
         Title: `Movie ${index + 1}`,
-        Year: "2023",
+        Year: '2023',
         imdbID: `tt123456${index + 1}`,
-        Type: "movie",
+        Type: 'movie',
         Poster: `poster${index + 1}.jpg`,
-      };
+      }
     }),
-    totalResults: "10",
-  };
+    totalResults: '10',
+  }
 
-  it("should fetch multiple movies data successfully", async () => {
-    (AxiosOmbdapi.get as jest.Mock).mockResolvedValueOnce({
-      data: defaultResponseMany,
-    });
+  afterEach(() => {
+    MockAxiosOmbdapi.reset()
+  })
 
-    const { result } = renderHook(
-      async () => await fetchManyOmbdapi({ params: "?s=test" })
-    );
+  it('should fetch multiple movies data successfully', async () => {
+    MockAxiosOmbdapi.onGet('?s=test').replyOnce(200, { ...movies })
 
-    expect(await result.current).toEqual(defaultResponseMany);
-    expect(AxiosOmbdapi.get).toHaveBeenCalledWith("?s=test");
-  });
+    const { result } = renderHook(() => fetchManyOmbdapi({ params: '?s=test' }))
 
-  it("should handle error when fetching multiple movies data", async () => {
-    const consoleSpy = jest.spyOn(console, "log");
-    (AxiosOmbdapi.get as jest.Mock).mockRejectedValueOnce(
-      new Error("API Error")
-    );
+    expect(await result.current).toEqual(movies)
+  })
 
-    const { result } = renderHook(
-      async () => await fetchManyOmbdapi({ params: "invalid" })
-    );
+  it('should handle error when fetching multiple movies data', async () => {
+    const consoleSpy = jest.spyOn(console, 'log')
+    MockAxiosOmbdapi.onGet('?s=test').replyOnce(500, undefined)
 
-    expect(await result.current).toBeUndefined();
-    expect(consoleSpy).toHaveBeenCalled();
-  });
+    const { result } = renderHook(() => fetchManyOmbdapi({ params: '?s=test' }))
 
-  it("should handle empty response when fetching multiple movies data", async () => {
-    const consoleSpy = jest.spyOn(console, "log");
-    (AxiosOmbdapi.get as jest.Mock).mockResolvedValueOnce({
-      data: undefined,
-    });
+    expect(await result.current).toBeUndefined()
+    expect(consoleSpy).toHaveBeenCalled()
+  })
 
-    const { result } = renderHook(
-      async () => await fetchManyOmbdapi({ params: "?s=test" })
-    );
+  it('should handle empty response when fetching multiple movies data', async () => {
+    const consoleSpy = jest.spyOn(console, 'log')
+    MockAxiosOmbdapi.onGet('?s=test').replyOnce(200, undefined)
 
-    expect(await result.current).toBeUndefined();
-    expect(consoleSpy).toHaveBeenCalled();
-  });
-});
+    const { result } = renderHook(() => fetchManyOmbdapi({ params: '?s=test' }))
+
+    expect(await result.current).toBeUndefined()
+    expect(consoleSpy).toHaveBeenCalled()
+  })
+})
