@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { Home } from '.'
-import { MORE_ROUTES, WATCH_ROUTE } from '@/router/path-routes'
+import { WATCH_ROUTE } from '@/router/path-routes'
 import type { ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AxiosMockAdapter from 'axios-mock-adapter'
@@ -8,8 +7,8 @@ import { AxiosOmbdapi } from '@/util/axios-omdbapi'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { dbFocusData } from '@/data/movies-id'
 import { WatchContext, WatchContextProvider } from '@/context/watch-context'
-import { SearchContextProvider } from '@/context/search-context'
 import userEvent from '@testing-library/user-event'
+import { EmphasisMovies } from './emphasis-movies'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -21,9 +20,7 @@ const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <SearchContextProvider>
-        <WatchContextProvider>{children}</WatchContextProvider>
-      </SearchContextProvider>
+      <WatchContextProvider>{children}</WatchContextProvider>
     </QueryClientProvider>
   )
 }
@@ -48,22 +45,6 @@ describe('Home', () => {
     }
   })
 
-  beforeEach(() => {
-    const params = '?s=one&plot=full&y=2024&type=_&page=1'
-    MockAxiosOmbdapi.onGet(params.replace('_', 'movie')).reply(200, {
-      Search: movies,
-      totalResults: '10',
-    })
-    MockAxiosOmbdapi.onGet(params.replace('_', '')).reply(200, {
-      Search: movies,
-      totalResults: '10',
-    })
-    MockAxiosOmbdapi.onGet(params.replace('_', 'series')).reply(200, {
-      Search: movies,
-      totalResults: '10',
-    })
-  })
-
   afterEach(() => {
     MockAxiosOmbdapi.reset()
     queryClient.clear()
@@ -73,30 +54,26 @@ describe('Home', () => {
     MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
       ...movies[0],
     })
-    render(<Home />, { wrapper })
+    render(<EmphasisMovies />, { wrapper })
 
-    screen.getByText(MORE_ROUTES.RELEASE.title)
-    screen.getByText(MORE_ROUTES.RECOMMENDATION.title)
-    screen.getByText(MORE_ROUTES.MOVIES.title)
-    screen.getByText(MORE_ROUTES.SERIES.title)
     await screen.findByText(movies[0].Plot)
   })
 
   it('should render ErrorComponents when is request fail or return nothing', async () => {
     MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(500, undefined)
+    render(<EmphasisMovies />, { wrapper })
 
-    render(<Home />, { wrapper })
-
-    await screen.findByText(MORE_ROUTES.RELEASE.title)
+    await screen.findByText(
+      /During the '90s, a new faction of Transformers - the Maximals - join the Autobots as allies in the battle for Earth./i
+    )
     await screen.findByText(/Erro ao tentar carregar/i)
-    expect(screen.queryByText(MORE_ROUTES.RELEASE.title)).toBeNull()
   })
 
   it('should render LoadingEmphasis when is not complete request', () => {
     MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
       ...movies[0],
     })
-    render(<Home />, { wrapper })
+    render(<EmphasisMovies />, { wrapper })
 
     screen.getByText(
       /During the '90s, a new faction of Transformers - the Maximals - join the Autobots as allies in the battle for Earth./i
@@ -117,7 +94,7 @@ describe('Home', () => {
           state: { imdbID: '', index: 0 },
         }}
       >
-        <Home />
+        <EmphasisMovies />
       </WatchContext.Provider>,
       { wrapper }
     )
@@ -147,7 +124,7 @@ describe('Home', () => {
           state: { imdbID: '', index: 0 },
         }}
       >
-        <Home />
+        <EmphasisMovies />
       </WatchContext.Provider>,
       { wrapper }
     )
@@ -170,7 +147,7 @@ describe('Home', () => {
     MockAxiosOmbdapi.onGet(`?i=${movies[1].imdbID}`).reply(200, {
       ...movies[1],
     })
-    render(<Home />, { wrapper })
+    render(<EmphasisMovies />, { wrapper })
 
     await screen.findByText(movies[0].Plot)
     await user.click(screen.getByTitle(/Avançar/i))
@@ -185,7 +162,7 @@ describe('Home', () => {
     MockAxiosOmbdapi.onGet(`?i=${movies[1].imdbID}`).reply(200, {
       ...movies[1],
     })
-    render(<Home />, { wrapper })
+    render(<EmphasisMovies />, { wrapper })
 
     await screen.findByText(movies[0].Plot)
     await user.click(screen.getByTitle(/Avançar/i))
@@ -202,7 +179,7 @@ describe('Home', () => {
         ...movies[index],
       })
     }
-    render(<Home />, { wrapper })
+    render(<EmphasisMovies />, { wrapper })
 
     for (let index = 0; index <= 5; index++) {
       await screen.findByText(movies[index].Plot)
@@ -217,7 +194,7 @@ describe('Home', () => {
     MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
       ...movies[0],
     })
-    render(<Home />, { wrapper })
+    render(<EmphasisMovies />, { wrapper })
 
     await screen.findByText(movies[0].Plot)
     expect(screen.getByTitle(/Volta/i)).toBeDisabled()
