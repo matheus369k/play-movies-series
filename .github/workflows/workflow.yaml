@@ -1,0 +1,21 @@
+name: Continue Integration
+
+on: push
+
+jobs:
+  continue-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Using Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 23.
+      - name: Run install, test and build
+        run: |
+          npm install
+          npm run test
+          npm run build
+        env:
+          VITE_API_OMDBAPI: ${{secrets.VITE_API_OMDBAPI}}
+          VITE_API_OMDBAPI_KEY: ${{secrets.VITE_API_OMDBAPI_KEY}}
