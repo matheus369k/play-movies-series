@@ -1,9 +1,14 @@
-name: Continue Integration
+name: Continuous Integration - Continuous Delivery
 
-on: push
+on:
+  push:
+    branches:
+      - main
+permissions:
+  contents: write
 
 jobs:
-  continue-integration:
+  continuous-integration:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,3 +24,25 @@ jobs:
         env:
           VITE_API_OMDBAPI: ${{secrets.VITE_API_OMDBAPI}}
           VITE_API_OMDBAPI_KEY: ${{secrets.VITE_API_OMDBAPI_KEY}}
+
+  continuous-delivery:
+    needs: continuous-integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Using Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 23.
+      - name: Run install and Build
+        run: |
+          npm install
+          npm run build
+        env:
+          VITE_API_OMDBAPI: ${{secrets.VITE_API_OMDBAPI}}
+          VITE_API_OMDBAPI_KEY: ${{secrets.VITE_API_OMDBAPI_KEY}}
+      - name: Run deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
