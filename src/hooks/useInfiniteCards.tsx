@@ -1,8 +1,8 @@
-import { SearchContext } from '@/context/search-context'
+import { SearchContext } from '@/contexts/search-context'
 import { fetchManyOmbdapi } from '@/services/fetch-omdbapi'
 import { useQuery } from '@tanstack/react-query'
 import { useContext, useEffect, useRef } from 'react'
-import { getUrlParams } from '@/functions'
+import { urlParams } from '@/util/url-params'
 import { formatter } from '@/util/formatter'
 
 export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
@@ -14,22 +14,22 @@ export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
     totalPages: 1,
   })
 
+  const SearchParam = window.location.pathname.split('/')[4].toString()
   const QueryRef = useRef({
-    type: getUrlParams('type') || '',
-    year: getUrlParams('year') || '',
-    title: formatter(
-      window.location.pathname.split('/')[3].toString()
-    ).unformattedUrl(),
+    type: urlParams.get('type') || '',
+    year: urlParams.get('year') || '',
+    title: formatter.unformattedUrl(SearchParam),
   })
 
-  if (isSearchPage) {
+  if (isSearchPage && search) {
     QueryRef.current = {
       ...QueryRef.current,
-      title: formatter(search).unformattedUrl(),
+      title: formatter.unformattedUrl(search),
     }
   }
 
   const { data, isFetching, refetch, remove } = useQuery({
+    staleTime: 1000 * 60 * 60 * 24,
     queryFn: async () =>
       await fetchManyOmbdapi({
         params: `?s=${search}&type=${QueryRef.current.type}&y=${QueryRef.current.year}&page=${PagesRef.current.currentPage}`,

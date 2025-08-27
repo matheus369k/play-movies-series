@@ -1,18 +1,34 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { useInfiniteCards } from './useInfiniteCards'
-import { SearchContextProvider } from '@/context/search-context'
+import { SearchContextProvider } from '@/contexts/search-context'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React, { act } from 'react'
 import AxiosMockAdapter from 'axios-mock-adapter'
-import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { AxiosOmbdapi } from '@/util/axios'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { MORE_ROUTE, SEARCH_ROUTE } from '@/router/path-routes'
+import { BASE_ROUTE, MORE_ROUTE, SEARCH_ROUTE } from '@/util/consts'
+import { UserContext } from '@/contexts/user-context'
 
+const userData = {
+  id: faker.database.mongodbObjectId(),
+  avatar: faker.image.avatar(),
+  email: faker.internet.email(),
+  name: faker.person.firstName(),
+  createAt: faker.date.past().toISOString(),
+}
 const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={queryClient}>
-    <SearchContextProvider>{children}</SearchContextProvider>
-  </QueryClientProvider>
+  <UserContext.Provider
+    value={{
+      resetUserState: jest.fn(),
+      setUserState: jest.fn(),
+      user: userData,
+    }}
+  >
+    <QueryClientProvider client={queryClient}>
+      <SearchContextProvider>{children}</SearchContextProvider>
+    </QueryClientProvider>
+  </UserContext.Provider>
 )
 
 const insertMoreURLRoute = ({
@@ -25,7 +41,9 @@ const insertMoreURLRoute = ({
   title: string
 }) => {
   const url = new URL(window.location.origin.toString())
-  url.pathname = `${MORE_ROUTE}/${title.split(' ').join('-')}`
+  url.pathname = `${BASE_ROUTE.concat(MORE_ROUTE)}/${title
+    .split(' ')
+    .join('-')}`
   url.searchParams.set('type', type)
   url.searchParams.set('year', year)
   window.history.pushState({}, '', url)
@@ -33,7 +51,10 @@ const insertMoreURLRoute = ({
 
 const insertSearchURLRoute = ({ title }: { title: string }) => {
   const url = new URL(window.location.origin.toString())
-  url.pathname = SEARCH_ROUTE.replace(':search', title.split(' ').join('-'))
+  url.pathname = BASE_ROUTE.concat(SEARCH_ROUTE).replace(
+    ':search',
+    title.split(' ').join('-')
+  )
   window.history.pushState({}, '', url)
 }
 

@@ -1,14 +1,21 @@
-export function formatter(url: string) {
-  function formatterUrl() {
-    return url.split(' ').join('-').toString().toLowerCase()
-  }
+import { env } from './env'
 
-  function unformattedUrl() {
-    return url.split('-').join(' ').toString()
-  }
-
-  return {
-    formatterUrl,
-    unformattedUrl,
-  }
+export const formatter = {
+  formatterUrl: function (url: string) {
+    const urlLowerCase = url.toLowerCase()
+    if (urlLowerCase.includes(' ')) {
+      return urlLowerCase.split(' ').join('-').toString()
+    }
+    return urlLowerCase
+  },
+  unformattedUrl: function (url: string) {
+    const urlLowerCase = url.toLowerCase()
+    if (urlLowerCase.includes('-')) {
+      return urlLowerCase.split('-').join(' ').toString()
+    }
+    return urlLowerCase
+  },
+  mergeAvatarUrlWithBackUrl: function (avatar: string | null) {
+    return avatar ? env.VITE_BACKEND_URL.concat('/' + avatar) : null
+  },
 }

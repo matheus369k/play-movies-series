@@ -1,4 +1,4 @@
-import type { ReducerStateType } from '@/context/watch-context'
+import type { ReducerStateType } from '@/contexts/watch-context'
 import { ReducerCases } from './action-types'
 
 interface ReducerActionType {
@@ -39,12 +39,12 @@ export const reducer = (
 
 export const handleInitialReducer = (state: ReducerStateType) => {
   const url = new URL(window.location.toString())
-  const id = url.pathname.split('/')[3]
+  const imdbID = url.pathname.split('/')[4]
 
-  if (id) {
+  if (imdbID) {
     return {
       ...state,
-      imdbID: id,
+      imdbID,
     }
   }
 

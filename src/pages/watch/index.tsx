@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 import { CategorySection } from '../../components/category-section'
-import { randomYearNumber } from '@/functions/random-year'
+import { randomYearNumber } from '@/util/random-year'
 import { Error } from '@/components/error'
-import { WatchContext } from '@/context/watch-context'
+import { WatchContext } from '@/contexts/watch-context'
 import { VideoScreen } from './components/video-screen'
 import { BsStarFill } from 'react-icons/bs'
 import { fetchOneOmbdapi } from '@/services/fetch-omdbapi'
@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query'
 export function WatchMovieSeries() {
   const { state } = useContext(WatchContext)
   const { data, isError, isFetching } = useQuery({
+    staleTime: 1000 * 60 * 60 * 24,
     queryFn: async () => await fetchOneOmbdapi({ id: state.imdbID }),
     queryKey: ['movie', state.imdbID],
   })

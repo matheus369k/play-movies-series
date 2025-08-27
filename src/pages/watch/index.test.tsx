@@ -1,19 +1,29 @@
-import { WatchContext } from '@/context/watch-context'
+import { WatchContext } from '@/contexts/watch-context'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
 import { WatchMovieSeries } from '.'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import AxiosMockAdapter from 'axios-mock-adapter'
-import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { AxiosOmbdapi } from '@/util/axios'
 import { dbFocusData } from '@/data/movies-id'
 import type { ReactNode } from 'react'
+import { UserContext } from '@/contexts/user-context'
 
-const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => MockNavigate,
+  useNavigate: () => jest.fn(),
+  useLocation: jest.fn().mockReturnValue({
+    pathname: window.location.toString(),
+  }),
 }))
 
+const userData = {
+  id: faker.database.mongodbObjectId(),
+  avatar: faker.image.avatar(),
+  email: faker.internet.email(),
+  name: faker.person.firstName(),
+  createAt: faker.date.past().toISOString(),
+}
 const queryClient = new QueryClient()
 const wrapper = ({
   children,
@@ -22,18 +32,26 @@ const wrapper = ({
   children: ReactNode
   imdbID: string
 }) => (
-  <QueryClientProvider client={queryClient}>
-    <WatchContext.Provider
-      value={{
-        state: { imdbID, index: 1 },
-        handleAddIDBMID: jest.fn(),
-        handleAddIndex: jest.fn(),
-        handleResetData: jest.fn(),
-      }}
-    >
-      {children}
-    </WatchContext.Provider>
-  </QueryClientProvider>
+  <UserContext.Provider
+    value={{
+      resetUserState: jest.fn(),
+      setUserState: jest.fn(),
+      user: userData,
+    }}
+  >
+    <QueryClientProvider client={queryClient}>
+      <WatchContext.Provider
+        value={{
+          state: { imdbID, index: 1 },
+          handleAddIDBMID: jest.fn(),
+          handleAddIndex: jest.fn(),
+          handleResetData: jest.fn(),
+        }}
+      >
+        {children}
+      </WatchContext.Provider>
+    </QueryClientProvider>
+  </UserContext.Provider>
 )
 
 describe('WatchMovieSeries Data Display', () => {

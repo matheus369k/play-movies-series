@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react'
-import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { AxiosOmbdapi } from '@/util/axios'
 import { fetchOneOmbdapi, fetchManyOmbdapi } from './fetch-omdbapi'
 import AxiosMockAdapter from 'axios-mock-adapter'
 

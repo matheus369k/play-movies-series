@@ -1,14 +1,19 @@
 import { render, fireEvent, screen } from '@testing-library/react'
 import { InfiniteMovieCard } from './infinite-card'
 import { type ReactNode } from 'react'
-import { WatchContext } from '@/context/watch-context'
-import { WATCH_ROUTE } from '@/router/path-routes'
+import { WatchContext } from '@/contexts/watch-context'
+import { WATCH_ROUTE } from '@/util/consts'
 import userEvent from '@testing-library/user-event'
+import { UserContext } from '@/contexts/user-context'
+import { faker } from '@faker-js/faker/locale/pt_BR'
 
 const MockNavigate = jest.fn()
-jest.mock('react-router', () => ({
-  ...jest.requireActual('react-router'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => MockNavigate,
+  useLocation: jest.fn().mockReturnValue({
+    pathname: window.location.toString(),
+  }),
 }))
 
 const MockInView = jest.fn().mockReturnValue(false)
@@ -19,19 +24,34 @@ jest.mock('react-intersection-observer', () => ({
   }),
 }))
 
+const userData = {
+  id: faker.database.mongodbObjectId(),
+  avatar: faker.image.avatar(),
+  email: faker.internet.email(),
+  name: faker.person.firstName(),
+  createAt: faker.date.past().toISOString(),
+}
 const MockHandleAddIDBMID = jest.fn()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <WatchContext.Provider
+    <UserContext.Provider
       value={{
-        handleAddIDBMID: MockHandleAddIDBMID,
-        handleAddIndex: jest.fn(),
-        handleResetData: jest.fn(),
-        state: { imdbID: '', index: 0 },
+        resetUserState: jest.fn(),
+        setUserState: jest.fn(),
+        user: userData,
       }}
     >
-      {children}
-    </WatchContext.Provider>
+      <WatchContext.Provider
+        value={{
+          handleAddIDBMID: MockHandleAddIDBMID,
+          handleAddIndex: jest.fn(),
+          handleResetData: jest.fn(),
+          state: { imdbID: '', index: 0 },
+        }}
+      >
+        {children}
+      </WatchContext.Provider>
+    </UserContext.Provider>
   )
 }
 
@@ -119,7 +139,10 @@ describe('InfiniteMovieCard', () => {
       imdbID: movie.imdbID,
     })
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':id', movie.imdbID)
+      WATCH_ROUTE.replace(':userId', userData.id).replace(
+        ':movieId',
+        movie.imdbID
+      )
     )
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
   })

@@ -5,12 +5,13 @@ import { CardMovieLoading } from './movie-card-loading'
 import { MoviesCarouselProvider } from './movies-carousel'
 import { MovieCard } from './movie-card'
 import { useContext } from 'react'
-import { WatchContext } from '@/context/watch-context'
-import { SearchContext } from '@/context/search-context'
-import { useNavigate } from 'react-router-dom'
-import { TopResetScroll } from '@/functions'
-import { MORE_ROUTE } from '@/router/path-routes'
-import { formatter } from '@/util/formatter'
+import { WatchContext } from '@/contexts/watch-context'
+import { SearchContext } from '@/contexts/search-context'
+import { TopResetScroll } from '@/util/reset-scroll'
+import { useRoutes } from '@/hooks/useRoutes'
+import { UserContext } from '@/contexts/user-context'
+import { Navigate } from 'react-router-dom'
+import { REGISTER_USER } from '@/util/consts'
 
 interface CategorySectionProps {
   type: string
@@ -25,25 +26,32 @@ export function CategorySection({
   title,
   year,
 }: CategorySectionProps) {
-  const params = `?s=one&plot=full&y=${year}&type=${type}&page=${page}`
+  const { NavigateToMorePage } = useRoutes()
   const { handleResetData } = useContext(WatchContext)
   const { handleResetContext } = useContext(SearchContext)
+  const { user } = useContext(UserContext)
   const { data, isLoading, isError } = useQuery({
+    staleTime: 1000 * 60 * 60 * 24,
     queryKey: [title, type, year, page],
-    queryFn: async () => await fetchManyOmbdapi({ params }),
+    queryFn: async () =>
+      await fetchManyOmbdapi({
+        params: `?s=one&plot=full&y=${year}&type=${type}&page=${page}`,
+      }),
   })
-  const navigate = useNavigate()
 
   function handleGetDataOfMovie() {
+    if (!user) return <Navigate to={REGISTER_USER} />
+
     TopResetScroll()
     handleResetContext()
     handleResetData()
 
-    navigate(
-      `${MORE_ROUTE}/${formatter(
-        title
-      ).formatterUrl()}?type=${type}&year=${year}`
-    )
+    NavigateToMorePage({
+      title,
+      type,
+      year,
+      userId: user.id,
+    })
   }
 
   if (isError || (!isLoading && !data)) {
@@ -58,7 +66,7 @@ export function CategorySection({
         </h2>
         <span
           onClick={handleGetDataOfMovie}
-          className='text-gray-500 hover:text-gray-100 cursor-pointer'
+          className='text-zinc-500 hover:text-zinc-100 cursor-pointer'
         >
           More
         </span>

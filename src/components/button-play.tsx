@@ -19,7 +19,7 @@ export function ButtonPlay({
   return (
     <button
       {...props}
-      className={`border border-gray-100 bg-gray-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-gray-200/10 ${positionDefault} ${receiveVisible} z-50`}
+      className={`border border-zinc-100 bg-zinc-200/20 rounded-full p-4 cursor-pointer transition-all hover:bg-zinc-200/10 ${positionDefault} ${receiveVisible} z-50`}
       type='button'
       title='Play'
     >

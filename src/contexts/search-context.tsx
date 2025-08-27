@@ -1,9 +1,8 @@
-import { SEARCH_ROUTE } from '@/router/path-routes'
 import { createContext, useState } from 'react'
 
 interface SearchContextType {
   search: string
-  handleUpdateSearch: (props: { search: string }) => void
+  handleUpdateSearch: (search: string) => void
   handleResetContext: () => void
 }
 
@@ -16,16 +15,16 @@ export function SearchContextProvider({
 }) {
   const [search, setSearch] = useState(() => {
     const { pathname } = new URL(window.location.toString())
-    const search = pathname.split('/')[3]
+    const searchParam = pathname.split('/')[4]
 
-    if (pathname.includes(SEARCH_ROUTE.split(':search')[0]) && search) {
-      return search
+    if (pathname.includes('/search/') && searchParam) {
+      return searchParam
     }
 
     return 'one'
   })
 
-  function handleUpdateSearch({ search }: { search: string }) {
+  function handleUpdateSearch(search: string) {
     setSearch(search)
   }
 

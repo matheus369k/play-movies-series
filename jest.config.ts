@@ -18,8 +18,9 @@ const config: Config.InitialOptions = {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
   testEnvironmentOptions: {
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3000/play-movies-series',
   },
+  testTimeout: 10000,
 }
 
 export default config

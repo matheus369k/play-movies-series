@@ -1,11 +1,13 @@
 import { IoSearchOutline } from 'react-icons/io5'
-import { SearchContext } from '@/context/search-context'
-import { TopResetScroll } from '@/functions'
-import { SEARCH_ROUTE } from '@/router/path-routes'
-import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { SearchContext } from '@/contexts/search-context'
+import { TopResetScroll } from '@/util/reset-scroll'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useContext } from 'react'
-import { formatter } from '@/util/formatter'
+import { FormFieldIcon, FormFieldInput, FormFieldRoot } from './form-field'
+import { useRoutes } from '@/hooks/useRoutes'
+import { Navigate } from 'react-router-dom'
+import { REGISTER_USER } from '@/util/consts'
+import { UserContext } from '@/contexts/user-context'
 
 export interface UseFormType {
   search: string
@@ -13,35 +15,45 @@ export interface UseFormType {
 
 export function SearchForm() {
   const { handleUpdateSearch } = useContext(SearchContext)
-  const { handleSubmit, reset, register } = useForm<UseFormType>({
+  const { user } = useContext(UserContext)
+  const hookUseForm = useForm<UseFormType>({
     defaultValues: {
       search: '',
     },
   })
-  const navigate = useNavigate()
+  const { handleSubmit, reset } = hookUseForm
+  const { NavigateToSearchPage } = useRoutes()
 
   function handleSubmitSearchForm({ search }: UseFormType) {
-    navigate(SEARCH_ROUTE.replace(':search', formatter(search).formatterUrl()))
-    handleUpdateSearch({ search })
+    if (!user) return <Navigate to={REGISTER_USER} />
+
+    handleUpdateSearch(search)
     TopResetScroll()
     reset()
+
+    NavigateToSearchPage({ search, userId: user.id })
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(handleSubmitSearchForm)}
-      autoComplete='off'
-      className='relative text-gray-400 backdrop-blur-sm'
-    >
-      <label htmlFor='search'>
-        <IoSearchOutline className='absolute top-1/2 left-2 -translate-y-1/2 size-8 z-10 max-sm:size-6' />
-      </label>
-      <input
-        {...register('search')}
-        className='bg-gray-200/20 text-gray-100 outline-none border border-gray-500 focus:border-gray-100 focus:outline-none placeholder:text-gray-400 w-full p-2 pl-12 rounded-full max-sm:text-sm max-sm:pl-10'
-        type='search'
-        placeholder='Search...'
-      />
-    </form>
+    <FormProvider {...hookUseForm}>
+      <form
+        onSubmit={handleSubmit(handleSubmitSearchForm)}
+        autoComplete='off'
+        className='relative text-zinc-400'
+      >
+        <FormFieldRoot className='bg-zinc-200/20 backdrop-blur-sm'>
+          <FormFieldInput
+            aria-label='search'
+            type='search'
+            placeholder='Search...'
+            fieldName='search'
+            id='search'
+          />
+          <FormFieldIcon>
+            <IoSearchOutline className='size-6 z-10' />
+          </FormFieldIcon>
+        </FormFieldRoot>
+      </form>
+    </FormProvider>
   )
 }

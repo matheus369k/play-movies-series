@@ -1,16 +1,19 @@
 import { render, screen } from '@testing-library/react'
 import { Search } from '.'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { SEARCH_ROUTE } from '@/router/path-routes'
+import { BASE_ROUTE, SEARCH_ROUTE } from '@/util/consts'
 import AxiosMockAdapter from 'axios-mock-adapter'
-import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { AxiosOmbdapi } from '@/util/axios'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { SearchContextProvider } from '@/context/search-context'
+import { SearchContextProvider } from '@/contexts/search-context'
+import { UserContext } from '@/contexts/user-context'
 
-const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => MockNavigate,
+  useNavigate: () => jest.fn(),
+  useLocation: jest.fn().mockReturnValue({
+    pathname: window.location.toString(),
+  }),
 }))
 
 const MockInView = jest.fn().mockReturnValue(false)
@@ -21,11 +24,26 @@ jest.mock('react-intersection-observer', () => ({
   }),
 }))
 
+const userData = {
+  id: faker.database.mongodbObjectId(),
+  avatar: faker.image.avatar(),
+  email: faker.internet.email(),
+  name: faker.person.firstName(),
+  createAt: faker.date.past().toISOString(),
+}
 const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={queryClient}>
-    <SearchContextProvider>{children}</SearchContextProvider>
-  </QueryClientProvider>
+  <UserContext.Provider
+    value={{
+      resetUserState: jest.fn(),
+      setUserState: jest.fn(),
+      user: userData,
+    }}
+  >
+    <QueryClientProvider client={queryClient}>
+      <SearchContextProvider>{children}</SearchContextProvider>
+    </QueryClientProvider>
+  </UserContext.Provider>
 )
 
 describe('Search', () => {
@@ -52,7 +70,10 @@ describe('Search', () => {
 
   beforeEach(() => {
     const url = new URL(window.location.origin.toString())
-    url.pathname = SEARCH_ROUTE.replace(':search', 'transformers')
+    url.pathname = BASE_ROUTE.concat(SEARCH_ROUTE).replace(
+      ':search',
+      'transformers'
+    )
     window.history.pushState({}, '', url)
   })
 

@@ -1,4 +1,4 @@
-export function resetScroll() {
+export function TopResetScroll() {
   window.scrollTo({
     top: 0,
     left: 0,

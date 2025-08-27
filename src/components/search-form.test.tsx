@@ -1,28 +1,48 @@
 import { render, screen, act } from '@testing-library/react'
 import { SearchForm } from './search-form'
-import { SearchContext } from '@/context/search-context'
+import { SearchContext } from '@/contexts/search-context'
 import { type ReactNode } from 'react'
 import { userEvent } from '@testing-library/user-event'
-import { SEARCH_ROUTE } from '@/router/path-routes'
+import { SEARCH_ROUTE } from '@/util/consts'
+import { faker } from '@faker-js/faker/locale/pt_BR'
+import { UserContext } from '@/contexts/user-context'
 
-const mockNavigate = jest.fn()
+const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => MockNavigate,
+  useLocation: jest.fn().mockReturnValue({
+    pathname: window.location.toString(),
+  }),
 }))
 
+const userData = {
+  id: faker.database.mongodbObjectId(),
+  avatar: faker.image.avatar(),
+  email: faker.internet.email(),
+  name: faker.person.firstName(),
+  createAt: faker.date.past().toISOString(),
+}
 const MockHandleUpdateSearch = jest.fn()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <SearchContext.Provider
+    <UserContext.Provider
       value={{
-        search: 'one',
-        handleUpdateSearch: MockHandleUpdateSearch,
-        handleResetContext: jest.fn(),
+        resetUserState: jest.fn(),
+        setUserState: jest.fn(),
+        user: userData,
       }}
     >
-      {children}
-    </SearchContext.Provider>
+      <SearchContext.Provider
+        value={{
+          search: 'one',
+          handleUpdateSearch: MockHandleUpdateSearch,
+          handleResetContext: jest.fn(),
+        }}
+      >
+        {children}
+      </SearchContext.Provider>
+    </UserContext.Provider>
   )
 }
 
@@ -52,11 +72,12 @@ describe('SearchForm', () => {
     await user.click(screen.getByRole('button'))
 
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
-    expect(MockHandleUpdateSearch).toHaveBeenCalledWith({
-      search: 'transformers',
-    })
-    expect(mockNavigate).toHaveBeenCalledWith(
-      SEARCH_ROUTE.replace(':search', 'transformers')
+    expect(MockHandleUpdateSearch).toHaveBeenCalledWith('transformers')
+    expect(MockNavigate).toHaveBeenCalledWith(
+      SEARCH_ROUTE.replace(':userId', userData.id).replace(
+        ':search',
+        'transformers'
+      )
     )
     expect(inputSearch).toHaveValue('')
   })

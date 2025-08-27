@@ -1,4 +1,4 @@
-import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { AxiosOmbdapi } from '@/util/axios'
 
 interface ResponseOneDataType {
   Title?: string

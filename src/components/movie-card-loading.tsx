@@ -1,6 +1,6 @@
 export function CardMovieLoading() {
   return (
-    <li className='flex flex-col items-center bg-gray-900 rounded border border-gray-800 max-w-52 max-sm:w-32 w-full animate-pulse'>
+    <div className='flex flex-col items-center bg-zinc-900 rounded border border-zinc-800 max-w-52 max-sm:w-32 w-full animate-pulse'>
       <div className='relative z-50 rounded cursor-pointer aspect-[3/4] overflow-hidden min-h-full'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -13,6 +13,6 @@ export function CardMovieLoading() {
           />
         </svg>
       </div>
-    </li>
+    </div>
   )
 }

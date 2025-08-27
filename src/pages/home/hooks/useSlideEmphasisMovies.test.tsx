@@ -1,26 +1,45 @@
-import { WatchContextProvider } from '@/context/watch-context'
+import { WatchContextProvider } from '@/contexts/watch-context'
 import { dbFocusData } from '@/data/movies-id'
-import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { AxiosOmbdapi } from '@/util/axios'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook } from '@testing-library/react'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { act, type ReactNode } from 'react'
 import { useSlideEmphasisMovies } from './useSlideEmphasisMovies'
-import { WATCH_ROUTE } from '@/router/path-routes'
+import { WATCH_ROUTE } from '@/util/consts'
+import { UserContext } from '@/contexts/user-context'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => MockNavigate,
+  useLocation: jest.fn().mockReturnValue({
+    pathname: window.location.toString(),
+  }),
 }))
 
+const userData = {
+  id: faker.database.mongodbObjectId(),
+  avatar: faker.image.avatar(),
+  email: faker.internet.email(),
+  name: faker.person.firstName(),
+  createAt: faker.date.past().toISOString(),
+}
 const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <WatchContextProvider>{children}</WatchContextProvider>
-    </QueryClientProvider>
+    <UserContext.Provider
+      value={{
+        resetUserState: jest.fn(),
+        setUserState: jest.fn(),
+        user: userData,
+      }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <WatchContextProvider>{children}</WatchContextProvider>
+      </QueryClientProvider>
+    </UserContext.Provider>
   )
 }
 
@@ -75,7 +94,10 @@ describe('useSlideEmphasisMovies', () => {
     })
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':id', movies[0].imdbID)
+      WATCH_ROUTE.replace(':userId', userData.id).replace(
+        ':movieId',
+        movies[0].imdbID
+      )
     )
     expect(result.current.state).toEqual({
       imdbID: movies[0].imdbID,

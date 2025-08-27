@@ -1,7 +1,7 @@
 import { CategorySection } from '@/components/category-section'
-import { randomYearNumber } from '@/functions'
+import { randomYearNumber } from '@/util/random-year'
 import { EmphasisMovies } from './components/emphasis-movies'
-import { MORE_ROUTES } from '@/router/path-routes'
+import { MORE_ROUTES } from '@/util/consts'
 
 export function Home() {
   return (

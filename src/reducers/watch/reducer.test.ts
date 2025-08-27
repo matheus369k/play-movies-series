@@ -1,88 +1,86 @@
-import { reducer, handleInitialReducer } from "./reducer";
-import { ReducerCases } from "./action-types";
-import type { ReducerStateType } from "@/context/watch-context";
-import { WATCH_ROUTE } from "@/router/path-routes";
+import { reducer, handleInitialReducer } from './reducer'
+import { ReducerCases } from './action-types'
+import type { ReducerStateType } from '@/contexts/watch-context'
+import { BASE_ROUTE, WATCH_ROUTE } from '@/util/consts'
 
-describe("reducer", () => {
+describe('reducer', () => {
   const initialState: ReducerStateType = {
-    imdbID: "",
+    imdbID: '',
     index: 0,
-  };
+  }
 
-  it("should reset data to default values", () => {
-    const action = { type: ReducerCases.RESET_DATA };
-
-    const newState = reducer(initialState, action);
+  it('should reset data to default values', () => {
+    const action = { type: ReducerCases.RESET_DATA }
+    const newState = reducer(initialState, action)
 
     expect(newState).toEqual({
-      imdbID: "",
+      imdbID: '',
       index: 0,
-    });
-  });
+    })
+  })
 
-  it("should set the imdbID", () => {
+  it('should set the imdbID', () => {
     const action = {
       type: ReducerCases.ADD_IDBM_ID,
-      payload: { imdbID: "tt1234567" },
-    };
-
-    const newState = reducer(initialState, action);
+      payload: { imdbID: 'tt1234567' },
+    }
+    const newState = reducer(initialState, action)
 
     expect(newState).toEqual({
-      imdbID: "tt1234567",
+      imdbID: 'tt1234567',
       index: 0,
-    });
-  });
+    })
+  })
 
-  it("should update the index", () => {
+  it('should update the index', () => {
     const action = {
       type: ReducerCases.ADD_INDEX,
       payload: { index: 5 },
-    };
-
-    const newState = reducer(initialState, action);
+    }
+    const newState = reducer(initialState, action)
 
     expect(newState).toEqual({
-      imdbID: "",
+      imdbID: '',
       index: 5,
-    });
-  });
+    })
+  })
 
-  it("should return the current state for unknown action types", () => {
-    const action = { type: "UNKNOWN_ACTION" };
+  it('should return the current state for unknown action types', () => {
+    const action = { type: 'UNKNOWN_ACTION' }
+    const newState = reducer(initialState, action)
 
-    const newState = reducer(initialState, action);
+    expect(newState).toEqual(initialState)
+  })
+})
 
-    expect(newState).toEqual(initialState);
-  });
-});
-
-describe("handleInitialReducer", () => {
+describe('handleInitialReducer', () => {
   const initialState: ReducerStateType = {
-    imdbID: "",
+    imdbID: '',
     index: 0,
-  };
+  }
 
-  it("should set imdbID from URL", () => {
-    const url = new URL(window.location.toString());
-    url.pathname = WATCH_ROUTE.replace(":id", "tt1234567");
-    window.history.pushState({}, "", url.toString());
-
-    const newState = handleInitialReducer(initialState);
+  it('should set imdbID from URL', () => {
+    const url = new URL(window.location.toString())
+    url.pathname = BASE_ROUTE.concat(WATCH_ROUTE).replace(
+      ':movieId',
+      'tt1234567'
+    )
+    window.history.pushState({}, '', url.toString())
+    const newState = handleInitialReducer(initialState)
 
     expect(newState).toEqual({
-      imdbID: "tt1234567",
+      imdbID: 'tt1234567',
       index: 0,
-    });
-  });
+    })
+  })
 
-  it("should return the initial state if no imdbID in URL", () => {
-    const url = new URL(window.location.toString());
-    url.pathname = WATCH_ROUTE.replace(":id", "");
-    window.history.pushState({}, "", url.toString());
+  it('should return the initial state if no imdbID in URL', () => {
+    const url = new URL(window.location.toString())
+    url.pathname = BASE_ROUTE.concat(WATCH_ROUTE).replace(':movieId', '')
+    window.history.pushState({}, '', url.toString())
 
-    const newState = handleInitialReducer(initialState);
+    const newState = handleInitialReducer(initialState)
 
-    expect(newState).toEqual(initialState);
-  });
-});
+    expect(newState).toEqual(initialState)
+  })
+})

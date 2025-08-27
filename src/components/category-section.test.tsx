@@ -3,27 +3,41 @@ import { CategorySection } from './category-section'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import type { ReactNode } from 'react'
-import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { AxiosOmbdapi } from '@/util/axios'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { WatchContext } from '@/context/watch-context'
-import { SearchContext } from '@/context/search-context'
+import { WatchContext } from '@/contexts/watch-context'
+import { SearchContext } from '@/contexts/search-context'
 import { userEvent } from '@testing-library/user-event'
-import { MORE_ROUTE } from '@/router/path-routes'
+import { MORE_ROUTE } from '@/util/consts'
+import { UserContext, UserContextProvider } from '@/contexts/user-context'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => MockNavigate,
+  useLocation: jest.fn().mockReturnValue({
+    pathname: window.location.toString(),
+  }),
 }))
 
 jest.mock('./movies-carousel', () => ({
-  MoviesCarouselProvider: ({ ...props }) => <ul {...props} />,
+  MoviesCarouselProvider: ({ children, ...props }: any) => {
+    return (
+      <ul {...props}>
+        {(children as [any]).map((child) => (
+          <li key={faker.database.mongodbObjectId()}>{child}</li>
+        ))}
+      </ul>
+    )
+  },
 }))
 
 const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserContextProvider>{children}</UserContextProvider>
+    </QueryClientProvider>
   )
 }
 
@@ -128,6 +142,13 @@ describe('CategorySection', () => {
   })
 
   it('when clicked in more should: reset contexts, return scroll to initial and redirection page', async () => {
+    const userData = {
+      id: faker.database.mongodbObjectId(),
+      avatar: faker.image.avatar(),
+      email: faker.internet.email(),
+      name: faker.person.firstName(),
+      createAt: faker.date.past().toISOString(),
+    }
     const SpyScrollTo = jest
       .spyOn(window, 'scrollTo')
       .mockImplementationOnce(() => jest.fn())
@@ -138,29 +159,37 @@ describe('CategorySection', () => {
       totalResults: 10,
     })
     render(
-      <SearchContext.Provider
+      <UserContext.Provider
         value={{
-          handleResetContext: MockHandleResetContext,
-          handleUpdateSearch: jest.fn(),
-          search: 'all',
+          resetUserState: jest.fn(),
+          setUserState: jest.fn(),
+          user: userData,
         }}
       >
-        <WatchContext.Provider
+        <SearchContext.Provider
           value={{
-            handleResetData: MockHandleResetData,
-            handleAddIndex: jest.fn(),
-            handleAddIDBMID: jest.fn(),
-            state: { imdbID: '', index: 0 },
+            handleResetContext: MockHandleResetContext,
+            handleUpdateSearch: jest.fn(),
+            search: 'all',
           }}
         >
-          <CategorySection
-            title='Test Title'
-            page={page}
-            type={type}
-            year={year}
-          />
-        </WatchContext.Provider>
-      </SearchContext.Provider>,
+          <WatchContext.Provider
+            value={{
+              handleResetData: MockHandleResetData,
+              handleAddIndex: jest.fn(),
+              handleAddIDBMID: jest.fn(),
+              state: { imdbID: '', index: 0 },
+            }}
+          >
+            <CategorySection
+              title='Test Title'
+              page={page}
+              type={type}
+              year={year}
+            />
+          </WatchContext.Provider>
+        </SearchContext.Provider>
+      </UserContext.Provider>,
       {
         wrapper,
       }
@@ -173,7 +202,10 @@ describe('CategorySection', () => {
     expect(MockHandleResetContext).toHaveBeenCalledTimes(1)
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
     expect(MockNavigate).toHaveBeenCalledWith(
-      `${MORE_ROUTE}/test-title?type=${type}&year=${year}`
+      `${MORE_ROUTE.replace(
+        ':userId',
+        userData.id
+      )}/test-title?type=${type}&year=${year}`
     )
   })
 })

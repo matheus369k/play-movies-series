@@ -1,26 +1,61 @@
-import { TopResetScroll } from '@/functions'
+import { TopResetScroll } from '@/util/reset-scroll'
 import { SearchForm } from './search-form'
-import { HOME_ROUTE, MORE_ROUTE, SEARCH_ROUTE } from '@/router/path-routes'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { JWT_USER_TOKEN, LOGIN_USER, REGISTER_USER } from '@/util/consts'
+import { Link, Navigate } from 'react-router-dom'
+import { getUserProfile } from '@/services/get-user-profile'
+import { useRoutes } from '@/hooks/useRoutes'
+import { useContext, useEffect } from 'react'
+import { UserContext } from '@/contexts/user-context'
+import { cookiesStorage } from '@/util/browser-storage'
+import { formatter } from '@/util/formatter'
 
 export function Header() {
-  const { pathname } = useLocation()
-  const navigate = useNavigate()
+  const {
+    isLoginPage,
+    isRegisterPage,
+    isMorePage,
+    isSearchPage,
+    NavigateToHomePage,
+    NavigateToRegisterPage,
+  } = useRoutes()
+  const isRegisterOrLoginPage = isLoginPage || isRegisterPage
+  const isSearchOrMorePage = isMorePage || isSearchPage
+  const { user, setUserState } = useContext(UserContext)
 
   function handleRedirectMainPage() {
+    if (!user) return <Navigate to={REGISTER_USER} />
     TopResetScroll()
-
-    navigate(HOME_ROUTE)
+    NavigateToHomePage(user.id)
   }
 
-  const isSearchOrMore =
-    pathname.includes(MORE_ROUTE) ||
-    pathname.includes(SEARCH_ROUTE.split(':search')[0])
+  async function AutoLoginUser() {
+    const token = cookiesStorage.get(JWT_USER_TOKEN)
+    if (!token && user) return
+
+    const data = await getUserProfile()
+    if (!data) {
+      cookiesStorage.delete(JWT_USER_TOKEN)
+      NavigateToRegisterPage()
+      return
+    }
+
+    setUserState({
+      ...data.user,
+      avatar: formatter.mergeAvatarUrlWithBackUrl(data.user.avatar),
+    })
+    if (isRegisterOrLoginPage) {
+      NavigateToHomePage(data.user.id)
+    }
+  }
+
+  useEffect(() => {
+    AutoLoginUser()
+  }, [])
 
   return (
     <header
       className={`top-0 left-0 w-full p-4 flex justify-between items-center z-50 max-sm:p-2 animate-show-header ${
-        isSearchOrMore ? 'fixed bg-gray-950' : 'absolute'
+        isSearchOrMorePage ? 'fixed bg-zinc-950' : 'absolute'
       }`}
     >
       <button onClick={handleRedirectMainPage} className='flex items-center'>
@@ -30,7 +65,41 @@ export function Header() {
         </h1>
       </button>
 
-      <SearchForm />
+      {user ? (
+        <div className='flex gap-4'>
+          <SearchForm />
+          <div className='w-10 h-10 rounded-full cursor-pointer'>
+            {user.avatar ? (
+              <img
+                className='object-cover rounded-full'
+                src={user.avatar}
+                alt=''
+              />
+            ) : (
+              <div className='flex justify-center items-center w-full h-full bg-red-600 text-zinc-50 rounded-full'>
+                <i className='uppercase text-2xl font-sans'>
+                  {user.email.slice(0, 1)}
+                </i>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <nav className='flex gap-8'>
+          <Link
+            className={`text-lg ${isRegisterPage && 'text-zinc-500'}`}
+            to={REGISTER_USER}
+          >
+            register
+          </Link>
+          <Link
+            className={`text-lg ${isLoginPage && 'text-zinc-500'}`}
+            to={LOGIN_USER}
+          >
+            login
+          </Link>
+        </nav>
+      )}
     </header>
   )
 }

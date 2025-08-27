@@ -1,27 +1,47 @@
 import { render, screen } from '@testing-library/react'
-import { WATCH_ROUTE } from '@/router/path-routes'
+import { WATCH_ROUTE } from '@/util/consts'
 import type { ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AxiosMockAdapter from 'axios-mock-adapter'
-import { AxiosOmbdapi } from '@/util/axios-omdbapi'
+import { AxiosOmbdapi } from '@/util/axios'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { dbFocusData } from '@/data/movies-id'
-import { WatchContext, WatchContextProvider } from '@/context/watch-context'
+import { WatchContext, WatchContextProvider } from '@/contexts/watch-context'
 import userEvent from '@testing-library/user-event'
 import { EmphasisMovies } from './emphasis-movies'
+import { UserContext } from '@/contexts/user-context'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => MockNavigate,
+  useLocation: jest.fn().mockReturnValue({
+    pathname: window.location.toString(),
+  }),
 }))
 
 const queryClient = new QueryClient()
+
+const userData = {
+  id: faker.database.mongodbObjectId(),
+  avatar: faker.image.avatar(),
+  email: faker.internet.email(),
+  name: faker.person.firstName(),
+  createAt: faker.date.past().toISOString(),
+}
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <WatchContextProvider>{children}</WatchContextProvider>
-    </QueryClientProvider>
+    <UserContext.Provider
+      value={{
+        resetUserState: jest.fn(),
+        setUserState: jest.fn(),
+        user: userData,
+      }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <WatchContextProvider>{children}</WatchContextProvider>
+      </QueryClientProvider>
+    </UserContext.Provider>
   )
 }
 
@@ -103,7 +123,10 @@ describe('Home', () => {
     await user.click(screen.getByRole('img').parentElement!)
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':id', movies[0].imdbID)
+      WATCH_ROUTE.replace(':userId', userData.id).replace(
+        ':movieId',
+        movies[0].imdbID
+      )
     )
     expect(MockHandleAddIDBMID).toHaveBeenCalledWith({
       imdbID: movies[0].imdbID,
@@ -133,7 +156,10 @@ describe('Home', () => {
     await user.click(screen.getAllByRole('button')[1].parentElement!)
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':id', movies[0].imdbID)
+      WATCH_ROUTE.replace(':userId', userData.id).replace(
+        ':movieId',
+        movies[0].imdbID
+      )
     )
     expect(MockHandleAddIDBMID).toHaveBeenCalledWith({
       imdbID: movies[0].imdbID,

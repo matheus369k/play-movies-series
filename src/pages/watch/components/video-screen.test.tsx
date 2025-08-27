@@ -21,7 +21,7 @@ describe('VideoScreen', () => {
     await user.click(likeButton)
 
     expect(likeButton).toHaveClass('bg-green-500 text-zinc-100')
-    expect(likeButton).not.toHaveClass('text-zinc-400 bg-gray-950')
+    expect(likeButton).not.toHaveClass('text-zinc-400 bg-zinc-950')
   })
 
   it('update color from dislike button state when clicked', async () => {
@@ -31,7 +31,7 @@ describe('VideoScreen', () => {
     await user.click(dislikeButton)
 
     expect(dislikeButton).toHaveClass('bg-red-500 text-zinc-100')
-    expect(dislikeButton).not.toHaveClass('text-zinc-400 bg-gray-950')
+    expect(dislikeButton).not.toHaveClass('text-zinc-400 bg-zinc-950')
   })
 
   it('toggles between like and dislike states', async () => {
