@@ -100,7 +100,7 @@ describe('Search', () => {
     })
     render(<Search />, { wrapper })
 
-    screen.getByText(/carregando.../i)
+    screen.getByText(/loading.../i)
   })
 
   it('should render not found components when finished request without find datas', async () => {

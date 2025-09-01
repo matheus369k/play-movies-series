@@ -10,7 +10,7 @@ export function RootLayout() {
   const isLoginOrRegisterPage = isLoginPage || isRegisterPage
 
   return (
-    <div className='bg-zinc-950 text-zinc-100 min-h-screen font-inter tracking-wider'>
+    <div className='relative bg-zinc-950 text-zinc-100 min-h-screen font-inter tracking-wider max-w-[1344px] mx-auto'>
       <WatchContextProvider>
         <SearchContextProvider>
           <Header />
@@ -21,7 +21,7 @@ export function RootLayout() {
             </main>
           ) : (
             <>
-              <main className='min-h-[calc(100vh-9rem)] h-full animate-soften-render'>
+              <main className='min-h-[calc(100vh-9rem)] h-full animate-soften-render px-4'>
                 <Outlet />
               </main>
               <Footer />

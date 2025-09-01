@@ -21,7 +21,6 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const queryClient = new QueryClient()
-
 const userData = {
   id: faker.database.mongodbObjectId(),
   avatar: faker.image.avatar(),

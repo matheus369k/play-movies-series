@@ -16,7 +16,7 @@ describe('SearchMoreContainer', () => {
   it('should render loading state when fetching is true', () => {
     render(<SearchMoreContainer isFetching={true} title='Testing' />)
 
-    screen.getByText(/carregando.../i)
+    screen.getByText(/loading.../i)
   })
 
   it('should render not found state when fetching is false and without receive children', () => {

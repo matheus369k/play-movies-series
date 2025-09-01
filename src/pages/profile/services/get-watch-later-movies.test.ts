@@ -2,21 +2,24 @@ import { renderHook } from '@testing-library/react'
 import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { getUserProfile } from './get-user-profile'
+import { getWatchLaterMovies } from './get-watch-later-movies'
 import { cookiesStorage } from '@/util/browser-storage'
 
-describe('getUserProfile', () => {
+describe('getWatchLaterMovies', () => {
   const SpyConsole = jest.spyOn(console, 'log')
   const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
   const SpyCookiesStorageGet = jest.spyOn(cookiesStorage, 'get')
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
-  const user = {
-    name: faker.person.fullName(),
-    email: faker.internet.email(),
-    id: faker.database.mongodbObjectId(),
-    avatar: faker.image.avatar(),
-    createAt: faker.date.past().toISOString(),
-  }
+  const watchLaterMedias = Array.from({ length: 4 }).map(() => {
+    return {
+      id: faker.database.mongodbObjectId(),
+      movieId: faker.database.mongodbObjectId(),
+      image: faker.image.avatar(),
+      title: faker.book.title(),
+      release: faker.date.past().getFullYear(),
+      type: 'movies',
+    }
+  })
 
   beforeEach(() => {
     SpyCookiesStorageGet.mockReturnValue(jwtToken)
@@ -28,10 +31,10 @@ describe('getUserProfile', () => {
   })
 
   it('should fetch completed when is user has authorization', async () => {
-    MockAxiosBackApi.onGet('/users/profile').replyOnce(200, { user })
-    const { result } = renderHook(getUserProfile)
+    MockAxiosBackApi.onGet('/watch-later').replyOnce(200, { watchLaterMedias })
+    const { result } = renderHook(getWatchLaterMovies)
 
-    expect(await result.current).toMatchObject({ user })
+    expect(await result.current).toMatchObject({ watchLaterMedias })
     expect(MockAxiosBackApi.history[0].headers?.Authorization).toBe(
       `Bearer ${jwtToken}`
     )
@@ -39,8 +42,8 @@ describe('getUserProfile', () => {
 
   it('should handle error when user not have token to authorization', async () => {
     SpyCookiesStorageGet.mockReset()
-    MockAxiosBackApi.onGet('/users/profile').replyOnce(200, { user })
-    const { result } = renderHook(getUserProfile)
+    MockAxiosBackApi.onGet('/watch-later').replyOnce(200, { watchLaterMedias })
+    const { result } = renderHook(getWatchLaterMovies)
 
     expect(await result.current).toBeUndefined()
     expect(MockAxiosBackApi.history).toHaveLength(0)
@@ -49,18 +52,16 @@ describe('getUserProfile', () => {
 
   it('should handle error when request failed', async () => {
     MockAxiosBackApi.onGet('/watch-later').replyOnce(500, undefined)
-    const { result } = renderHook(getUserProfile)
+    const { result } = renderHook(getWatchLaterMovies)
 
     expect(await result.current).toBeUndefined()
     expect(MockAxiosBackApi.history).toHaveLength(1)
     expect(SpyConsole).toHaveBeenCalled()
   })
 
-  it('should handle empty response when fetching user profile data', async () => {
-    const SpyConsole = jest.spyOn(console, 'log')
-    MockAxiosBackApi.onGet('/users/profile').replyOnce(200, undefined)
-
-    const { result } = renderHook(getUserProfile)
+  it('should handle empty response when fetching medias data', async () => {
+    MockAxiosBackApi.onGet('/watch-later').replyOnce(200, undefined)
+    const { result } = renderHook(getWatchLaterMovies)
 
     expect(await result.current).toBeUndefined()
     expect(MockAxiosBackApi.history).toHaveLength(1)

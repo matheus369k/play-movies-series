@@ -5,6 +5,7 @@ export const REGISTER_USER = '/register'
 export const LOGIN_USER = '/login'
 export const HOME_ROUTE = '/:userId'
 export const WATCH_ROUTE = HOME_ROUTE.concat('/watch/:movieId')
+export const PROFILE_ROUTE = HOME_ROUTE.concat('/profile')
 export const SEARCH_ROUTE = HOME_ROUTE.concat('/search/:search')
 export const MORE_ROUTE = HOME_ROUTE.concat('/more')
 export const MORE_ROUTES = {

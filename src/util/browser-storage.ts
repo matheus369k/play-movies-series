@@ -39,10 +39,10 @@ export const browserSessionStorage = {
 }
 
 export const cookiesStorage = {
-  date: new Date(),
   set: function ({ key, value }: { key: string; value: string }) {
-    this.date.setTime(this.date.getTime() + 7 * 24 * 60 * 60 * 1000)
-    document.cookie = `${key}=${value};expires=${this.date.toUTCString()}`
+    const date = new Date()
+    date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000)
+    document.cookie = `${key}=${value};expires=${date.toUTCString()}`
   },
   get: function (key: string) {
     try {
@@ -63,17 +63,18 @@ export const cookiesStorage = {
   },
   delete: function (key: string) {
     try {
+      const date = new Date()
       const allCookies: string[] = document.cookie.split('=')
       const cookieKeyIndex = allCookies.findIndex((value) => value === key)
       if (cookieKeyIndex < 0)
         throw new Error(`Not found cookie with name: ${key}`)
-      this.date.setTime(this.date.getTime())
+      date.setTime(date.getTime() - 1000 * 60 * 60 * 24 * 7)
       document.cookie = allCookies
         .map((value, index) => {
           if (cookieKeyIndex + 1 === index) {
             return `${
               allCookies[cookieKeyIndex + 1]
-            };expires=${this.date.toUTCString()}`
+            };expires=${date.toUTCString()}`
           }
           return value
         })

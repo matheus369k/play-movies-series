@@ -1,22 +1,14 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { WatchMovieSeries } from '@/pages/watch'
 import { MoreMoviesSeries } from '@/pages/more'
 import { NotFound } from '@/components/not-found'
 import { Search } from '@/pages/search'
 import { Home } from '@/pages/home'
 import { RootLayout } from '@/root'
-
-import {
-  BASE_ROUTE,
-  HOME_ROUTE,
-  LOGIN_USER,
-  MORE_ROUTES,
-  REGISTER_USER,
-  SEARCH_ROUTE,
-  WATCH_ROUTE,
-} from '@/util/consts'
+import * as pathRoutes from '@/util/consts'
 import { RegisterUser } from '@/pages/register'
 import { LoginUser } from '@/pages/login'
+import { Profile } from '@/pages/profile'
 
 export const routes = createBrowserRouter(
   [
@@ -24,51 +16,59 @@ export const routes = createBrowserRouter(
       element: <RootLayout />,
       children: [
         {
-          path: REGISTER_USER,
+          path: pathRoutes.REGISTER_USER,
           element: <RegisterUser />,
         },
         {
-          path: LOGIN_USER,
+          path: pathRoutes.LOGIN_USER,
           element: <LoginUser />,
         },
         {
-          path: HOME_ROUTE,
+          path: pathRoutes.HOME_ROUTE,
           element: <Home />,
         },
         {
-          path: MORE_ROUTES.RECOMMENDATION.path,
+          path: pathRoutes.MORE_ROUTES.RECOMMENDATION.path,
           element: <MoreMoviesSeries />,
         },
         {
-          path: MORE_ROUTES.MOVIES.path,
+          path: pathRoutes.MORE_ROUTES.MOVIES.path,
           element: <MoreMoviesSeries />,
         },
         {
-          path: MORE_ROUTES.SERIES.path,
+          path: pathRoutes.MORE_ROUTES.SERIES.path,
           element: <MoreMoviesSeries />,
         },
         {
-          path: MORE_ROUTES.RELEASE.path,
+          path: pathRoutes.MORE_ROUTES.RELEASE.path,
           element: <MoreMoviesSeries />,
         },
         {
-          path: MORE_ROUTES.SEE_ALSO.path,
+          path: pathRoutes.MORE_ROUTES.SEE_ALSO.path,
           element: <MoreMoviesSeries />,
         },
         {
-          path: WATCH_ROUTE,
+          path: pathRoutes.WATCH_ROUTE,
           element: <WatchMovieSeries />,
         },
         {
-          path: SEARCH_ROUTE,
+          path: pathRoutes.SEARCH_ROUTE,
           element: <Search />,
         },
+        {
+          path: pathRoutes.PROFILE_ROUTE,
+          element: <Profile />,
+        },
       ],
+    },
+    {
+      path: '/',
+      element: <Navigate to={pathRoutes.REGISTER_USER} />,
     },
     {
       path: '*',
       element: <NotFound text='not found page' />,
     },
   ],
-  { basename: BASE_ROUTE }
+  { basename: pathRoutes.BASE_ROUTE }
 )

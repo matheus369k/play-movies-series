@@ -5,6 +5,7 @@ import {
   HOME_ROUTE,
   LOGIN_USER,
   MORE_ROUTE,
+  PROFILE_ROUTE,
   REGISTER_USER,
   SEARCH_ROUTE,
   WATCH_ROUTE,
@@ -33,14 +34,22 @@ const setUrlPath = (path: string) => {
 }
 
 describe('useRoutes()', () => {
+  const isCurrentRouteDefault = {
+    isRegisterPage: false,
+    isSearchPage: false,
+    isLoginPage: false,
+    isMorePage: false,
+    isWatchPage: false,
+    isProfilePage: false,
+    isHomePage: false,
+  }
+
   it('should returned is initial state', () => {
     const { result } = renderHook(useRoutes)
 
     expect(result.current).toMatchObject({
-      isRegisterPage: false,
-      isSearchPage: false,
-      isLoginPage: false,
-      isMorePage: false,
+      ...isCurrentRouteDefault,
+      isHomePage: true,
     })
   })
 
@@ -52,10 +61,8 @@ describe('useRoutes()', () => {
     const { result } = renderHook(useRoutes)
 
     expect(result.current).toMatchObject({
+      ...isCurrentRouteDefault,
       isRegisterPage: true,
-      isSearchPage: false,
-      isLoginPage: false,
-      isMorePage: false,
     })
   })
 
@@ -67,10 +74,8 @@ describe('useRoutes()', () => {
     const { result } = renderHook(useRoutes)
 
     expect(result.current).toMatchObject({
-      isRegisterPage: false,
-      isSearchPage: false,
+      ...isCurrentRouteDefault,
       isLoginPage: true,
-      isMorePage: false,
     })
   })
 
@@ -82,10 +87,8 @@ describe('useRoutes()', () => {
     const { result } = renderHook(useRoutes)
 
     expect(result.current).toMatchObject({
-      isRegisterPage: false,
+      ...isCurrentRouteDefault,
       isSearchPage: true,
-      isLoginPage: false,
-      isMorePage: false,
     })
   })
 
@@ -97,11 +100,64 @@ describe('useRoutes()', () => {
     const { result } = renderHook(useRoutes)
 
     expect(result.current).toMatchObject({
-      isRegisterPage: false,
-      isSearchPage: false,
-      isLoginPage: false,
+      ...isCurrentRouteDefault,
       isMorePage: true,
     })
+  })
+
+  it('should returned profile route as current', () => {
+    setUrlPath(PROFILE_ROUTE)
+    MockLocation.mockReturnValue({
+      pathname: window.location.toString(),
+    })
+    const { result } = renderHook(useRoutes)
+
+    expect(result.current).toMatchObject({
+      ...isCurrentRouteDefault,
+      isProfilePage: true,
+    })
+  })
+
+  it('should returned home route as current', () => {
+    setUrlPath(HOME_ROUTE)
+    MockLocation.mockReturnValue({
+      pathname: window.location.toString(),
+    })
+    const { result } = renderHook(useRoutes)
+
+    expect(result.current).toMatchObject({
+      ...isCurrentRouteDefault,
+      isHomePage: true,
+    })
+  })
+
+  it('should returned watch route as current', () => {
+    setUrlPath(WATCH_ROUTE)
+    MockLocation.mockReturnValue({
+      pathname: window.location.toString(),
+    })
+    const { result } = renderHook(useRoutes)
+
+    expect(result.current).toMatchObject({
+      ...isCurrentRouteDefault,
+      isWatchPage: true,
+    })
+  })
+
+  it('should run NavigateToHomePage and useNavigate receive correct path', () => {
+    setUrlPath(REGISTER_USER)
+    MockLocation.mockReturnValue({
+      pathname: window.location.toString(),
+    })
+    const { result } = renderHook(useRoutes)
+
+    act(() => {
+      result.current.NavigateToHomePage(userId)
+    })
+
+    expect(MockNavigate).toHaveBeenCalledWith(
+      HOME_ROUTE.replace(':userId', userId)
+    )
   })
 
   it('should run NavigateToSearchPage and useNavigate receive correct path', () => {

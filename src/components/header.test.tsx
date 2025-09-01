@@ -2,6 +2,7 @@ import {
   HOME_ROUTE,
   JWT_USER_TOKEN,
   MORE_ROUTE,
+  PROFILE_ROUTE,
   REGISTER_USER,
   SEARCH_ROUTE,
 } from '@/util/consts'
@@ -90,7 +91,30 @@ describe('Header', () => {
     screen.getByPlaceholderText(/Search.../i)
   })
 
+  it('should showing arrow left to back page when is not home, register or login page', () => {
+    setUrlPath(PROFILE_ROUTE)
+    render(<Header />, {
+      wrapper: ({ children }) => wrapper({ children, user: userData }),
+    })
+
+    screen.getByRole('button', { name: /back page/i })
+    screen.getByPlaceholderText(/Search.../i)
+  })
+
+  it('should redirection to back page when clicked in arrow left in header', async () => {
+    setUrlPath(PROFILE_ROUTE)
+    const SpyBackPage = jest.spyOn(window.history, 'back')
+    render(<Header />, {
+      wrapper: ({ children }) => wrapper({ children, user: userData }),
+    })
+
+    await user.click(screen.getByRole('button', { name: /back page/i }))
+
+    expect(SpyBackPage).toHaveBeenCalledTimes(1)
+  })
+
   it('should redirection when is clicked in the logo of the site', async () => {
+    setUrlPath(HOME_ROUTE)
     const SpyScrollTo = jest
       .spyOn(window, 'scrollTo')
       .mockImplementationOnce(() => jest.fn())
@@ -226,5 +250,19 @@ describe('Header', () => {
     await user.click(registerLink)
 
     expect(window.location.toString().includes('register')).toBeTruthy()
+  })
+
+  it('should redirection to profile page when is clicked in avatar icon', async () => {
+    render(<Header />, {
+      wrapper: ({ children }) => wrapper({ children, user: userData }),
+    })
+    const formElement = screen.getByRole('searchbox').parentNode!.parentNode!
+    const avatarContainer = formElement!.nextSibling! as Element
+
+    await user.click(avatarContainer)
+
+    expect(MockNavigate).toHaveBeenCalledWith(
+      PROFILE_ROUTE.replace(':userId', userData.id)
+    )
   })
 })

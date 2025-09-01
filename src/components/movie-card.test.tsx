@@ -60,15 +60,17 @@ describe('MovieCard', () => {
     render(<MovieCard {...movie} onlyImage />, { wrapper })
 
     screen.getByAltText('movie: Test Movie')
-    expect(screen.queryByRole('heading', { level: 3 })).toBeNull()
+    expect(
+      screen.getByRole('heading', { level: 3 }).parentNode!
+    ).toHaveAttribute('data-only-image', 'true')
   })
 
-  it('should rended title and type of movies when onlyImage is false', () => {
+  it('should add data-only-image as false when invite prop onlyImage as false', () => {
     render(<MovieCard {...movie} />, { wrapper })
 
-    expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent(
-      movie.Title
-    )
+    expect(
+      screen.getByRole('heading', { level: 3 }).parentNode!
+    ).toHaveAttribute('data-only-image', 'false')
   })
 
   it('should call handleAddIDBMID and navigate when clicked', async () => {

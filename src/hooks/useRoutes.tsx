@@ -1,6 +1,7 @@
 import {
   HOME_ROUTE,
   MORE_ROUTE,
+  PROFILE_ROUTE,
   REGISTER_USER,
   SEARCH_ROUTE,
   WATCH_ROUTE,
@@ -13,9 +14,19 @@ export function useRoutes() {
   const navigate = useNavigate()
 
   const isSearchPage = pathname.includes('/search/')
+  const isWatchPage = pathname.includes('/watch/')
   const isMorePage = pathname.includes('/more')
-  const isLoginPage = pathname.includes('login')
-  const isRegisterPage = pathname.includes('register')
+  const isLoginPage = pathname.includes('/login')
+  const isRegisterPage = pathname.includes('/register')
+  const isProfilePage = pathname.includes('/profile')
+  const isHomePage = !(
+    isProfilePage ||
+    isSearchPage ||
+    isWatchPage ||
+    isMorePage ||
+    isLoginPage ||
+    isRegisterPage
+  )
 
   function NavigateToRegisterPage() {
     navigate(REGISTER_USER)
@@ -51,7 +62,8 @@ export function useRoutes() {
   }
 
   function NavigateToProfilePage(userId: string) {
-    console.log(userId)
+    const insertUserId = PROFILE_ROUTE.replace(':userId', userId)
+    navigate(insertUserId)
   }
 
   function NavigateToWatchPage(props: { movieId: string; userId: string }) {
@@ -71,5 +83,8 @@ export function useRoutes() {
     isSearchPage,
     isLoginPage,
     isMorePage,
+    isProfilePage,
+    isHomePage,
+    isWatchPage,
   }
 }

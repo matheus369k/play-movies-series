@@ -22,7 +22,7 @@ export function MovieCard({
   Type,
   Year,
   imdbID,
-  onlyImage,
+  onlyImage = false,
 }: MovieCardProps) {
   const { handleAddIDBMID } = useContext(WatchContext)
   const { user } = useContext(UserContext)
@@ -39,12 +39,15 @@ export function MovieCard({
 
   return (
     <div
+      aria-label='movie-card'
+      data-only-image={onlyImage}
       onClick={handleClickedPlayOnMovie}
-      className={`flex flex-col items-center bg-zinc-900 rounded border border-zinc-800 max-w-52 max-sm:w-32 w-full ${
-        onlyImage ? '' : 'p-2'
-      }`}
+      className='grid grid-rows-[auto, 20px] grid-cols-1 w-full gap-1 justify-center bg-zinc-900 rounded border border-zinc-500 max-w-52 max-sm:w-32 max-sm:grid-rows-1 data-[only-image=true]:grid-rows-1'
     >
-      <div className='relative group/play bg-zinc/50 z-50 rounded cursor-pointer aspect-[3/4] overflow-hidden min-h-full'>
+      <div
+        data-only-image={onlyImage}
+        className='relative group/play bg-zinc/50 z-50 rounded rounded-b-none cursor-pointer aspect-[3/4] overflow-hidden min-h-full data-[only-image]:rounded max-sm:rounded'
+      >
         <img
           src={Poster}
           onError={(e) =>
@@ -52,21 +55,23 @@ export function MovieCard({
               'https://placehold.co/225x300?text=Not+Found')
           }
           loading='lazy'
-          className='w-full h-full object-fill border-b border-b-zinc-800 transition-all opacity-100 group-hover/play:opacity-40 max-sm:border-none'
+          className='w-full h-full object-fill border-b border-b-zinc-500 transition-all opacity-100 group-hover/play:opacity-40 max-sm:border-none'
           alt={Type + ': ' + Title}
         />
         <ButtonPlay />
       </div>
-      {!onlyImage && (
-        <>
-          <h3 className='max-w-44 overflow-hidden text-center text-ellipsis text-nowrap text-sm max-sm:hidden max-sm:max-w-28'>
-            {Title}
-          </h3>
-          <p className='text-center text-sm max-sm:hidden'>
-            <span>{Type} </span>-<span> {Year}</span>
-          </p>
-        </>
-      )}
+
+      <div
+        data-only-image={onlyImage}
+        className='w-fit mx-auto font-bold py-1 data-[only-image=true]:hidden max-sm:hidden'
+      >
+        <h3 className='max-w-44 overflow-hidden text-center text-ellipsis text-nowrap text-sm max-sm:max-w-28'>
+          {Title}
+        </h3>
+        <p className='text-center text-sm'>
+          <span>{Type} </span>-<span> {Year}</span>
+        </p>
+      </div>
     </div>
   )
 }

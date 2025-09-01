@@ -2,28 +2,30 @@ import { AxiosBackApi } from '@/util/axios'
 import { cookiesStorage } from '@/util/browser-storage'
 import { JWT_USER_TOKEN } from '@/util/consts'
 
-type UserProfileResponse = {
-  name: string
-  email: string
+type WatchLaterResponse = {
   id: string
-  avatar: string
-  createAt: string
+  movieId: string
+  image: string
+  title: string
+  release: string
+  type: string
 }
 
-export async function getUserProfile() {
+export async function getWatchLaterMovies() {
   try {
     const jwtToken = cookiesStorage.get(JWT_USER_TOKEN)
     if (!jwtToken) throw new Error('user not have authorization')
 
-    const response = await AxiosBackApi.get('/users/profile', {
+    const response = await AxiosBackApi.get('/watch-later', {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
     })
-    const result: { user: UserProfileResponse } = await response.data
+    const result: { watchLaterMedias: WatchLaterResponse[] } =
+      await response.data
 
     if (!result) {
-      throw new Error('Error try create new user')
+      throw new Error('Error try get watch later movies')
     }
 
     return {
