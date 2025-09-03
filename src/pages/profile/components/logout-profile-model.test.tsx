@@ -3,32 +3,33 @@ import { LogoutProfileModel } from './logout-profile-model'
 import type { ReactNode } from 'react'
 import { UserContext } from '@/contexts/user-context'
 import userEvent from '@testing-library/user-event'
-import { JWT_USER_TOKEN, REGISTER_USER } from '@/util/consts'
+import { JWT_USER_TOKEN } from '@/util/consts'
 import { cookiesStorage } from '@/util/browser-storage'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-const MockNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => MockNavigate,
-  useLocation: jest.fn(() => {
-    return {
-      pathname: window.location.toString(),
-    }
-  }),
+const SpyClearQueryClient = jest.fn()
+jest.mock('@tanstack/react-query', () => ({
+  ...jest.requireActual('@tanstack/react-query'),
+  useQueryClient: jest.fn(() => ({
+    clear: SpyClearQueryClient,
+  })),
 }))
 
+const queryClient = new QueryClient()
 const MockRestUserState = jest.fn()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <UserContext.Provider
-      value={{
-        resetUserState: MockRestUserState,
-        setUserState: jest.fn(),
-        user: null,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <UserContext.Provider
+        value={{
+          resetUserState: MockRestUserState,
+          setUserState: jest.fn(),
+          user: null,
+        }}
+      >
+        {children}
+      </UserContext.Provider>
+    </QueryClientProvider>
   )
 }
 
@@ -65,13 +66,18 @@ describe('<LogoutProfileModel />', () => {
   })
 
   it('should delete jwt token, redirection page and rest UserContext when is clicked in confirm in the dialog', async () => {
+    const MockReloadPage = jest.fn()
+    jest.spyOn(window, 'location', 'get').mockReturnValue({
+      reload: MockReloadPage,
+    } as any)
     render(<LogoutProfileModel />, { wrapper })
 
     await userEvents.click(screen.getByLabelText(/logout/i))
     await userEvents.click(screen.getByLabelText(/confirm logout/i))
 
     expect(MockRestUserState).toHaveBeenCalled()
-    expect(MockNavigate).toHaveBeenCalledWith(REGISTER_USER)
+    expect(MockReloadPage).toHaveBeenCalled()
+    expect(SpyClearQueryClient).toHaveBeenCalled()
     expect(SpyDeleteCookieStorage).toHaveBeenCalledWith(JWT_USER_TOKEN)
   })
 })

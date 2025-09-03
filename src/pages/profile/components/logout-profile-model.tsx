@@ -1,19 +1,20 @@
 import { Button } from '@/components/ui/button'
 import * as Dialog from '@/components/ui/dialog'
 import { UserContext } from '@/contexts/user-context'
-import { useRoutes } from '@/hooks/useRoutes'
 import { cookiesStorage } from '@/util/browser-storage'
 import { JWT_USER_TOKEN } from '@/util/consts'
+import { useQueryClient } from '@tanstack/react-query'
 import { useContext } from 'react'
 
 export function LogoutProfileModel() {
-  const { NavigateToRegisterPage } = useRoutes()
+  const queryClient = useQueryClient()
   const { resetUserState } = useContext(UserContext)
 
   function handleLogoutUser() {
     cookiesStorage.delete(JWT_USER_TOKEN)
-    NavigateToRegisterPage()
     resetUserState()
+    queryClient.clear()
+    window.location.reload()
   }
 
   return (
