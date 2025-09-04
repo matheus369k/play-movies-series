@@ -1,24 +1,58 @@
 import { AiOutlineDislike, AiOutlineLike } from 'react-icons/ai'
 import { ButtonPlay } from '@/components/button-play'
-import { useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { formatter } from '@/util/formatter'
+import { getAssessment } from '../services/get-assessment'
+import { createAssessment } from '../services/create-assessment'
+import { updateAssessment } from '../services/update-assessment'
 
-export function VideoScreen({ Title }: { Title: string }) {
-  const [isLike, setIsLike] = useState<'like' | 'dislike' | null>(null)
+export function VideoScreen({
+  Title,
+  movieId,
+}: {
+  Title: string
+  movieId: string
+}) {
+  const queryClient = useQueryClient()
+  const { data } = useQuery({
+    staleTime: 1000 * 60 * 60 * 24,
+    queryKey: ['liked', 'unlike', movieId],
+    queryFn: async () => await getAssessment(movieId),
+  })
 
-  const handleLike = () => {
-    setIsLike('like')
-  }
+  async function handleLikeOrUnlikeMovie({
+    liked,
+    unlike,
+  }: {
+    liked: boolean
+    unlike: boolean
+  }) {
+    try {
+      if (data && !data.liked && !data.unlike) {
+        await createAssessment({
+          liked,
+          movieId,
+          unlike,
+        })
+      } else {
+        await updateAssessment({
+          liked,
+          movieId,
+          unlike,
+        })
+      }
 
-  const handleDislike = () => {
-    setIsLike('dislike')
+      queryClient.invalidateQueries({
+        queryKey: ['liked', 'unlike', movieId],
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
     <div className='absolute top-0 left-0 w-full h-[400px] bg-[url(@/assets/bg-play-movies.webp)] bg-cover aspect-video overflow-hidden cursor-pointer group/play max-sm:h-[200px]'>
-      <div
-        id='videoScreen'
-        className='w-full h-full relative flex items-end bg-gradient-to-b from-[#1b1a1fa4] to-zinc-950 m-auto p-4'
-      >
+      <div className='w-full h-full relative flex items-end bg-gradient-to-b from-[#1b1a1fa4] to-zinc-950 m-auto p-4'>
         <ButtonPlay />
 
         <div className='mx-auto flex justify-between max-w-7xl w-full'>
@@ -28,31 +62,35 @@ export function VideoScreen({ Title }: { Title: string }) {
 
           <div className='flex gap-4'>
             <button
+              data-liked={data?.liked}
+              onClick={() =>
+                handleLikeOrUnlikeMovie({
+                  liked: true,
+                  unlike: false,
+                })
+              }
               type='button'
-              onClick={handleDislike}
-              className={`flex items-center leading-4 gap-1 px-3 py-2 rounded-3xl border font-semibold border-zinc-900 ${
-                isLike === 'dislike'
-                  ? 'bg-red-500 text-zinc-100'
-                  : 'text-zinc-400 bg-zinc-950'
-              } transition-all`}
-              title='Não gostei'
+              className='flex items-center gap-1 px-3 py-1 rounded text-xl font-semibold text-zinc-400 data-[liked=true]:text-zinc-50'
+              aria-label='liked'
             >
-              45
-              <AiOutlineDislike className='text-2xl' />
+              <AiOutlineLike className='text-2xl' />
+              {formatter.formatterLikeOrUnlikeCount(data?.totalLiked || 0)}
             </button>
 
             <button
-              onClick={handleLike}
+              data-unlike={data?.unlike}
               type='button'
-              className={`flex items-center leading-4 gap-1 px-3 py-2 rounded-3xl border font-semibold border-zinc-900 ${
-                isLike === 'like'
-                  ? 'bg-green-500 text-zinc-100'
-                  : 'text-zinc-400 bg-zinc-950'
-              } transition-all`}
-              title='Gostei'
+              onClick={() =>
+                handleLikeOrUnlikeMovie({
+                  liked: false,
+                  unlike: true,
+                })
+              }
+              className='flex items-center gap-1 px-3 py-1 rounded  text-xl font-semibold text-zinc-400 data-[unlike=true]:text-zinc-50'
+              aria-label='unlike'
             >
-              257
-              <AiOutlineLike className='text-2xl' />
+              <AiOutlineDislike className='text-2xl' />
+              {formatter.formatterLikeOrUnlikeCount(data?.totalUnlike || 0)}
             </button>
           </div>
         </div>

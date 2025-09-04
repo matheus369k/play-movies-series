@@ -31,7 +31,7 @@ export function WatchMovieSeries() {
 
   return (
     <section className='flex pt-[400px] flex-col gap-8 max-w-7xl mx-auto max-xl:px-4 max-sm:pt-[200px]'>
-      <VideoScreen Title={data.Title || ''} />
+      <VideoScreen movieId={data.imdbID || ''} Title={data.Title || ''} />
 
       <div className='flex flex-row-reverse justify-between gap-4'>
         <img
