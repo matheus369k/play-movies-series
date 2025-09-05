@@ -91,7 +91,7 @@ export function Profile() {
                   Poster={watchLaterMedia.image}
                   Title={watchLaterMedia.title}
                   Type={watchLaterMedia.type}
-                  imdbID={watchLaterMedia.movieId}
+                  imdbID={watchLaterMedia.MovieId}
                   Year={watchLaterMedia.release}
                   key={watchLaterMedia.id}
                 />

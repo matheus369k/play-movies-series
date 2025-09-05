@@ -13,7 +13,7 @@ describe('getWatchLaterMovies', () => {
   const watchLaterMedias = Array.from({ length: 4 }).map(() => {
     return {
       id: faker.database.mongodbObjectId(),
-      movieId: faker.database.mongodbObjectId(),
+      MovieId: faker.database.mongodbObjectId(),
       image: faker.image.avatar(),
       title: faker.book.title(),
       release: faker.date.past().getFullYear(),

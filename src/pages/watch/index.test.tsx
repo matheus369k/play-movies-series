@@ -103,6 +103,9 @@ describe('WatchMovieSeries Data Display', () => {
       name: /See also/i,
     })
     screen.getByText(movies[0].Title)
+    screen.getByRole('button', {
+      name: /add to the list/i,
+    })
   })
 
   it('should hidden description movie when is N/A', async () => {

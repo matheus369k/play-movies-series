@@ -3,7 +3,6 @@ import { cookiesStorage } from '@/util/browser-storage'
 import { JWT_USER_TOKEN } from '@/util/consts'
 
 type WatchLaterResponse = {
-  id: string
   MovieId: string
   image: string
   title: string
@@ -11,26 +10,25 @@ type WatchLaterResponse = {
   type: string
 }
 
-export async function getWatchLaterMovies() {
+export async function getMovieWatchLater(MovieId: string) {
   try {
     const jwtToken = cookiesStorage.get(JWT_USER_TOKEN)
-    if (!jwtToken) throw new Error('user not have authorization')
+    if (!jwtToken) {
+      throw new Error('user not have authorization')
+    }
 
-    const response = await AxiosBackApi.get('/watch-later', {
+    const response = await AxiosBackApi.get(`/watch-later/${MovieId}`, {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
     })
-    const result: { watchLaterMedias: WatchLaterResponse[] } =
-      await response.data
+    const result: WatchLaterResponse = await response.data['watchLaterMedia']
 
     if (!result) {
-      throw new Error('Error try get watch later movies')
+      throw new Error('movie not found in watch later list')
     }
 
-    return {
-      ...result,
-    }
+    return result
   } catch (error) {
     console.log(error)
   }
