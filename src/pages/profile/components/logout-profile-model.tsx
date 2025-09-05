@@ -12,8 +12,8 @@ export function LogoutProfileModel() {
 
   function handleLogoutUser() {
     cookiesStorage.delete(JWT_USER_TOKEN)
-    resetUserState()
     queryClient.clear()
+    resetUserState()
     window.location.reload()
   }
 
@@ -21,7 +21,7 @@ export function LogoutProfileModel() {
     <Dialog.Dialog modal={false}>
       <Dialog.DialogTrigger
         aria-label='logout'
-        className='cursor-pointer py-1 hover:bg-transparent hover:text-zinc-500'
+        className='cursor-pointer w-full py-1 hover:bg-transparent hover:text-zinc-500'
       >
         logout
       </Dialog.DialogTrigger>

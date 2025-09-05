@@ -5,7 +5,7 @@ import {
   FormFieldInput,
   FormFieldRoot,
 } from '@/components/form-field'
-import { UserRound } from 'lucide-react'
+import { Camera, UserRound } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, FormProvider } from 'react-hook-form'
@@ -90,7 +90,7 @@ export function EditProfileModel() {
 
   return (
     <Dialog.Dialog>
-      <Dialog.DialogTrigger className='cursor-pointer py-1 hover:bg-transparent hover:text-zinc-500'>
+      <Dialog.DialogTrigger className='cursor-pointer w-full py-1 hover:bg-transparent hover:text-zinc-500'>
         edit profile
       </Dialog.DialogTrigger>
       <Dialog.DialogContent
@@ -111,8 +111,10 @@ export function EditProfileModel() {
             <div className='flex flex-col items-center gap-4'>
               <div
                 data-is-error={!!errors.file}
-                className='relative size-fit rounded-full data-[is-error=true]:animate-pulse'
+                className='relative size-fit rounded-full data-[is-error=true]:border border-red-500'
               >
+                <Camera className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-10 z-50' />
+
                 <UserAvatar
                   size='md'
                   fontSize='md'

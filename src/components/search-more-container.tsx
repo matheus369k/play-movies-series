@@ -8,7 +8,7 @@ export function SearchMoreContainer({
   title: string
 }) {
   return (
-    <section className='flex flex-col px-2 gap-5 pt-32 max-w-7xl mx-auto min-h-screen h-fit w-full'>
+    <section className='flex flex-col px-2 gap-5 pt-24 max-w-7xl mx-auto min-h-screen h-fit w-full'>
       <span className='pl-3 border-l-4 border-l-red-600 rounded'>
         <h2 className='font-bold capitalize text-4xl max-lg:text-2xl'>
           {title}

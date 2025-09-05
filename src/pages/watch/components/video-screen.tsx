@@ -52,15 +52,15 @@ export function VideoScreen({
 
   return (
     <div className='absolute top-0 left-0 w-full h-[400px] bg-[url(@/assets/bg-play-movies.webp)] bg-cover aspect-video overflow-hidden cursor-pointer group/play max-sm:h-[200px]'>
-      <div className='w-full h-full relative flex items-end bg-gradient-to-b from-[#1b1a1fa4] to-zinc-950 m-auto p-4'>
+      <div className='w-full h-full relative flex items-end bg-gradient-to-b from-[#1b1a1fa4] to-zinc-950 m-auto p-2'>
         <ButtonPlay />
 
-        <div className='mx-auto flex justify-between max-w-7xl w-full'>
-          <h3 className='font-bold text-4xl transition-all text-nowrap text-ellipsis overflow-hidden'>
+        <div className='mx-auto flex items-center justify-between max-w-7xl w-full'>
+          <h3 className='font-bold text-4xl transition-all text-nowrap text-ellipsis overflow-hidden max-md:text-xl'>
             {Title}
           </h3>
 
-          <div className='flex gap-4'>
+          <div className='flex gap-4 max-md:gap-1'>
             <button
               data-liked={data?.liked}
               onClick={() =>
@@ -70,7 +70,7 @@ export function VideoScreen({
                 })
               }
               type='button'
-              className='flex items-center gap-1 px-3 py-1 rounded text-xl font-semibold text-zinc-400 data-[liked=true]:text-zinc-50'
+              className='flex items-center gap-1 px-3 py-1 rounded text-xl font-semibold text-zinc-600 data-[liked=true]:text-zinc-50 max-md:px-1.5'
               aria-label='liked'
             >
               <AiOutlineLike className='text-2xl' />
@@ -86,7 +86,7 @@ export function VideoScreen({
                   unlike: true,
                 })
               }
-              className='flex items-center gap-1 px-3 py-1 rounded  text-xl font-semibold text-zinc-400 data-[unlike=true]:text-zinc-50'
+              className='flex items-center gap-1 px-3 py-1 rounded  text-xl font-semibold text-zinc-600 data-[unlike=true]:text-zinc-50 max-md:px-1.5'
               aria-label='unlike'
             >
               <AiOutlineDislike className='text-2xl' />

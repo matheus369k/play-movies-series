@@ -26,22 +26,24 @@ export function WatchLaterButton({
   })
 
   async function AddOrRemoveMovieFromWatchLater() {
-    if (isFetching) return
+    try {
+      if (isSuccess) {
+        await deleteMovieWatchLater(MovieId)
+      } else {
+        await createMovieWatchLater({
+          image: image,
+          MovieId: MovieId,
+          release: release,
+          title: title,
+          type: type,
+        })
+      }
 
-    if (isSuccess) {
-      await deleteMovieWatchLater(MovieId)
-    } else {
-      await createMovieWatchLater({
-        image: image,
-        MovieId: MovieId,
-        release: release,
-        title: title,
-        type: type,
-      })
+      queryClient.invalidateQueries({ queryKey: ['watch-later'] })
+      queryClient.invalidateQueries({ queryKey: ['watch-later', MovieId] })
+    } catch (error) {
+      console.log(error)
     }
-
-    queryClient.invalidateQueries({ queryKey: ['watch-later'] })
-    queryClient.invalidateQueries({ queryKey: ['watch-later', MovieId] })
   }
 
   return (
@@ -49,7 +51,7 @@ export function WatchLaterButton({
       disabled={isFetching}
       data-saved={isSuccess}
       onClick={AddOrRemoveMovieFromWatchLater}
-      className='flex text-zinc-50 font-semibold text-lg py-2 px-12 bg-transparent data-[saved=false]:border border-zinc-50 max-sm:w-full text-center rounded-lg data-[saved=true]:bg-red-600 hover:opacity-80 hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50'
+      className='text-zinc-50 font-semibold text-lg py-2 px-12 bg-transparent data-[saved=false]:border border-zinc-50 text-center rounded-lg  max-md:w-full data-[saved=true]:bg-red-600 hover:opacity-80 hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50'
       aria-label={isSuccess ? 'saved on the list' : 'add to the list'}
     >
       {isSuccess ? 'saved on the list' : 'add to the list'}

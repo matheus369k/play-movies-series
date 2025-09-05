@@ -25,7 +25,7 @@ export async function createMovieWatchLater(props: AddMovieToWatchLater) {
     await AxiosBackApi.post(
       '/watch-later',
       JSON.stringify({
-        release,
+        release: Number(release),
         MovieId,
         image,
         title,

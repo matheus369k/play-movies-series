@@ -144,7 +144,7 @@ export function RegisterUser() {
                 <FormItem className='flex gap-2 items-center space-y-0'>
                   <FormControl>
                     <Checkbox
-                      className='border-zinc-500 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600'
+                      className='border-zinc-500 data-[state=checked]:text-zinc-50 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600'
                       checked={field.value}
                       onCheckedChange={() => field.onChange(!field.value)}
                     />

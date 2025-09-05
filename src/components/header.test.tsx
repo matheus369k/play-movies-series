@@ -101,16 +101,20 @@ describe('Header', () => {
     screen.getByPlaceholderText(/Search.../i)
   })
 
-  it('should redirection to back page when clicked in arrow left in header', async () => {
-    setUrlPath(PROFILE_ROUTE)
-    const SpyBackPage = jest.spyOn(window.history, 'back')
+  it('should redirection to home page when clicked in arrow left in header', async () => {
+    const SpyScrollTo = jest
+      .spyOn(window, 'scrollTo')
+      .mockImplementationOnce(() => jest.fn())
     render(<Header />, {
       wrapper: ({ children }) => wrapper({ children, user: userData }),
     })
 
-    await user.click(screen.getByRole('button', { name: /back page/i }))
+    await user.click(screen.getByRole('button'))
 
-    expect(SpyBackPage).toHaveBeenCalledTimes(1)
+    expect(SpyScrollTo).toHaveBeenCalledTimes(1)
+    expect(MockNavigate).toHaveBeenCalledWith(
+      HOME_ROUTE.replace(':userId', userData.id)
+    )
   })
 
   it('should redirection when is clicked in the logo of the site', async () => {

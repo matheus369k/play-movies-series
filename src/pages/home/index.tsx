@@ -5,10 +5,10 @@ import { MORE_ROUTES } from '@/util/consts'
 
 export function Home() {
   return (
-    <section className='flex flex-col gap-6 max-xl:px-4'>
+    <section className='flex flex-col gap-6'>
       <EmphasisMovies />
 
-      <div className='flex flex-col gap-8'>
+      <div className='flex flex-col gap-8 px-2'>
         <CategorySection
           year={2024}
           page={1}

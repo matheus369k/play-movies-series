@@ -28,8 +28,8 @@ export function EmphasisMovies() {
   return (
     <>
       {isLoading || !data ? (
-        <div className="relative p-1 my-2 after:bg-[url('https://placehold.co/1444x943/000000/000000.png')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-zinc-950 before:to-transparent animate-pulse">
-          <div className='relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 z-40 justify-center pt-28'>
+        <div className="relative my-2 after:bg-[url('https://placehold.co/1444x943/000000/000000.png')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-zinc-950 before:to-transparent animate-pulse">
+          <div className='relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 z-40 justify-center px-2 pt-28'>
             <div className='flex items-center flex-col gap-6 max-w-7xl text-zinc-500 '>
               <div className='relative group/play text-zinc-100 bg-zinc-900 rounded-md w-max h-max z-40'>
                 <img
@@ -62,7 +62,7 @@ export function EmphasisMovies() {
         </div>
       ) : (
         <div className="relative min-h-[60vh] max-lg:min-h-[40vh] p-1 my-2 after:bg-[url('../assets/bg-play-movies.webp')] after:bg-cover after:absolute after:top-0 after:left-0 after:size-full after:opacity-20 before:z-10 before:absolute before:bottom-0 before:left-0 before:size-full before:bg-gradient-to-t before:from-zinc-950 before:to-transparent">
-          <div className='relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 z-40 justify-center pt-28'>
+          <div className='relative max-w-7xl mx-auto w-full h-full flex items-center flex-col gap-10 z-40 justify-center px-2 pt-28'>
             <div className='flex items-center flex-col gap-6 max-w-7xl  text-zinc-500'>
               <div
                 onClick={() =>

@@ -21,7 +21,7 @@ export function RootLayout() {
             </main>
           ) : (
             <>
-              <main className='min-h-[calc(100vh-9rem)] h-full animate-soften-render px-4'>
+              <main className='min-h-[calc(100vh-9rem)] h-full animate-soften-render'>
                 <Outlet />
               </main>
               <Footer />

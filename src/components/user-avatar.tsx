@@ -51,7 +51,10 @@ export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
             aria-label='preview avatar'
             alt={`avatar from user with name ${user.name}`}
           />
-          <Avatar.AvatarFallback>{user.name}</Avatar.AvatarFallback>
+
+          <Avatar.AvatarFallback className={AvatarTextVariates({ fontSize })}>
+            {firstLetter}
+          </Avatar.AvatarFallback>
         </Avatar.Avatar>
       )}
 
@@ -62,7 +65,9 @@ export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
             aria-label='main avatar'
             alt={`avatar from user with name ${user.name}`}
           />
-          <Avatar.AvatarFallback>{firstLetter}</Avatar.AvatarFallback>
+          <Avatar.AvatarFallback className={AvatarTextVariates({ fontSize })}>
+            {firstLetter}
+          </Avatar.AvatarFallback>
         </Avatar.Avatar>
       )}
 

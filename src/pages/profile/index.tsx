@@ -84,7 +84,10 @@ export function Profile() {
         )}
 
         {data && (
-          <div aria-label='watch later movies' className='flex gap-4'>
+          <div
+            aria-label='watch later movies'
+            className='flex justify-center flex-wrap gap-3 pb-6 w-auto max-sm:gap-1.5'
+          >
             {data.watchLaterMedias.map((watchLaterMedia) => {
               return (
                 <MovieCard

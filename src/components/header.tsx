@@ -41,10 +41,6 @@ export function Header() {
     NavigateToProfilePage(user.id)
   }
 
-  function handleBackPage() {
-    window.history.back()
-  }
-
   async function AutoLoginUser() {
     const token = cookiesStorage.get(JWT_USER_TOKEN)
     if (!token && user) return
@@ -87,7 +83,11 @@ export function Header() {
           </h1>
         </button>
       ) : (
-        <button aria-label='back page' type='button' onClick={handleBackPage}>
+        <button
+          aria-label='back page'
+          type='button'
+          onClick={handleRedirectMainPage}
+        >
           <ChevronLeft className='size-8' />
         </button>
       )}
