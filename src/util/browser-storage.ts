@@ -40,14 +40,9 @@ export const browserSessionStorage = {
 
 export const cookiesStorage = {
   set: function ({ key, value }: { key: string; value: string }) {
-    let countTrying = 0
     const date = new Date()
     date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000)
     document.cookie = `${key}=${value};expires=${date.toUTCString()}`
-    if (!this.get(key) && countTrying < 5) {
-      this.delete(key)
-      countTrying += 1
-    }
   },
   get: function (key: string) {
     try {
@@ -68,30 +63,21 @@ export const cookiesStorage = {
   },
   delete: function (key: string) {
     try {
-      let countTrying = 0
-      const date = new Date()
       const allCookies: string[] = document.cookie.split('=')
       const cookieKeyIndex = allCookies.findIndex((value) => value === key)
       if (cookieKeyIndex < 0)
         throw new Error(`Not found cookie with name: ${key}`)
-      date.setTime(date.getTimezoneOffset())
       document.cookie = allCookies
         .map((value, index) => {
           if (cookieKeyIndex + 1 === index) {
-            return `${
-              allCookies[cookieKeyIndex + 1]
-            };expires=${date.toUTCString()}`
+            const cookieExpired = `;expires=${new Date(0).toUTCString()} `
+            return `${allCookies[cookieKeyIndex + 1]} ${cookieExpired}`
           }
           return value
         })
         .toString()
         .replace(';,', '; ')
         .replace(',', '=')
-
-      if (this.get(key) && countTrying < 5) {
-        this.delete(key)
-        countTrying += 1
-      }
     } catch (error) {
       console.log(error)
     }
