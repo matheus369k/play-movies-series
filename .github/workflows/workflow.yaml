@@ -24,6 +24,7 @@ jobs:
         env:
           VITE_API_OMDBAPI: ${{secrets.VITE_API_OMDBAPI}}
           VITE_API_OMDBAPI_KEY: ${{secrets.VITE_API_OMDBAPI_KEY}}
+          VITE_BACKEND_URL: ${{secrets.VITE_BACKEND_URL}}
 
   continuous-delivery:
     needs: continuous-integration
@@ -41,6 +42,7 @@ jobs:
         env:
           VITE_API_OMDBAPI: ${{secrets.VITE_API_OMDBAPI}}
           VITE_API_OMDBAPI_KEY: ${{secrets.VITE_API_OMDBAPI_KEY}}
+          VITE_BACKEND_URL: ${{secrets.VITE_BACKEND_URL}}
       - name: Run deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
