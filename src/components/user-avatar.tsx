@@ -17,7 +17,7 @@ export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
 
   const firstLetter = user.email.slice(0, 1)
   const AvatarVariants = tv({
-    base: 'border border-zinc-500 bg-zinc-950',
+    base: 'flex justify-center items-center border border-zinc-500 bg-zinc-900',
     variants: {
       size: {
         sm: 'size-10',
@@ -30,12 +30,12 @@ export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
     },
   })
   const AvatarTextVariates = tv({
-    base: 'uppercase font-sans',
+    base: 'uppercase font-sans bg-zinc-900',
     variants: {
       fontSize: {
-        sm: 'text-2xl',
-        md: 'text-6xl',
-        lg: 'text-9xl',
+        sm: 'text-2xl leading-none ',
+        md: 'text-6xl leading-none ',
+        lg: 'text-9xl leading-none ',
       },
     },
     defaultVariants: {
@@ -76,7 +76,7 @@ export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
           aria-label='first letter avatar'
           className={twMerge(
             AvatarVariants({ size }),
-            'flex justify-center items-center text-zinc-50 rounded-full'
+            'text-zinc-50 rounded-full'
           )}
         >
           <i className={AvatarTextVariates({ fontSize })}>{firstLetter}</i>
