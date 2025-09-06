@@ -22,38 +22,56 @@ export function SearchForm() {
     },
   })
   const { handleSubmit, reset } = hookUseForm
-  const { NavigateToSearchPage } = useRoutes()
+  const { NavigateToSearchPage, isSearchPage } = useRoutes()
 
   function handleSubmitSearchForm({ search }: UseFormType) {
+    reset()
+    handleRedirectionSearchPage(search)
+  }
+
+  function handleRedirectionSearchPage(search: string) {
     if (!user) return <Navigate to={REGISTER_USER} />
 
     handleUpdateSearch(search)
     TopResetScroll()
-    reset()
 
     NavigateToSearchPage({ search, userId: user.id })
   }
 
   return (
-    <FormProvider {...hookUseForm}>
-      <form
-        onSubmit={handleSubmit(handleSubmitSearchForm)}
-        autoComplete='off'
-        className='relative text-zinc-400'
-      >
-        <FormFieldRoot className='bg-zinc-200/20 backdrop-blur-sm'>
-          <FormFieldInput
-            aria-label='search'
-            type='search'
-            placeholder='Search...'
-            fieldName='search'
-            id='search'
-          />
-          <FormFieldIcon>
-            <IoSearchOutline className='size-6 z-10' />
-          </FormFieldIcon>
-        </FormFieldRoot>
-      </form>
-    </FormProvider>
+    <>
+      {isSearchPage ? (
+        <FormProvider {...hookUseForm}>
+          <form
+            aria-label='search form'
+            onSubmit={handleSubmit(handleSubmitSearchForm)}
+            autoComplete='off'
+            className='relative text-zinc-400 w-full'
+          >
+            <FormFieldRoot>
+              <FormFieldInput
+                aria-label='search'
+                type='search'
+                aria-controls='off'
+                placeholder='Search...'
+                fieldName='search'
+                id='search'
+              />
+              <FormFieldIcon>
+                <IoSearchOutline className='size-6 z-10' />
+              </FormFieldIcon>
+            </FormFieldRoot>
+          </form>
+        </FormProvider>
+      ) : (
+        <button
+          aria-label='btn redirection search page'
+          onClick={() => handleRedirectionSearchPage('dragons')}
+          className='size-fit bg-transparent'
+        >
+          <IoSearchOutline className='size-8 z-10' />
+        </button>
+      )}
+    </>
   )
 }

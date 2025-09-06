@@ -88,7 +88,7 @@ describe('Header', () => {
     })
 
     screen.getByText(/Play/i)
-    screen.getByPlaceholderText(/Search.../i)
+    screen.getByRole('button', { name: /btn redirection search page/i })
   })
 
   it('should showing arrow left to back page when is not home, register or login page', () => {
@@ -98,7 +98,7 @@ describe('Header', () => {
     })
 
     screen.getByRole('button', { name: /back page/i })
-    screen.getByPlaceholderText(/Search.../i)
+    screen.getByRole('button', { name: /btn redirection search page/i })
   })
 
   it('should redirection to home page when clicked in arrow left in header', async () => {
@@ -109,7 +109,7 @@ describe('Header', () => {
       wrapper: ({ children }) => wrapper({ children, user: userData }),
     })
 
-    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('button', { name: /back page/i }))
 
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
     expect(MockNavigate).toHaveBeenCalledWith(
@@ -126,7 +126,7 @@ describe('Header', () => {
       wrapper: ({ children }) => wrapper({ children, user: userData }),
     })
 
-    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('button', { name: /play/i }))
 
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
     expect(MockNavigate).toHaveBeenCalledWith(
@@ -139,7 +139,7 @@ describe('Header', () => {
       wrapper: ({ children }) => wrapper({ children, user: null }),
     })
 
-    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('button', { name: /play/i }))
 
     expect(MockNavigate).toHaveBeenCalledWith(REGISTER_USER)
   })
@@ -257,13 +257,13 @@ describe('Header', () => {
   })
 
   it('should redirection to profile page when is clicked in avatar icon', async () => {
+    setUrlPath(SEARCH_ROUTE)
     render(<Header />, {
       wrapper: ({ children }) => wrapper({ children, user: userData }),
     })
-    const formElement = screen.getByRole('searchbox').parentNode!.parentNode!
-    const avatarContainer = formElement!.nextSibling! as Element
+    const avatarContainer = screen.getByLabelText(/search form/i).nextSibling
 
-    await user.click(avatarContainer)
+    await user.click(avatarContainer as Element)
 
     expect(MockNavigate).toHaveBeenCalledWith(
       PROFILE_ROUTE.replace(':userId', userData.id)

@@ -93,7 +93,7 @@ export function Header() {
       )}
 
       {user ? (
-        <div className='flex gap-4'>
+        <div className='flex justify-end items-center w-full max-w-[400px] gap-4'>
           <SearchForm />
           <div
             onClick={handleNavigateToProfile}
