@@ -1,6 +1,5 @@
 export const JWT_USER_TOKEN = 'jwt_user_token'
 
-export const BASE_ROUTE = '/play-movies-series'
 export const REGISTER_USER = '/register'
 export const LOGIN_USER = '/login'
 export const HOME_ROUTE = '/:userId'

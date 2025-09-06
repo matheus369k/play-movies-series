@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { Search } from '.'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { BASE_ROUTE, SEARCH_ROUTE } from '@/util/consts'
+import { SEARCH_ROUTE } from '@/util/consts'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosOmbdapi } from '@/util/axios'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -70,10 +70,7 @@ describe('Search', () => {
 
   beforeEach(() => {
     const url = new URL(window.location.origin.toString())
-    url.pathname = BASE_ROUTE.concat(SEARCH_ROUTE).replace(
-      ':search',
-      'transformers'
-    )
+    url.pathname = SEARCH_ROUTE.replace(':search', 'transformers')
     window.history.pushState({}, '', url)
   })
 

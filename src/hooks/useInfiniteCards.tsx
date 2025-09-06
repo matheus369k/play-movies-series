@@ -6,6 +6,7 @@ import { urlParams } from '@/util/url-params'
 import { formatter } from '@/util/formatter'
 
 export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
+  const { pathname } = window.location
   const { search } = useContext(SearchContext)
   const isSearchPage = page === 'search'
 
@@ -14,11 +15,12 @@ export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
     totalPages: 1,
   })
 
-  const SearchParam = window.location.pathname.split('/')[4].toString()
+  const SearchParam = pathname.split('/search/')[1]
+  const MoreParam = pathname.split('/more/')[1]
   const QueryRef = useRef({
     type: urlParams.get('type') || '',
     year: urlParams.get('year') || '',
-    title: formatter.unformattedUrl(SearchParam),
+    title: formatter.unformattedUrl(isSearchPage ? SearchParam : MoreParam),
   })
 
   if (isSearchPage && search) {

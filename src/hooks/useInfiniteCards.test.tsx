@@ -6,7 +6,7 @@ import React, { act } from 'react'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosOmbdapi } from '@/util/axios'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { BASE_ROUTE, MORE_ROUTE, SEARCH_ROUTE } from '@/util/consts'
+import { MORE_ROUTE, SEARCH_ROUTE } from '@/util/consts'
 import { UserContext } from '@/contexts/user-context'
 
 const userData = {
@@ -41,9 +41,7 @@ const insertMoreURLRoute = ({
   title: string
 }) => {
   const url = new URL(window.location.origin.toString())
-  url.pathname = `${BASE_ROUTE.concat(MORE_ROUTE)}/${title
-    .split(' ')
-    .join('-')}`
+  url.pathname = `${MORE_ROUTE}/${title.split(' ').join('-')}`
   url.searchParams.set('type', type)
   url.searchParams.set('year', year)
   window.history.pushState({}, '', url)
@@ -51,10 +49,7 @@ const insertMoreURLRoute = ({
 
 const insertSearchURLRoute = ({ title }: { title: string }) => {
   const url = new URL(window.location.origin.toString())
-  url.pathname = BASE_ROUTE.concat(SEARCH_ROUTE).replace(
-    ':search',
-    title.split(' ').join('-')
-  )
+  url.pathname = SEARCH_ROUTE.replace(':search', title.split(' ').join('-'))
   window.history.pushState({}, '', url)
 }
 

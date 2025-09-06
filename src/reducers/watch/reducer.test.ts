@@ -1,7 +1,7 @@
 import { reducer, handleInitialReducer } from './reducer'
 import { ReducerCases } from './action-types'
 import type { ReducerStateType } from '@/contexts/watch-context'
-import { BASE_ROUTE, WATCH_ROUTE } from '@/util/consts'
+import { WATCH_ROUTE } from '@/util/consts'
 
 describe('reducer', () => {
   const initialState: ReducerStateType = {
@@ -61,10 +61,7 @@ describe('handleInitialReducer', () => {
 
   it('should set imdbID from URL', () => {
     const url = new URL(window.location.toString())
-    url.pathname = BASE_ROUTE.concat(WATCH_ROUTE).replace(
-      ':movieId',
-      'tt1234567'
-    )
+    url.pathname = WATCH_ROUTE.replace(':movieId', 'tt1234567')
     window.history.pushState({}, '', url.toString())
     const newState = handleInitialReducer(initialState)
 
@@ -76,7 +73,7 @@ describe('handleInitialReducer', () => {
 
   it('should return the initial state if no imdbID in URL', () => {
     const url = new URL(window.location.toString())
-    url.pathname = BASE_ROUTE.concat(WATCH_ROUTE).replace(':movieId', '')
+    url.pathname = WATCH_ROUTE.replace(':movieId', '')
     window.history.pushState({}, '', url.toString())
 
     const newState = handleInitialReducer(initialState)

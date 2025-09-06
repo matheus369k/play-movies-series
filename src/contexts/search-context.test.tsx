@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { SearchContextProvider, SearchContext } from './search-context'
 import { act, type ReactNode } from 'react'
-import { BASE_ROUTE, SEARCH_ROUTE } from '@/util/consts'
+import { SEARCH_ROUTE } from '@/util/consts'
 
 const wrapper = ({ children }: { children: ReactNode }) => {
   return <SearchContextProvider>{children}</SearchContextProvider>
@@ -76,7 +76,7 @@ describe('SearchContextProvider', () => {
 
   it('should restore search value from URL', () => {
     const url = new URL(window.location.toString())
-    url.pathname = BASE_ROUTE.concat(SEARCH_ROUTE).replace(':search', 'test')
+    url.pathname = SEARCH_ROUTE.replace(':search', 'test')
     window.history.pushState({}, '', url.toString())
 
     render(

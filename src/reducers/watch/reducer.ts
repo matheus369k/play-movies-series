@@ -39,7 +39,7 @@ export const reducer = (
 
 export const handleInitialReducer = (state: ReducerStateType) => {
   const url = new URL(window.location.toString())
-  const imdbID = url.pathname.split('/')[4]
+  const imdbID = url.pathname.split('/watch/')[1]
 
   if (imdbID) {
     return {

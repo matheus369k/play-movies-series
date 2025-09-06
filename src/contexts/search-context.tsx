@@ -15,9 +15,9 @@ export function SearchContextProvider({
 }) {
   const [search, setSearch] = useState(() => {
     const { pathname } = new URL(window.location.toString())
-    const searchParam = pathname.split('/')[4]
+    const searchParam = pathname.split('/search/')[1]
 
-    if (pathname.includes('/search/') && searchParam) {
+    if (searchParam) {
       return searchParam
     }
 
