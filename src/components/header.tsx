@@ -1,7 +1,7 @@
 import { TopResetScroll } from '@/util/reset-scroll'
 import { SearchForm } from './search-form'
 import { JWT_USER_TOKEN, LOGIN_USER, REGISTER_USER } from '@/util/consts'
-import { Link, Navigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { getUserProfile } from '@/services/get-user-profile'
 import { useRoutes } from '@/hooks/useRoutes'
 import { useContext, useEffect } from 'react'
@@ -10,6 +10,7 @@ import { cookiesStorage } from '@/util/browser-storage'
 import { formatter } from '@/util/formatter'
 import { ChevronLeft } from 'lucide-react'
 import { UserAvatar } from './user-avatar'
+import { AxiosBackApi } from '@/util/axios'
 
 export function Header() {
   const {
@@ -31,19 +32,20 @@ export function Header() {
   const { user, setUserState } = useContext(UserContext)
 
   function handleRedirectMainPage() {
-    if (!user) return <Navigate to={REGISTER_USER} />
-    TopResetScroll()
+    if (!user) return NavigateToRegisterPage()
+
     NavigateToHomePage(user.id)
+    TopResetScroll()
   }
 
   function handleNavigateToProfile() {
-    if (!user) return <Navigate to={REGISTER_USER} />
+    if (!user) return NavigateToRegisterPage()
+
     NavigateToProfilePage(user.id)
   }
 
   async function AutoLoginUser() {
-    const token = cookiesStorage.get(JWT_USER_TOKEN)
-    if (!token && user) return
+    if (user) return
 
     const data = await getUserProfile()
     if (!data) {
@@ -62,7 +64,17 @@ export function Header() {
   }
 
   useEffect(() => {
-    AutoLoginUser()
+    const token = cookiesStorage.get(JWT_USER_TOKEN)
+
+    if (token) {
+      AutoLoginUser()
+    }
+
+    if (!token) {
+      AxiosBackApi.get('/hearth').then(() => {
+        console.log('ok')
+      })
+    }
   }, [])
 
   return (
@@ -73,7 +85,7 @@ export function Header() {
     >
       {isHomeOrLoginOrRegisterPage ? (
         <button
-          aria-label='play'
+          aria-label='logo of site'
           onClick={handleRedirectMainPage}
           className='flex items-center'
         >

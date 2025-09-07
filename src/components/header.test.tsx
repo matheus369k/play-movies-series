@@ -26,7 +26,6 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => MockNavigate,
   useLocation: () => MockLocation(),
-  Navigate: ({ to }: { to: string }) => MockNavigate(to),
 }))
 
 const userData = {
@@ -76,6 +75,7 @@ describe('Header', () => {
     MockAxiosBackApi.onGet('/users/profile').reply(200, {
       user: userData,
     })
+    MockAxiosBackApi.onGet('/hearth').reply(200, 'ok')
   })
 
   afterEach(() => {
@@ -87,7 +87,7 @@ describe('Header', () => {
       wrapper: ({ children }) => wrapper({ children, user: userData }),
     })
 
-    screen.getByText(/Play/i)
+    screen.getByLabelText(/logo of site/i)
     screen.getByRole('button', { name: /btn redirection search page/i })
   })
 
@@ -126,7 +126,7 @@ describe('Header', () => {
       wrapper: ({ children }) => wrapper({ children, user: userData }),
     })
 
-    await user.click(screen.getByRole('button', { name: /play/i }))
+    await user.click(screen.getByRole('button', { name: /logo of site/i }))
 
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
     expect(MockNavigate).toHaveBeenCalledWith(
@@ -135,11 +135,12 @@ describe('Header', () => {
   })
 
   it('should redirection to register page when is clicked in the logo of the site and user datas not exists', async () => {
+    setUrlPath(HOME_ROUTE)
     render(<Header />, {
       wrapper: ({ children }) => wrapper({ children, user: null }),
     })
 
-    await user.click(screen.getByRole('button', { name: /play/i }))
+    await user.click(screen.getByLabelText(/logo of site/i))
 
     expect(MockNavigate).toHaveBeenCalledWith(REGISTER_USER)
   })
