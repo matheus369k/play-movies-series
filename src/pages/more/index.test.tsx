@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { MoreMoviesSeries } from '.'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { BASE_ROUTE, MORE_ROUTE } from '@/util/consts'
+import { MORE_ROUTE } from '@/util/consts'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosOmbdapi } from '@/util/axios'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -70,7 +70,7 @@ describe('MoreMoviesSeries', () => {
 
   beforeEach(() => {
     const url = new URL(window.location.origin.toString())
-    url.pathname = BASE_ROUTE.concat(MORE_ROUTE).concat('/Release')
+    url.pathname = MORE_ROUTE.concat('/Release')
     url.searchParams.set('type', '')
     url.searchParams.set('year', '2025')
     window.history.pushState({}, '', url)

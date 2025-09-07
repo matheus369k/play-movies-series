@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { WatchContextProvider, WatchContext } from './watch-context'
 import { act, type ReactNode } from 'react'
-import { BASE_ROUTE, WATCH_ROUTE } from '@/util/consts'
+import { WATCH_ROUTE } from '@/util/consts'
 
 const wrapper = ({ children }: { children: ReactNode }) => {
   return <WatchContextProvider>{children}</WatchContextProvider>
@@ -108,10 +108,7 @@ describe('WatchContext', () => {
 
   it('should restore state from URL when has id param', () => {
     const url = new URL(window.location.toString())
-    url.pathname = BASE_ROUTE.concat(WATCH_ROUTE).replace(
-      ':movieId',
-      'tt1234567'
-    )
+    url.pathname = WATCH_ROUTE.replace(':movieId', 'tt1234567')
     window.history.pushState({}, '', url.toString())
 
     render(
