@@ -25,10 +25,10 @@ export function Profile() {
     <section className='pt-28 flex flex-col gap-16'>
       <div className='flex flex-col items-center gap-4'>
         <div className='relative size-fit rounded-full'>
-          <div className='absolute top-2.5 left-2.5 space-y-2 z-10'>
+          <div className='absolute bottom-2.5 right-2.5 space-y-2 z-10'>
             <Dropdown.DropdownMenu modal={false}>
               <Dropdown.DropdownMenuTrigger aria-label='setting' asChild>
-                <Settings className='size-8 cursor-pointer' />
+                <Settings className='size-12 cursor-pointer' />
               </Dropdown.DropdownMenuTrigger>
               <Dropdown.DropdownMenuContent
                 align='start'

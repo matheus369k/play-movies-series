@@ -113,7 +113,7 @@ export function EditProfileModel() {
                 data-is-error={!!errors.file}
                 className='relative size-fit rounded-full data-[is-error=true]:border border-red-500'
               >
-                <Camera className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-10 z-50' />
+                <Camera className='absolute bottom-0 right-0 size-8 z-50' />
 
                 <UserAvatar
                   size='md'

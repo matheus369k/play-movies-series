@@ -31,7 +31,7 @@ export function LogoutProfileModel() {
             Are you sure you want to log out of your current account?
           </Dialog.DialogTitle>
         </Dialog.DialogHeader>
-        <Dialog.DialogFooter>
+        <Dialog.DialogFooter className='flex flex-row gap-4'>
           <Dialog.DialogClose aria-label='confirm logout' asChild>
             <Button
               onClick={handleLogoutUser}
