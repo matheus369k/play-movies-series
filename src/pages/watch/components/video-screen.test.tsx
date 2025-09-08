@@ -6,7 +6,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookies from 'js-cookie'
+import { JWT_USER_TOKEN } from '@/util/consts'
 
 const SpyInvalidationQueryClient = jest.fn()
 jest.mock('@tanstack/react-query', () => ({
@@ -25,7 +26,6 @@ const wrapper = ({ children }: { children: ReactNode }) => {
 
 describe('<VideoScreen />', () => {
   const jwtToken = faker.database.mongodbObjectId()
-  const SpyGetCookiesStorage = jest.spyOn(cookiesStorage, 'get')
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const movieId = faker.database.mongodbObjectId()
   const userEvents = userEvent.setup()
@@ -37,7 +37,7 @@ describe('<VideoScreen />', () => {
   }
 
   beforeEach(() => {
-    SpyGetCookiesStorage.mockReturnValue(jwtToken)
+    cookies.set(JWT_USER_TOKEN, jwtToken)
     MockAxiosBackApi.onGet(`/assessment/${movieId}`).reply(200, {
       mediaAssessment,
     })

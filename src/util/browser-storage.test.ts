@@ -1,55 +1,5 @@
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import {
-  browserLocalStorage,
-  browserSessionStorage,
-  cookiesStorage,
-} from './browser-storage'
-
-describe('cookiesStorage', () => {
-  const cookieExpired = faker.date.past().toISOString()
-  const token = {
-    name: 'token',
-    value: faker.database.mongodbObjectId(),
-  }
-
-  beforeEach(() => {
-    document.cookie = ''
-  })
-
-  it('should set cookie', () => {
-    cookiesStorage.set({ key: token.name, value: token.value })
-
-    expect(document.cookie.includes(token.name)).toBeTruthy()
-    expect(document.cookie.includes(token.value)).toBeTruthy()
-  })
-
-  it('should set cookie when is many cookies', () => {
-    document.cookie = `${token.name}=${token.value};expires=${cookieExpired}`
-    cookiesStorage.set({ key: 'user', value: 'matheus' })
-
-    expect(document.cookie.includes('user')).toBeTruthy()
-    expect(document.cookie.includes('matheus')).toBeTruthy()
-    expect(document.cookie.includes(token.name)).toBeTruthy()
-    expect(document.cookie.includes(token.value)).toBeTruthy()
-  })
-
-  it('should get cookie', () => {
-    document.cookie = `${token.name}=${token.value};expires=${cookieExpired}`
-    expect(document.cookie.includes(token.name)).toBeTruthy()
-
-    const cookie = cookiesStorage.get(token.name)
-    expect(cookie).toBe(token.value)
-  })
-
-  it('should get single cookie when is many cookies in the storage', () => {
-    document.cookie = `${token.name}=${token.value};expires=${cookieExpired}`
-    document.cookie = `user=matheus;expires=${cookieExpired}`
-    expect(document.cookie.includes(token.name)).toBeTruthy()
-
-    const cookie = cookiesStorage.get(token.name)
-    expect(cookie).toBe(token.value)
-  })
-})
+import { browserLocalStorage, browserSessionStorage } from './browser-storage'
 
 describe('localStorage', () => {
   const token = {

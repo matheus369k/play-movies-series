@@ -9,12 +9,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Form } from '@/components/ui/form'
 import { loginUser } from './services/login-user'
-import { cookiesStorage } from '@/util/browser-storage'
 import { JWT_USER_TOKEN } from '@/util/consts'
 import { useRoutes } from '@/hooks/useRoutes'
 import { useContext } from 'react'
 import { UserContext } from '@/contexts/user-context'
 import { formatter } from '@/util/formatter'
+import cookie from 'js-cookie'
 
 const LoginUserSchema = z.object({
   email: z.string().email('email is not valid'),
@@ -57,10 +57,7 @@ export function LoginUser() {
       }
 
       reset()
-      cookiesStorage.set({
-        key: JWT_USER_TOKEN,
-        value: data.token,
-      })
+      cookie.set(JWT_USER_TOKEN, data.token)
       setUserState({
         ...data.user,
         avatar: formatter.mergeAvatarUrlWithBackUrl(data.user.avatar),

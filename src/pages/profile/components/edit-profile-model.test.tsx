@@ -6,8 +6,8 @@ import { UserContext } from '@/contexts/user-context'
 import userEvent from '@testing-library/user-event'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosBackApi } from '@/util/axios'
-import { cookiesStorage } from '@/util/browser-storage'
-import { HOME_ROUTE } from '@/util/consts'
+import cookies from 'js-cookie'
+import { HOME_ROUTE, JWT_USER_TOKEN } from '@/util/consts'
 import { env } from '@/util/env'
 
 jest.mock('@/components/ui/avatar.tsx', () => ({
@@ -58,14 +58,13 @@ describe('<EditProfileModel />', () => {
   const userEvents = userEvent.setup()
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
-  const SpyCookiesStorageGet = jest.spyOn(cookiesStorage, 'get')
   const testFile = new File(['(dummy content)'], 'avatar.png', {
     type: 'image/png',
   })
 
   beforeEach(() => {
     MockAxiosBackApi.onPatch('/users/update').reply(200, { user: userData })
-    SpyCookiesStorageGet.mockReturnValue(jwtToken)
+    cookies.set(JWT_USER_TOKEN, jwtToken)
   })
 
   afterEach(() => {

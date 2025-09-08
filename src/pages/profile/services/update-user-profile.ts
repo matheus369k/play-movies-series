@@ -1,6 +1,6 @@
 import { AxiosBackApi } from '@/util/axios'
-import { cookiesStorage } from '@/util/browser-storage'
 import { JWT_USER_TOKEN } from '@/util/consts'
+import cookie from 'js-cookie'
 
 type UserProfileResponse = {
   name: string
@@ -21,7 +21,7 @@ export async function updateUserProfile(data: {
     }
     formData.append('name', data.name)
 
-    const jwtToken = cookiesStorage.get(JWT_USER_TOKEN)
+    const jwtToken = cookie.get(JWT_USER_TOKEN)
     if (!jwtToken) throw new Error('user not have authorization')
 
     const response = await AxiosBackApi.patch('/users/update', formData, {

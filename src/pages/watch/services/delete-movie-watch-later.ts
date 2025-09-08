@@ -1,10 +1,10 @@
 import { AxiosBackApi } from '@/util/axios'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookie from 'js-cookie'
 import { JWT_USER_TOKEN } from '@/util/consts'
 
 export async function deleteMovieWatchLater(MovieId: string) {
   try {
-    const jwtToken = cookiesStorage.get(JWT_USER_TOKEN)
+    const jwtToken = cookie.get(JWT_USER_TOKEN)
     if (!jwtToken) {
       throw new Error('user not have authorization')
     }

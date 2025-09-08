@@ -2,8 +2,9 @@ import { renderHook } from '@testing-library/react'
 import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookies from 'js-cookie'
 import { updateUserProfile } from './update-user-profile'
+import { JWT_USER_TOKEN } from '@/util/consts'
 
 describe('updateUserProfile', () => {
   const testFile = new File(['(dummy content)'], 'avatar.png', {
@@ -11,7 +12,6 @@ describe('updateUserProfile', () => {
   })
   const SpyConsole = jest.spyOn(console, 'log')
   const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
-  const SpyCookiesStorageGet = jest.spyOn(cookiesStorage, 'get')
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const user = {
     name: faker.person.fullName(),
@@ -22,7 +22,7 @@ describe('updateUserProfile', () => {
   }
 
   beforeEach(() => {
-    SpyCookiesStorageGet.mockReturnValue(jwtToken)
+    cookies.set(JWT_USER_TOKEN, jwtToken)
   })
 
   afterEach(() => {
@@ -46,7 +46,7 @@ describe('updateUserProfile', () => {
   })
 
   it('should handle error when user not have token to authorization', async () => {
-    SpyCookiesStorageGet.mockReset()
+    cookies.remove(JWT_USER_TOKEN)
     MockAxiosBackApi.onPatch('/users/update').replyOnce(200, { user })
     const { result } = renderHook(() =>
       updateUserProfile({

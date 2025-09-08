@@ -3,12 +3,12 @@ import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { getUserProfile } from './get-user-profile'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookies from 'js-cookie'
+import { JWT_USER_TOKEN } from '@/util/consts'
 
 describe('getUserProfile', () => {
   const SpyConsole = jest.spyOn(console, 'log')
   const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
-  const SpyCookiesStorageGet = jest.spyOn(cookiesStorage, 'get')
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const user = {
     name: faker.person.fullName(),
@@ -19,7 +19,7 @@ describe('getUserProfile', () => {
   }
 
   beforeEach(() => {
-    SpyCookiesStorageGet.mockReturnValue(jwtToken)
+    cookies.set(JWT_USER_TOKEN, jwtToken)
   })
 
   afterEach(() => {
@@ -38,7 +38,7 @@ describe('getUserProfile', () => {
   })
 
   it('should handle error when user not have token to authorization', async () => {
-    SpyCookiesStorageGet.mockReset()
+    cookies.remove(JWT_USER_TOKEN)
     MockAxiosBackApi.onGet('/users/profile').replyOnce(200, { user })
     const { result } = renderHook(getUserProfile)
 

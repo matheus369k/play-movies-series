@@ -3,12 +3,12 @@ import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { createAssessment } from './create-assessment'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookies from 'js-cookie'
+import { JWT_USER_TOKEN } from '@/util/consts'
 
 describe('createAssessment', () => {
   const SpyConsole = jest.spyOn(console, 'log')
   const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
-  const SpyCookiesStorageGet = jest.spyOn(cookiesStorage, 'get')
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const movieId = faker.database.mongodbObjectId()
   const mediaAssessmentRequest = {
@@ -23,7 +23,7 @@ describe('createAssessment', () => {
   }
 
   beforeEach(() => {
-    SpyCookiesStorageGet.mockReturnValue(jwtToken)
+    cookies.set(JWT_USER_TOKEN, jwtToken)
   })
 
   afterEach(() => {
@@ -47,7 +47,7 @@ describe('createAssessment', () => {
   })
 
   it('should handle error when user not have token to authorization', async () => {
-    SpyCookiesStorageGet.mockReset()
+    cookies.remove(JWT_USER_TOKEN)
     MockAxiosBackApi.onPost(`/assessment/${movieId}`).reply(
       200,
       mediaAssessmentResponse

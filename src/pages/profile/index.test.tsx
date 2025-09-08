@@ -6,8 +6,9 @@ import type { ReactNode } from 'react'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { Profile } from '.'
 import { AxiosBackApi } from '@/util/axios'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookies from 'js-cookie'
 import userEvent from '@testing-library/user-event'
+import { JWT_USER_TOKEN } from '@/util/consts'
 
 jest.mock('@/components/ui/avatar.tsx', () => ({
   ...jest.requireActual('@/components/ui/avatar.tsx'),
@@ -57,7 +58,6 @@ const wrapper = ({
 describe('<Profile />', () => {
   const userEvents = userEvent.setup()
   const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
-  const SpyCookiesStorageGet = jest.spyOn(cookiesStorage, 'get')
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const watchLaterMedias = Array.from({ length: 4 }).map(() => {
     return {
@@ -72,7 +72,7 @@ describe('<Profile />', () => {
 
   beforeEach(() => {
     MockAxiosBackApi.onGet('/watch-later').reply(200, { watchLaterMedias })
-    SpyCookiesStorageGet.mockReturnValue(jwtToken)
+    cookies.set(JWT_USER_TOKEN, jwtToken)
   })
 
   afterEach(() => {

@@ -16,7 +16,7 @@ import {
   FormLabel,
 } from '@/components/ui/form'
 import { createUser } from './services/create-user'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookie from 'js-cookie'
 import { JWT_USER_TOKEN } from '@/util/consts'
 import { useRoutes } from '@/hooks/useRoutes'
 import { useContext } from 'react'
@@ -70,10 +70,7 @@ export function RegisterUser() {
       }
 
       reset()
-      cookiesStorage.set({
-        key: JWT_USER_TOKEN,
-        value: data.token,
-      })
+      cookie.set(JWT_USER_TOKEN, data.token)
       setUserState({
         ...data.user,
         avatar: formatter.mergeAvatarUrlWithBackUrl(data.user.avatar),

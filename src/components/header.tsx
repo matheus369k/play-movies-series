@@ -6,11 +6,10 @@ import { getUserProfile } from '@/services/get-user-profile'
 import { useRoutes } from '@/hooks/useRoutes'
 import { useContext, useEffect } from 'react'
 import { UserContext } from '@/contexts/user-context'
-import { cookiesStorage } from '@/util/browser-storage'
 import { formatter } from '@/util/formatter'
 import { ChevronLeft } from 'lucide-react'
 import { UserAvatar } from './user-avatar'
-import { AxiosBackApi } from '@/util/axios'
+import cookies from 'js-cookie'
 
 export function Header() {
   const {
@@ -49,7 +48,7 @@ export function Header() {
 
     const data = await getUserProfile()
     if (!data) {
-      cookiesStorage.delete(JWT_USER_TOKEN)
+      cookies.remove(JWT_USER_TOKEN)
       NavigateToRegisterPage()
       return
     }
@@ -64,16 +63,10 @@ export function Header() {
   }
 
   useEffect(() => {
-    const token = cookiesStorage.get(JWT_USER_TOKEN)
+    const token = cookies.get(JWT_USER_TOKEN)
 
     if (token) {
       AutoLoginUser()
-    }
-
-    if (!token) {
-      AxiosBackApi.get('/hearth').then(() => {
-        console.log('ok')
-      })
     }
   }, [])
 

@@ -1,5 +1,5 @@
 import { AxiosBackApi } from '@/util/axios'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookie from 'js-cookie'
 import { JWT_USER_TOKEN } from '@/util/consts'
 
 type AssessmentResponseType = {
@@ -11,7 +11,7 @@ type AssessmentResponseType = {
 
 export async function getAssessment(movieId: string) {
   try {
-    const jwtToken = cookiesStorage.get(JWT_USER_TOKEN)
+    const jwtToken = cookie.get(JWT_USER_TOKEN)
     if (!jwtToken) throw new Error('user not have authorization')
 
     const response = await AxiosBackApi.get(`/assessment/${movieId}`, {

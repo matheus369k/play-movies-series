@@ -4,9 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { HOME_ROUTE } from '@/util/consts'
+import { HOME_ROUTE, JWT_USER_TOKEN } from '@/util/consts'
 import type { ComponentProps, ReactNode } from 'react'
 import { UserContext } from '@/contexts/user-context'
+import cookies from 'js-cookie'
 import { env } from '@/util/env'
 
 const MockNavigate = jest.fn()
@@ -43,7 +44,6 @@ const wrapper = ({ children }: { children: ReactNode }) => {
 }
 
 describe('<LoginUser/>', () => {
-  const MockCookie = jest.spyOn(document, 'cookie', 'set').mockReturnValue()
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
   const userResponse = {
@@ -67,6 +67,7 @@ describe('<LoginUser/>', () => {
   })
 
   afterEach(() => {
+    cookies.remove(JWT_USER_TOKEN)
     MockAxiosBackApi.reset()
   })
 
@@ -111,14 +112,13 @@ describe('<LoginUser/>', () => {
   })
 
   it('should redirection page, save token and reset fields form when submitted ', async () => {
-    MockCookie.mockRestore()
     render(<LoginUser />, { wrapper })
     const emailField = screen.getByRole('textbox', { name: /email/i })
     const passField = screen.getByPlaceholderText(/Enter your password.../i)
 
     expect(MockNavigate).toHaveBeenCalledTimes(0)
     expect(MockSetUserState).toHaveBeenCalledTimes(0)
-    expect(document.cookie.includes(jwtToken)).toBeFalsy()
+    expect(cookies.get(JWT_USER_TOKEN)).toBeFalsy()
 
     await user.type(emailField, userRequest.email)
     await user.type(passField, userRequest.password)
@@ -137,7 +137,7 @@ describe('<LoginUser/>', () => {
         avatar: env.VITE_BACKEND_URL.concat('/', userResponse.avatar),
       })
       expect(emailField).toHaveValue('')
-      expect(document.cookie.includes(jwtToken)).toBeTruthy()
+      expect(cookies.get(JWT_USER_TOKEN)).toBeTruthy()
     })
   })
 })

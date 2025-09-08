@@ -3,10 +3,11 @@ import { WatchLaterButton } from './watch-later-button'
 import type { ReactNode } from 'react'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookies from 'js-cookie'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosBackApi } from '@/util/axios'
 import userEvent from '@testing-library/user-event'
+import { JWT_USER_TOKEN } from '@/util/consts'
 
 const MockInvalidateQueries = jest.fn()
 jest.mock('@tanstack/react-query', () => ({
@@ -28,7 +29,6 @@ const wrapper = ({ children }: { children: ReactNode }) => {
 describe('<WatchLaterButton />', () => {
   const userEvents = userEvent.setup()
   const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
-  const SpyCookiesStorageGet = jest.spyOn(cookiesStorage, 'get')
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const MovieId = faker.database.mongodbObjectId()
   const WatchLaterButtonProps = {
@@ -40,7 +40,7 @@ describe('<WatchLaterButton />', () => {
   }
 
   beforeEach(() => {
-    SpyCookiesStorageGet.mockReturnValue(jwtToken)
+    cookies.set(JWT_USER_TOKEN, jwtToken)
     MockAxiosBackApi.onGet(`/watch-later/${MovieId}`).reply(200, {
       watchLaterMedia: WatchLaterButtonProps,
     })

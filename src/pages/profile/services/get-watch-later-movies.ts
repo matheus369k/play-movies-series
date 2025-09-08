@@ -1,6 +1,6 @@
 import { AxiosBackApi } from '@/util/axios'
-import { cookiesStorage } from '@/util/browser-storage'
 import { JWT_USER_TOKEN } from '@/util/consts'
+import cookie from 'js-cookie'
 
 type WatchLaterResponse = {
   id: string
@@ -13,7 +13,7 @@ type WatchLaterResponse = {
 
 export async function getWatchLaterMovies() {
   try {
-    const jwtToken = cookiesStorage.get(JWT_USER_TOKEN)
+    const jwtToken = cookie.get(JWT_USER_TOKEN)
     if (!jwtToken) throw new Error('user not have authorization')
 
     const response = await AxiosBackApi.get('/watch-later', {

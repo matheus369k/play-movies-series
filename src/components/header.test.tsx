@@ -16,7 +16,7 @@ import { faker } from '@faker-js/faker/locale/pt_BR'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosBackApi } from '@/util/axios'
 import { env } from '@/util/env'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookies from 'js-cookie'
 
 const MockNavigate = jest.fn()
 const MockLocation = jest.fn().mockReturnValue({
@@ -165,10 +165,8 @@ describe('Header', () => {
   })
 
   it('should delete token and redirection to register when the request UserProfiler return nothing', async () => {
-    const cookieDelete = jest.spyOn(cookiesStorage, 'delete')
     MockAxiosBackApi.onGet('/users/profile').reply(200, undefined)
-    const token = 'en3fn4fbb39fj38f3m0f3g4g84ng84'
-    document.cookie = `${JWT_USER_TOKEN}=${token};expires=${faker.date.future()}`
+    cookies.set(JWT_USER_TOKEN, 'en3fn4fbb39fj38f3m0f3g4g84ng84')
     render(<Header />, {
       wrapper: ({ children }) => wrapper({ children, user: null }),
     })
@@ -176,7 +174,7 @@ describe('Header', () => {
     await waitFor(() => {
       expect(MockSetUserState).toHaveBeenCalledTimes(0)
       expect(MockNavigate).toHaveBeenCalledWith(REGISTER_USER)
-      expect(cookieDelete).toHaveBeenCalledWith(JWT_USER_TOKEN)
+      expect(cookies.get(JWT_USER_TOKEN)).toBeFalsy()
     })
   })
 

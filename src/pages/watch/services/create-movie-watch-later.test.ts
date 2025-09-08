@@ -3,12 +3,12 @@ import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { createMovieWatchLater } from './create-movie-watch-later'
-import { cookiesStorage } from '@/util/browser-storage'
+import cookies from 'js-cookie'
+import { JWT_USER_TOKEN } from '@/util/consts'
 
 describe('createMovieWatchLater', () => {
   const SpyConsole = jest.spyOn(console, 'log')
   const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
-  const SpyCookiesStorageGet = jest.spyOn(cookiesStorage, 'get')
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const MovieId = faker.database.mongodbObjectId()
   const watchLaterMovie = {
@@ -20,7 +20,7 @@ describe('createMovieWatchLater', () => {
   }
 
   beforeEach(() => {
-    SpyCookiesStorageGet.mockReturnValue(jwtToken)
+    cookies.set(JWT_USER_TOKEN, jwtToken)
   })
 
   afterEach(() => {
@@ -41,7 +41,7 @@ describe('createMovieWatchLater', () => {
   })
 
   it('should handle error when user not have token to authorization', async () => {
-    SpyCookiesStorageGet.mockReset()
+    cookies.remove(JWT_USER_TOKEN)
     MockAxiosBackApi.onPost('/watch-later').reply(200, 'ok')
     renderHook(() => createMovieWatchLater(watchLaterMovie))
 
