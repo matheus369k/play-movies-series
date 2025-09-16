@@ -224,4 +224,19 @@ describe('Home', () => {
     await screen.findByText(movies[0].Plot)
     expect(screen.getByTitle(/Volta/i)).toBeDisabled()
   })
+
+  it('should jump movie when is clicked in bar link with her', async () => {
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+      ...movies[0],
+    })
+    MockAxiosOmbdapi.onGet(`?i=${movies[4].imdbID}`).reply(200, {
+      ...movies[4],
+    })
+    render(<EmphasisMovies />, { wrapper })
+
+    await screen.findByText(movies[0].Plot)
+    await user.click(screen.getByLabelText(`navigate to ${movies[4].imdbID}`))
+
+    await screen.findByText(movies[4].Plot)
+  })
 })

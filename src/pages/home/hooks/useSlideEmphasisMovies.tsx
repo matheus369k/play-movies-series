@@ -37,6 +37,12 @@ export function useSlideEmphasisMovies() {
     })
   }
 
+  function handlePassToMovieSeries(index: number) {
+    handleAddIndex({
+      index: Number(index),
+    })
+  }
+
   function handleClickedPlayOnMovie({ id }: { id: string }) {
     if (!user) return <Navigate to={REGISTER_USER} />
 
@@ -48,6 +54,7 @@ export function useSlideEmphasisMovies() {
     handleClickedPlayOnMovie,
     handlePassToPreviousMovieSeries,
     handlePassToNextMovieSeries,
+    handlePassToMovieSeries,
     data,
     isError,
     isLoading,

@@ -154,4 +154,35 @@ describe('useSlideEmphasisMovies', () => {
       index: 0,
     })
   })
+
+  it('should update jump to next or prev index when is call handlePassToMovieSeries with index number', () => {
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+      ...movies[0],
+    })
+    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+      ...movies[1],
+    })
+    const { result } = renderHook(useSlideEmphasisMovies, { wrapper })
+    expect(result.current.state).toEqual({
+      imdbID: '',
+      index: 0,
+    })
+
+    act(() => {
+      result.current.handlePassToMovieSeries(dbFocusData.length - 1)
+    })
+
+    expect(result.current.state).toEqual({
+      imdbID: '',
+      index: dbFocusData.length - 1,
+    })
+    act(() => {
+      result.current.handlePassToMovieSeries(dbFocusData.length - 3)
+    })
+
+    expect(result.current.state).toEqual({
+      imdbID: '',
+      index: dbFocusData.length - 3,
+    })
+  })
 })
