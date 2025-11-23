@@ -154,6 +154,7 @@ export function EditProfileModel() {
 
               <div className='flex gap-4 w-full'>
                 <Button
+                  autoFocus
                   disabled={isSubmitting}
                   type='submit'
                   className='w-full px-12 py-2 bg-red-600 text-zinc-50 hover:bg-red-600 disabled:opacity-70'

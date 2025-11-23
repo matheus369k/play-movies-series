@@ -39,6 +39,7 @@ export function LogoutProfileModel() {
           </Dialog.DialogClose>
           <Dialog.DialogClose aria-label='cancel logout' asChild>
             <Button
+              autoFocus
               className='w-full px-12 py-2 bg-transparent border-zinc-700 text-zinc-50'
               variant={'outline'}
             >
