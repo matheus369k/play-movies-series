@@ -67,6 +67,58 @@ describe('<VideoScreen />', () => {
     })
   })
 
+  it('disabled updateAssessment liked button when try update using some values', async () => {
+    MockAxiosBackApi.onGet(routeAssessment).reply(200, { mediaAssessment })
+    MockAxiosBackApi.onPatch(routeAssessment).reply(201, mediaAssessment)
+    render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
+      wrapper,
+    })
+
+    await userEvents.click(screen.getByRole('button', { name: /liked/i }))
+
+    await waitFor(() => {
+      expect(MockAxiosBackApi.history[1]).toBeUndefined()
+    })
+
+    await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
+
+    await waitFor(() => {
+      expect(MockAxiosBackApi.history[1]).toMatchObject({
+        url: routeAssessment,
+        method: /PACTH/i,
+      })
+    })
+  })
+
+  it('disabled unlike button when try update using some values', async () => {
+    MockAxiosBackApi.onGet(routeAssessment).reply(200, {
+      mediaAssessment: {
+        ...mediaAssessment,
+        liked: false,
+        unlike: true,
+      },
+    })
+    MockAxiosBackApi.onPatch(routeAssessment).reply(201)
+    render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
+      wrapper,
+    })
+
+    await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
+
+    await waitFor(() => {
+      expect(MockAxiosBackApi.history[1]).toBeUndefined()
+    })
+
+    await userEvents.click(screen.getByRole('button', { name: /liked/i }))
+
+    await waitFor(() => {
+      expect(MockAxiosBackApi.history[1]).toMatchObject({
+        url: routeAssessment,
+        method: /PACTH/i,
+      })
+    })
+  })
+
   it('should call createAssessment and recall getAssessment when liked and unlike for false', async () => {
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
       mediaAssessment: {

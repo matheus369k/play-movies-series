@@ -16,16 +16,18 @@ type HandleLikeOrUnlikeMovieProps = {
 }
 
 export function VideoScreen({ Title, movieId }: VideoScreenProps) {
-  const { mutateAsync: createAssessment } = useCreateAssessment(movieId)
-  const { mutateAsync: updateAssessment } = useUpdateAssessment(movieId)
+  const { mutateAsync: createAssessment, isLoading: isLoadingCreate } =
+    useCreateAssessment(movieId)
+  const { mutateAsync: updateAssessment, isLoading: isLoadingUpdate } =
+    useUpdateAssessment(movieId)
   const { data } = useGetAssessment(movieId)
 
   async function handleLikeOrUnlikeMovie(props: HandleLikeOrUnlikeMovieProps) {
     try {
       const { liked, unlike } = props
-      const isLikedAndUnlikeNotExist = data && !data.liked && !data.unlike
       const assessment = { liked, movieId, unlike }
 
+      const isLikedAndUnlikeNotExist = data && !data.liked && !data.unlike
       if (isLikedAndUnlikeNotExist) {
         await createAssessment(assessment)
         return
@@ -37,6 +39,9 @@ export function VideoScreen({ Title, movieId }: VideoScreenProps) {
     }
   }
 
+  const isFetchingLikeOrUnlikeRequest = isLoadingUpdate || isLoadingCreate
+  const disabledUnlikeButton = isFetchingLikeOrUnlikeRequest || data?.unlike
+  const disabledLikeButton = isFetchingLikeOrUnlikeRequest || data?.liked
   return (
     <div className='absolute top-0 left-0 w-full h-[400px] bg-[url(@/assets/bg-play-movies.webp)] bg-cover aspect-video overflow-hidden cursor-pointer group/play max-sm:h-[200px]'>
       <div className='w-full h-full relative flex items-end bg-gradient-to-b from-[#1b1a1fa4] to-zinc-950 m-auto p-2'>
@@ -49,6 +54,7 @@ export function VideoScreen({ Title, movieId }: VideoScreenProps) {
 
           <div className='flex gap-4 max-md:gap-1'>
             <button
+              disabled={disabledLikeButton}
               data-liked={data?.liked}
               onClick={() =>
                 handleLikeOrUnlikeMovie({
@@ -65,6 +71,7 @@ export function VideoScreen({ Title, movieId }: VideoScreenProps) {
             </button>
 
             <button
+              disabled={disabledUnlikeButton}
               data-unlike={data?.unlike}
               type='button'
               onClick={() =>
