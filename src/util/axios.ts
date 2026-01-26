@@ -11,4 +11,5 @@ export const AxiosOmbdapi = axios.create({
 
 export const AxiosBackApi = axios.create({
   baseURL: env.VITE_BACKEND_URL,
+  withCredentials: true,
 })

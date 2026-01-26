@@ -1,14 +1,12 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { LoginUser } from '.'
 import userEvent from '@testing-library/user-event'
 import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { HOME_ROUTE, JWT_USER_TOKEN } from '@/util/consts'
+import { HOME_ROUTE } from '@/util/consts'
 import type { ComponentProps, ReactNode } from 'react'
-import { UserContext } from '@/contexts/user-context'
-import cookies from 'js-cookie'
-import { env } from '@/util/env'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -28,50 +26,27 @@ jest.mock('@/components/ui/checkbox', () => ({
   }) => <input {...props} onClick={() => onCheckedChange()} type='checkbox' />,
 }))
 
-const MockSetUserState = jest.fn()
-const wrapper = ({ children }: { children: ReactNode }) => {
-  return (
-    <UserContext.Provider
-      value={{
-        resetUserState: jest.fn(),
-        setUserState: MockSetUserState,
-        user: null,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  )
-}
+const queryClient = new QueryClient()
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+)
 
-describe('<LoginUser/>', () => {
+describe('LoginUser component', () => {
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
-  const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
-  const userResponse = {
-    name: faker.person.fullName(),
+  const routeUserLogin = '/users/login'
+  const userEvents = userEvent.setup()
+  const userLogin = {
+    password: faker.database.mongodbObjectId().slice(0, 12),
     email: faker.internet.email(),
-    id: faker.database.mongodbObjectId(),
-    avatar: faker.image.avatar(),
-    createAt: faker.date.past().toISOString(),
   }
-  const userRequest = {
-    email: userResponse.email,
-    password: userResponse.name.slice(0, 10),
-  }
-  const user = userEvent.setup()
-
-  beforeEach(() => {
-    MockAxiosBackApi.onPost('/users/login', userRequest).reply(200, {
-      user: userResponse,
-      token: jwtToken,
-    })
-  })
 
   afterEach(() => {
-    cookies.remove(JWT_USER_TOKEN)
     MockAxiosBackApi.reset()
+    queryClient.clear()
   })
 
-  it('should render corrected', () => {
+  it('should rended', () => {
+    MockAxiosBackApi.onPost(routeUserLogin).reply(201)
     render(<LoginUser />, { wrapper })
 
     screen.getByPlaceholderText(/Enter your password.../i)
@@ -79,28 +54,26 @@ describe('<LoginUser/>', () => {
   })
 
   it("shouldn't submitted form when fields is empty", async () => {
+    MockAxiosBackApi.onPost(routeUserLogin).reply(201)
     render(<LoginUser />, { wrapper })
     const submitButton = screen.getByRole('button')
 
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    await userEvents.click(submitButton)
 
     expect(screen.getByRole('button')).toHaveTextContent(/login/i)
     expect(MockAxiosBackApi.history).toHaveLength(0)
   })
 
   it('should switch text and disabled form when submitted ', async () => {
+    MockAxiosBackApi.onPost(routeUserLogin).reply(201)
     render(<LoginUser />, { wrapper })
     const emailField = screen.getByRole('textbox', { name: /email/i })
     const passField = screen.getByPlaceholderText(/Enter your password.../i)
     const submitButton = screen.getByRole('button')
 
-    await user.type(emailField, userRequest.email)
-    await user.type(passField, userRequest.password)
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    await userEvents.type(emailField, userLogin.email)
+    await userEvents.type(passField, userLogin.password)
+    fireEvent.click(submitButton)
 
     expect(submitButton).toBeDisabled()
     expect(submitButton).toHaveTextContent(/login.../i)
@@ -111,33 +84,21 @@ describe('<LoginUser/>', () => {
     })
   })
 
-  it('should redirection page, save token and reset fields form when submitted ', async () => {
+  it('should redirection page, login request and reset fields when submitted', async () => {
+    MockAxiosBackApi.onPost(routeUserLogin).reply(201)
     render(<LoginUser />, { wrapper })
     const emailField = screen.getByRole('textbox', { name: /email/i })
     const passField = screen.getByPlaceholderText(/Enter your password.../i)
+    const submitButton = screen.getByRole('button')
 
-    expect(MockNavigate).toHaveBeenCalledTimes(0)
-    expect(MockSetUserState).toHaveBeenCalledTimes(0)
-    expect(cookies.get(JWT_USER_TOKEN)).toBeFalsy()
+    await userEvents.type(emailField, userLogin.email)
+    await userEvents.type(passField, userLogin.password)
+    fireEvent.click(submitButton)
 
-    await user.type(emailField, userRequest.email)
-    await user.type(passField, userRequest.password)
-    act(() => {
-      fireEvent.click(screen.getByRole('button'))
-    })
-
-    expect(emailField).toHaveValue(userRequest.email)
     await waitFor(() => {
+      expect(MockNavigate).toHaveBeenCalledWith(HOME_ROUTE)
       expect(MockAxiosBackApi.history).toHaveLength(1)
-      expect(MockNavigate).toHaveBeenCalledWith(
-        HOME_ROUTE.replace(':userId', userResponse.id)
-      )
-      expect(MockSetUserState).toHaveBeenCalledWith({
-        ...userResponse,
-        avatar: env.VITE_BACKEND_URL.concat('/', userResponse.avatar),
-      })
       expect(emailField).toHaveValue('')
-      expect(cookies.get(JWT_USER_TOKEN)).toBeTruthy()
     })
   })
 })

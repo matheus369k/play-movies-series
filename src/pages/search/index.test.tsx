@@ -6,7 +6,6 @@ import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosOmbdapi } from '@/util/axios'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SearchContextProvider } from '@/contexts/search-context'
-import { UserContext } from '@/contexts/user-context'
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -24,49 +23,33 @@ jest.mock('react-intersection-observer', () => ({
   }),
 }))
 
-const userData = {
-  id: faker.database.mongodbObjectId(),
-  avatar: faker.image.avatar(),
-  email: faker.internet.email(),
-  name: faker.person.firstName(),
-  createAt: faker.date.past().toISOString(),
-}
 const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <UserContext.Provider
-    value={{
-      resetUserState: jest.fn(),
-      setUserState: jest.fn(),
-      user: userData,
-    }}
-  >
-    <QueryClientProvider client={queryClient}>
-      <SearchContextProvider>{children}</SearchContextProvider>
-    </QueryClientProvider>
-  </UserContext.Provider>
+  <QueryClientProvider client={queryClient}>
+    <SearchContextProvider>{children}</SearchContextProvider>
+  </QueryClientProvider>
 )
 
-describe('Search', () => {
+describe('Search page', () => {
   const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
-  const movies = Array.from({ length: 20 }).map(() => {
-    return {
-      Title: faker.book.title(),
-      Year: faker.music.album(),
-      Rated: faker.number.float({ min: 0, max: 10 }),
-      Released: faker.date.recent().toString(),
-      Runtime: faker.number.int({ min: 70, max: 180 }) + 'minutes',
-      Genre:
-        faker.book.genre() +
-        ', ' +
-        faker.book.genre() +
-        ' and ' +
-        faker.book.genre(),
-      Poster: faker.image.url(),
-      imdbID: faker.database.mongodbObjectId(),
-      Type: 'movie',
-      totalSeasons: faker.number.int({ max: 34 }),
-    }
-  })
+  const routeMoviesPageQueryParam = `?s=transformers&type=&y=&page=1`
+  const movies = Array.from({ length: 20 }).map(() => ({
+    Title: faker.book.title(),
+    Year: faker.music.album(),
+    Rated: faker.number.float({ min: 0, max: 10 }),
+    Released: faker.date.recent().toString(),
+    Runtime: faker.number.int({ min: 70, max: 180 }) + 'minutes',
+    Genre:
+      faker.book.genre() +
+      ', ' +
+      faker.book.genre() +
+      ' and ' +
+      faker.book.genre(),
+    Poster: faker.image.url(),
+    imdbID: faker.database.mongodbObjectId(),
+    Type: 'movie',
+    totalSeasons: faker.number.int({ max: 34 }),
+  }))
 
   beforeEach(() => {
     const url = new URL(window.location.origin.toString())
@@ -80,7 +63,7 @@ describe('Search', () => {
   })
 
   it('should render corrected', async () => {
-    MockAxiosOmbdapi.onGet(`?s=transformers&type=&y=&page=1`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeMoviesPageQueryParam).reply(200, {
       Search: movies.filter((_, index) => index < 10),
       totalResults: '20',
     })
@@ -91,7 +74,7 @@ describe('Search', () => {
   })
 
   it('should render loading components when is request api', () => {
-    MockAxiosOmbdapi.onGet(`?s=transformers&type=&y=&page=1`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeMoviesPageQueryParam).reply(200, {
       Search: movies.filter((_, index) => index < 10),
       totalResults: '20',
     })
@@ -101,7 +84,7 @@ describe('Search', () => {
   })
 
   it('should render not found components when finished request without find datas', async () => {
-    MockAxiosOmbdapi.onGet(`?s=transformers&type=&y=&page=1`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeMoviesPageQueryParam).reply(200, {
       Search: [],
       totalResults: '0',
     })
@@ -111,7 +94,7 @@ describe('Search', () => {
   })
 
   it('should add id on the last item to observer when is visible', async () => {
-    MockAxiosOmbdapi.onGet(`?s=transformers&type=&y=&page=1`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeMoviesPageQueryParam).reply(200, {
       Search: movies.filter((_, index) => index < 20),
       totalResults: '20',
     })

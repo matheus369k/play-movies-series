@@ -22,11 +22,9 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => MockLocation(),
 }))
 
-const userId = faker.database.mongodbObjectId()
-
 const setUrlPath = (path: string) => {
   const url = new URL(window.location.toString())
-  url.pathname = path.replace?.(':userId', userId)
+  url.pathname = path
   window.history.pushState({}, '', url)
   MockLocation.mockReturnValue({
     pathname: window.location.toString(),
@@ -152,12 +150,10 @@ describe('useRoutes()', () => {
     const { result } = renderHook(useRoutes)
 
     act(() => {
-      result.current.NavigateToHomePage(userId)
+      result.current.NavigateToHomePage()
     })
 
-    expect(MockNavigate).toHaveBeenCalledWith(
-      HOME_ROUTE.replace(':userId', userId)
-    )
+    expect(MockNavigate).toHaveBeenCalledWith(HOME_ROUTE)
   })
 
   it('should run NavigateToSearchPage and useNavigate receive correct path', () => {
@@ -170,12 +166,11 @@ describe('useRoutes()', () => {
     act(() => {
       result.current.NavigateToSearchPage({
         search: 'Transformers',
-        userId,
       })
     })
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      SEARCH_ROUTE.replace(':userId', userId).replace(':search', 'transformers')
+      SEARCH_ROUTE.replace(':search', 'transformers')
     )
   })
 
@@ -191,14 +186,11 @@ describe('useRoutes()', () => {
         title: 'Transformers',
         type: 'movie',
         year: 2008,
-        userId,
       })
     })
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      MORE_ROUTE.replace(':userId', userId)
-        .concat('/transformers')
-        .concat('?type=movie&year=2008')
+      MORE_ROUTE.concat('/transformers').concat('?type=movie&year=2008')
     )
   })
 
@@ -210,12 +202,10 @@ describe('useRoutes()', () => {
     const { result } = renderHook(useRoutes)
 
     act(() => {
-      result.current.NavigateToHomePage(userId)
+      result.current.NavigateToHomePage()
     })
 
-    expect(MockNavigate).toHaveBeenCalledWith(
-      HOME_ROUTE.replace(':userId', userId)
-    )
+    expect(MockNavigate).toHaveBeenCalledWith(HOME_ROUTE)
   })
 
   it('should run NavigateToWatchPage and useNavigate receive correct path', () => {
@@ -227,11 +217,11 @@ describe('useRoutes()', () => {
     const { result } = renderHook(useRoutes)
 
     act(() => {
-      result.current.NavigateToWatchPage({ movieId, userId })
+      result.current.NavigateToWatchPage({ movieId })
     })
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':userId', userId).replace(':movieId', movieId)
+      WATCH_ROUTE.replace(':movieId', movieId)
     )
   })
 })

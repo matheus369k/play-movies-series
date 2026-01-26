@@ -3,9 +3,6 @@ import { useContext } from 'react'
 import { WatchContext } from '@/contexts/watch-context'
 import { TopResetScroll } from '@/util/reset-scroll'
 import { useRoutes } from '@/hooks/useRoutes'
-import { UserContext } from '@/contexts/user-context'
-import { Navigate } from 'react-router-dom'
-import { REGISTER_USER } from '@/util/consts'
 
 interface MovieCardProps {
   Poster: string
@@ -16,25 +13,16 @@ interface MovieCardProps {
   onlyImage?: boolean
 }
 
-export function MovieCard({
-  Poster,
-  Title,
-  Type,
-  Year,
-  imdbID,
-  onlyImage = false,
-}: MovieCardProps) {
+export function MovieCard({ onlyImage = false, ...props }: MovieCardProps) {
+  const { Poster, Title, Type, Year, imdbID } = props
   const { handleAddIDBMID } = useContext(WatchContext)
-  const { user } = useContext(UserContext)
-  const { NavigateToWatchPage } = useRoutes()
+  const route = useRoutes()
 
   function handleClickedPlayOnMovie() {
-    if (!user) return <Navigate to={REGISTER_USER} />
-
     TopResetScroll()
 
     handleAddIDBMID({ imdbID })
-    NavigateToWatchPage({ movieId: imdbID, userId: user.id })
+    route.NavigateToWatchPage({ movieId: imdbID })
   }
 
   return (

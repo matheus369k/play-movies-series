@@ -4,11 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { HOME_ROUTE, JWT_USER_TOKEN } from '@/util/consts'
+import { HOME_ROUTE } from '@/util/consts'
 import type { ComponentProps, ReactNode } from 'react'
-import { UserContext } from '@/contexts/user-context'
-import cookies from 'js-cookie'
-import { env } from '@/util/env'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -28,48 +26,30 @@ jest.mock('@/components/ui/checkbox', () => ({
   }) => <input {...props} onClick={() => onCheckedChange()} type='checkbox' />,
 }))
 
-const MockSetUserState = jest.fn()
+const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <UserContext.Provider
-      value={{
-        resetUserState: jest.fn(),
-        setUserState: MockSetUserState,
-        user: null,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   )
 }
 
 describe('<RegisterUser/>', () => {
+  const user = userEvent.setup()
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
-  const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
-  const userResponse = {
+  const routeCreateUser = '/users/register'
+  const userSubmitted = {
     name: faker.person.fullName(),
     email: faker.internet.email(),
-    id: faker.database.mongodbObjectId(),
-    avatar: faker.image.avatar(),
-    createAt: faker.date.past().toISOString(),
+    password: faker.person.fullName().slice(0, 10),
   }
-  const userRequest = {
-    email: userResponse.email,
-    name: userResponse.name,
-    password: userResponse.name.slice(0, 10),
-  }
-  const user = userEvent.setup()
 
   beforeEach(() => {
-    MockAxiosBackApi.onPost('/users/register', userRequest).reply(200, {
-      user: userResponse,
-      token: jwtToken,
-    })
+    MockAxiosBackApi.onPost(routeCreateUser).reply(200)
   })
 
   afterEach(() => {
     MockAxiosBackApi.reset()
-    cookies.remove(JWT_USER_TOKEN)
+    queryClient.clear()
   })
 
   it('should render corrected', () => {
@@ -89,7 +69,6 @@ describe('<RegisterUser/>', () => {
 
     expect(screen.getByRole('button')).toHaveTextContent(/register/i)
     expect(MockAxiosBackApi.history).toHaveLength(0)
-    expect(MockSetUserState).toHaveBeenCalledTimes(0)
   })
 
   it("shouldn't submitted form when field agree term not have checked", async () => {
@@ -104,9 +83,9 @@ describe('<RegisterUser/>', () => {
       fireEvent.click(checkedField)
     })
     expect(checkedField).not.toBeChecked()
-    await user.type(nameField, userRequest.name)
-    await user.type(emailField, userRequest.email)
-    await user.type(passField, userRequest.password)
+    await user.type(nameField, userSubmitted.name)
+    await user.type(emailField, userSubmitted.email)
+    await user.type(passField, userSubmitted.password)
     act(() => {
       fireEvent.click(submitButton)
     })
@@ -114,7 +93,6 @@ describe('<RegisterUser/>', () => {
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled()
       expect(MockAxiosBackApi.history).toHaveLength(0)
-      expect(MockSetUserState).toHaveBeenCalledTimes(0)
     })
   })
 
@@ -125,9 +103,9 @@ describe('<RegisterUser/>', () => {
     const passField = screen.getByPlaceholderText(/Enter your password.../i)
     const submitButton = screen.getByRole('button')
 
-    await user.type(nameField, userRequest.name)
-    await user.type(emailField, userRequest.email)
-    await user.type(passField, userRequest.password)
+    await user.type(nameField, userSubmitted.name)
+    await user.type(emailField, userSubmitted.email)
+    await user.type(passField, userSubmitted.password)
     act(() => {
       fireEvent.click(submitButton)
     })
@@ -148,27 +126,19 @@ describe('<RegisterUser/>', () => {
     const passField = screen.getByPlaceholderText(/Enter your password.../i)
 
     expect(MockNavigate).toHaveBeenCalledTimes(0)
-    expect(cookies.get(JWT_USER_TOKEN)).toBeFalsy()
 
-    await user.type(nameField, userRequest.name)
-    await user.type(emailField, userRequest.email)
-    await user.type(passField, userRequest.password)
+    await user.type(nameField, userSubmitted.name)
+    await user.type(emailField, userSubmitted.email)
+    await user.type(passField, userSubmitted.password)
     act(() => {
       fireEvent.click(screen.getByRole('button'))
     })
 
-    expect(nameField).toHaveValue(userRequest.name)
+    expect(nameField).toHaveValue(userSubmitted.name)
     await waitFor(() => {
       expect(MockAxiosBackApi.history).toHaveLength(1)
-      expect(MockNavigate).toHaveBeenCalledWith(
-        HOME_ROUTE.replace(':userId', userResponse.id)
-      )
+      expect(MockNavigate).toHaveBeenCalledWith(HOME_ROUTE)
       expect(nameField).toHaveValue('')
-      expect(cookies.get(JWT_USER_TOKEN)).toBeTruthy()
-      expect(MockSetUserState).toHaveBeenCalledWith({
-        ...userResponse,
-        avatar: env.VITE_BACKEND_URL.concat('/' + userResponse.avatar),
-      })
     })
   })
 })

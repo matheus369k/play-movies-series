@@ -4,8 +4,6 @@ import { SearchContext } from '@/contexts/search-context'
 import { type ReactNode } from 'react'
 import { userEvent } from '@testing-library/user-event'
 import { SEARCH_ROUTE } from '@/util/consts'
-import { faker } from '@faker-js/faker/locale/pt_BR'
-import { UserContext } from '@/contexts/user-context'
 
 const MockNavigate = jest.fn()
 const MockLocation = jest.fn().mockReturnValue({
@@ -17,40 +15,24 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => MockLocation(),
   Navigate: ({ to }: { to: string }) => MockNavigate(to),
 }))
-
-const userData = {
-  id: faker.database.mongodbObjectId(),
-  avatar: faker.image.avatar(),
-  email: faker.internet.email(),
-  name: faker.person.firstName(),
-  createAt: faker.date.past().toISOString(),
-}
 const MockHandleUpdateSearch = jest.fn()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <UserContext.Provider
+    <SearchContext.Provider
       value={{
-        resetUserState: jest.fn(),
-        setUserState: jest.fn(),
-        user: userData,
+        search: 'one',
+        handleUpdateSearch: MockHandleUpdateSearch,
+        handleResetContext: jest.fn(),
       }}
     >
-      <SearchContext.Provider
-        value={{
-          search: 'one',
-          handleUpdateSearch: MockHandleUpdateSearch,
-          handleResetContext: jest.fn(),
-        }}
-      >
-        {children}
-      </SearchContext.Provider>
-    </UserContext.Provider>
+      {children}
+    </SearchContext.Provider>
   )
 }
 
 const setUrlPath = (path: string) => {
   const url = new URL(window.location.toString())
-  url.pathname = path.replace?.(':userId', userData.id)
+  url.pathname = path
   window.history.pushState({}, '', url)
   MockLocation.mockReturnValue({
     pathname: window.location.toString(),
@@ -79,7 +61,7 @@ describe('SearchForm', () => {
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
     expect(MockHandleUpdateSearch).toHaveBeenCalledWith('dragons')
     expect(MockNavigate).toHaveBeenCalledWith(
-      SEARCH_ROUTE.replace(':userId', userData.id).replace(':search', 'dragons')
+      SEARCH_ROUTE.replace(':search', 'dragons')
     )
   })
 
@@ -103,7 +85,7 @@ describe('SearchForm', () => {
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
     expect(MockHandleUpdateSearch).toHaveBeenCalledWith('dragon')
     expect(MockNavigate).toHaveBeenCalledWith(
-      SEARCH_ROUTE.replace(':userId', userData.id).replace(':search', 'dragon')
+      SEARCH_ROUTE.replace(':search', 'dragon')
     )
     expect(inputSearch).toHaveValue('')
   })

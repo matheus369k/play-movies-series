@@ -7,7 +7,6 @@ import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosOmbdapi } from '@/util/axios'
 import { dbFocusData } from '@/data/movies-id'
 import type { ReactNode } from 'react'
-import { UserContext } from '@/contexts/user-context'
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -17,70 +16,55 @@ jest.mock('react-router-dom', () => ({
   }),
 }))
 
-const userData = {
-  id: faker.database.mongodbObjectId(),
-  avatar: faker.image.avatar(),
-  email: faker.internet.email(),
-  name: faker.person.firstName(),
-  createAt: faker.date.past().toISOString(),
-}
 const queryClient = new QueryClient()
-const wrapper = ({
-  children,
-  imdbID,
-}: {
-  children: ReactNode
-  imdbID: string
-}) => (
-  <UserContext.Provider
-    value={{
-      resetUserState: jest.fn(),
-      setUserState: jest.fn(),
-      user: userData,
-    }}
-  >
-    <QueryClientProvider client={queryClient}>
-      <WatchContext.Provider
-        value={{
-          state: { imdbID, index: 1 },
-          handleAddIDBMID: jest.fn(),
-          handleAddIndex: jest.fn(),
-          handleResetData: jest.fn(),
-        }}
-      >
-        {children}
-      </WatchContext.Provider>
-    </QueryClientProvider>
-  </UserContext.Provider>
+const wrapper = (props: { children: ReactNode; imdbID: string }) => (
+  <QueryClientProvider client={queryClient}>
+    <WatchContext.Provider
+      value={{
+        state: { imdbID: props.imdbID, index: 1 },
+        handleAddIDBMID: jest.fn(),
+        handleAddIndex: jest.fn(),
+        handleResetData: jest.fn(),
+      }}
+    >
+      {props.children}
+    </WatchContext.Provider>
+  </QueryClientProvider>
 )
 
 describe('WatchMovieSeries Data Display', () => {
   const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
   jest.spyOn(Math, 'random').mockImplementation(() => 0.96)
-  const movies = Array.from({ length: dbFocusData.length }).map((_, index) => {
-    return {
-      Title: faker.book.title(),
-      Year: faker.music.album(),
-      imdbRating: faker.number.float({ min: 0, max: 10 }),
-      Released: faker.date.recent().toString(),
-      Runtime: faker.number.int({ min: 70, max: 180 }) + 'minutes',
-      Genre: `${faker.book.genre()}, ${faker.book.genre()} and ${faker.book.genre()}`,
-      Poster: faker.image.url(),
-      imdbID: dbFocusData[index].imdbid,
-      Plot: faker.lorem.paragraph(1),
-      Type: 'movie',
-      totalSeasons: faker.number.int({ max: 34 }),
-    }
-  })
+  const userProfile = {
+    id: faker.database.mongodbObjectId(),
+    avatar: faker.image.avatar(),
+    email: faker.internet.email(),
+    name: faker.person.firstName(),
+    createAt: faker.date.past().toISOString(),
+  }
+  const movies = Array.from({ length: dbFocusData.length }).map((_, index) => ({
+    Title: faker.book.title(),
+    Year: faker.music.album(),
+    imdbRating: faker.number.float({ min: 0, max: 10 }),
+    Released: faker.date.recent().toString(),
+    Runtime: faker.number.int({ min: 70, max: 180 }) + 'minutes',
+    Genre: `${faker.book.genre()}, ${faker.book.genre()} and ${faker.book.genre()}`,
+    Poster: faker.image.url(),
+    imdbID: dbFocusData[index].imdbid,
+    Plot: faker.lorem.paragraph(1),
+    Type: 'movie',
+    totalSeasons: faker.number.int({ max: 34 }),
+  }))
+  const routeGetMovieForID = `?i=${movies[0].imdbID}`
+  const routeGetMoviesForPage = '?s=one&plot=full&y=2024&type=&page=1'
+  const routeUserProfile = '/users/profile'
 
   beforeEach(() => {
-    MockAxiosOmbdapi.onGet('?s=one&plot=full&y=2024&type=&page=1').replyOnce(
-      200,
-      {
-        Search: movies,
-        totalResults: '10',
-      }
-    )
+    MockAxiosOmbdapi.onGet(routeUserProfile).reply(200, userProfile)
+    MockAxiosOmbdapi.onGet(routeGetMoviesForPage).replyOnce(200, {
+      Search: movies,
+      totalResults: '10',
+    })
   })
 
   afterEach(() => {
@@ -89,7 +73,7 @@ describe('WatchMovieSeries Data Display', () => {
   })
 
   it('should render corrected', async () => {
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).replyOnce(200, movies[0])
+    MockAxiosOmbdapi.onGet(routeGetMovieForID).replyOnce(200, movies[0])
     render(<WatchMovieSeries />, {
       wrapper: ({ children }) => {
         return wrapper({ children, imdbID: movies[0].imdbID })
@@ -109,7 +93,7 @@ describe('WatchMovieSeries Data Display', () => {
   })
 
   it('should hidden description movie when is N/A', async () => {
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).replyOnce(200, {
+    MockAxiosOmbdapi.onGet(routeGetMovieForID).replyOnce(200, {
       ...movies[0],
       imdbRating: 'N/A',
       Runtime: 'N/A',
@@ -128,7 +112,7 @@ describe('WatchMovieSeries Data Display', () => {
   })
 
   it('should return null when is not have data', () => {
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).replyOnce(200, movies[0])
+    MockAxiosOmbdapi.onGet(routeGetMovieForID).replyOnce(200, movies[0])
     render(<WatchMovieSeries />, {
       wrapper: ({ children }) => {
         return wrapper({ children, imdbID: movies[0].imdbID })

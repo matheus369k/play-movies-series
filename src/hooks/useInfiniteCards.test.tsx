@@ -7,39 +7,20 @@ import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosOmbdapi } from '@/util/axios'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { MORE_ROUTE, SEARCH_ROUTE } from '@/util/consts'
-import { UserContext } from '@/contexts/user-context'
 
-const userData = {
-  id: faker.database.mongodbObjectId(),
-  avatar: faker.image.avatar(),
-  email: faker.internet.email(),
-  name: faker.person.firstName(),
-  createAt: faker.date.past().toISOString(),
-}
 const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <UserContext.Provider
-    value={{
-      resetUserState: jest.fn(),
-      setUserState: jest.fn(),
-      user: userData,
-    }}
-  >
-    <QueryClientProvider client={queryClient}>
-      <SearchContextProvider>{children}</SearchContextProvider>
-    </QueryClientProvider>
-  </UserContext.Provider>
+  <QueryClientProvider client={queryClient}>
+    <SearchContextProvider>{children}</SearchContextProvider>
+  </QueryClientProvider>
 )
 
-const insertMoreURLRoute = ({
-  type,
-  year,
-  title,
-}: {
+const insertMoreURLRoute = (props: {
   type: string
   year: string
   title: string
 }) => {
+  const { type, year, title } = props
   const url = new URL(window.location.origin.toString())
   url.pathname = `${MORE_ROUTE}/${title.split(' ').join('-')}`
   url.searchParams.set('type', type)
@@ -53,7 +34,7 @@ const insertSearchURLRoute = ({ title }: { title: string }) => {
   window.history.pushState({}, '', url)
 }
 
-describe('useInfiniteCards', () => {
+describe('useInfiniteCards custom hook', () => {
   const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
   const { page, type, year, title } = {
     year: '2004',
@@ -61,25 +42,23 @@ describe('useInfiniteCards', () => {
     page: 1,
     title: 'transformers: the last of knight',
   }
-  const movies = Array.from({ length: 20 }).map(() => {
-    return {
-      Title: faker.book.title(),
-      Year: faker.music.album(),
-      Rated: faker.number.float({ min: 0, max: 10 }),
-      Released: faker.date.recent().toString(),
-      Runtime: faker.number.int({ min: 70, max: 180 }) + 'minutes',
-      Genre:
-        faker.book.genre() +
-        ', ' +
-        faker.book.genre() +
-        ' and ' +
-        faker.book.genre(),
-      Poster: faker.image.url(),
-      imdbID: faker.database.mongodbObjectId(),
-      Type: 'movie',
-      totalSeasons: faker.number.int({ max: 34 }),
-    }
-  })
+  const movies = Array.from({ length: 20 }).map(() => ({
+    Title: faker.book.title(),
+    Year: faker.music.album(),
+    Rated: faker.number.float({ min: 0, max: 10 }),
+    Released: faker.date.recent().toString(),
+    Runtime: faker.number.int({ min: 70, max: 180 }) + 'minutes',
+    Genre:
+      faker.book.genre() +
+      ', ' +
+      faker.book.genre() +
+      ' and ' +
+      faker.book.genre(),
+    Poster: faker.image.url(),
+    imdbID: faker.database.mongodbObjectId(),
+    Type: 'movie',
+    totalSeasons: faker.number.int({ max: 34 }),
+  }))
 
   afterEach(() => {
     MockAxiosOmbdapi.reset()
@@ -88,12 +67,13 @@ describe('useInfiniteCards', () => {
 
   it('should initialized with correct return in more page', async () => {
     insertMoreURLRoute({ title, type, year })
-    MockAxiosOmbdapi.onGet(
-      `?s=one&type=${type}&y=${year}&page=${page}`
-    ).replyOnce(200, {
-      Search: movies,
-      totalResults: '20',
-    })
+    MockAxiosOmbdapi.onGet(`?s=one&type=${type}&y=${year}&page=${page}`).reply(
+      200,
+      {
+        Search: movies,
+        totalResults: '20',
+      },
+    )
     const { result } = renderHook(() => useInfiniteCards({ page: 'more' }), {
       wrapper,
     })
@@ -121,7 +101,7 @@ describe('useInfiniteCards', () => {
     }
     insertSearchURLRoute({ title })
     MockAxiosOmbdapi.onGet(
-      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`,
     ).replyOnce(200, data)
     const { result } = renderHook(() => useInfiniteCards({ page: 'search' }), {
       wrapper,
@@ -150,10 +130,10 @@ describe('useInfiniteCards', () => {
     }
     insertSearchURLRoute({ title })
     MockAxiosOmbdapi.onGet(
-      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`,
     ).reply(200, data)
     MockAxiosOmbdapi.onGet(
-      `?s=${title.split(' ').join('-')}&type=&y=&page=${page + 1}`
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page + 1}`,
     ).reply(200, data)
     const { result } = renderHook(() => useInfiniteCards({ page: 'search' }), {
       wrapper,
@@ -167,9 +147,7 @@ describe('useInfiniteCards', () => {
       })
     })
 
-    act(() => {
-      result.current.handleFetchMoreData()
-    })
+    act(result.current.handleFetchMoreData)
 
     await waitFor(() => {
       expect(result.current).toMatchObject({
@@ -194,13 +172,13 @@ describe('useInfiniteCards', () => {
     }
     insertSearchURLRoute({ title })
     MockAxiosOmbdapi.onGet(
-      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`,
     ).reply(200, {
       Search: data.Search[0],
       totalResults: data.totalResults,
     })
     MockAxiosOmbdapi.onGet(
-      `?s=${title.split(' ').join('-')}&type=&y=&page=${page + 1}`
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page + 1}`,
     ).reply(200, {
       Search: data.Search[1],
       totalResults: data.totalResults,
@@ -239,7 +217,7 @@ describe('useInfiniteCards', () => {
   it("shouldn't maker a new request when is not have more movies", async () => {
     insertSearchURLRoute({ title })
     MockAxiosOmbdapi.onGet(
-      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`
+      `?s=${title.split(' ').join('-')}&type=&y=&page=${page}`,
     ).reply(200, {
       Search: movies.filter((movie, index) => {
         if (index > 10) return movie

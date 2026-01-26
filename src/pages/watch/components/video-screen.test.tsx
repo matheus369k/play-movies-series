@@ -6,28 +6,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
-import cookies from 'js-cookie'
-import { JWT_USER_TOKEN } from '@/util/consts'
-
-const SpyInvalidationQueryClient = jest.fn()
-jest.mock('@tanstack/react-query', () => ({
-  ...jest.requireActual('@tanstack/react-query'),
-  useQueryClient: jest.fn(() => ({
-    invalidateQueries: SpyInvalidationQueryClient,
-  })),
-}))
 
 const queryClient = new QueryClient()
-const wrapper = ({ children }: { children: ReactNode }) => {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  )
-}
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+)
 
 describe('<VideoScreen />', () => {
-  const jwtToken = faker.database.mongodbObjectId()
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const movieId = faker.database.mongodbObjectId()
+  const routeAssessment = `/assessment/${movieId}`
   const userEvents = userEvent.setup()
   const mediaAssessment = {
     liked: true,
@@ -36,19 +24,15 @@ describe('<VideoScreen />', () => {
     totalUnlike: 1506,
   }
 
-  beforeEach(() => {
-    cookies.set(JWT_USER_TOKEN, jwtToken)
-    MockAxiosBackApi.onGet(`/assessment/${movieId}`).reply(200, {
-      mediaAssessment,
-    })
-  })
-
   afterEach(() => {
     MockAxiosBackApi.reset()
     queryClient.clear()
   })
 
-  it('should render correctly', async () => {
+  it('should rended', async () => {
+    MockAxiosBackApi.onGet(routeAssessment).reply(200, {
+      mediaAssessment,
+    })
     render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
       wrapper,
     })
@@ -61,54 +45,54 @@ describe('<VideoScreen />', () => {
   })
 
   it('should call updateAssessment and recall getAssessment when liked or unlike for true', async () => {
-    MockAxiosBackApi.onPatch(`/assessment/${movieId}`).reply(
-      200,
-      mediaAssessment
-    )
+    MockAxiosBackApi.onPatch(routeAssessment).reply(201, mediaAssessment)
     render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
       wrapper,
     })
 
     await waitFor(() => {
-      expect(MockAxiosBackApi.history[0].method).toBe('get')
+      expect(MockAxiosBackApi.history[0]).toMatchObject({
+        url: routeAssessment,
+        method: /GET/i,
+      })
     })
 
     await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
 
     await waitFor(() => {
-      expect(MockAxiosBackApi.history[1].method).toBe('patch')
-      expect(SpyInvalidationQueryClient).toHaveBeenCalledWith({
-        queryKey: ['liked', 'unlike', movieId],
+      expect(MockAxiosBackApi.history[1]).toMatchObject({
+        url: routeAssessment,
+        method: /PACTH/i,
       })
     })
   })
 
   it('should call createAssessment and recall getAssessment when liked and unlike for false', async () => {
-    MockAxiosBackApi.onGet(`/assessment/${movieId}`).reply(200, {
+    MockAxiosBackApi.onGet(routeAssessment).reply(200, {
       mediaAssessment: {
         ...mediaAssessment,
         liked: false,
         unlike: false,
       },
     })
-    MockAxiosBackApi.onPost(`/assessment/${movieId}`).reply(
-      200,
-      mediaAssessment
-    )
+    MockAxiosBackApi.onPost(routeAssessment).reply(200, mediaAssessment)
     render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
       wrapper,
     })
 
     await waitFor(() => {
-      expect(MockAxiosBackApi.history[0].method).toBe('get')
+      expect(MockAxiosBackApi.history[0]).toMatchObject({
+        url: routeAssessment,
+        method: /GET/i,
+      })
     })
 
     await userEvents.click(screen.getByRole('button', { name: /liked/i }))
 
     await waitFor(() => {
-      expect(MockAxiosBackApi.history[1].method).toBe('post')
-      expect(SpyInvalidationQueryClient).toHaveBeenCalledWith({
-        queryKey: ['liked', 'unlike', movieId],
+      expect(MockAxiosBackApi.history[1]).toMatchObject({
+        url: routeAssessment,
+        method: /POST/i,
       })
     })
   })

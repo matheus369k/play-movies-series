@@ -1,82 +1,63 @@
 import { TopResetScroll } from '@/util/reset-scroll'
 import { SearchForm } from './search-form'
-import { JWT_USER_TOKEN, LOGIN_USER, REGISTER_USER } from '@/util/consts'
+import { LOGIN_USER, REGISTER_USER } from '@/util/consts'
 import { Link } from 'react-router-dom'
-import { getUserProfile } from '@/services/get-user-profile'
 import { useRoutes } from '@/hooks/useRoutes'
-import { useContext, useEffect } from 'react'
-import { UserContext } from '@/contexts/user-context'
-import { formatter } from '@/util/formatter'
 import { ChevronLeft } from 'lucide-react'
 import { UserAvatar } from './user-avatar'
-import cookies from 'js-cookie'
 
-export function Header() {
-  const {
-    isLoginPage,
-    isRegisterPage,
-    isMorePage,
-    isSearchPage,
-    isProfilePage,
-    NavigateToHomePage,
-    NavigateToRegisterPage,
-    isHomePage,
-    NavigateToProfilePage,
-  } = useRoutes()
-  const isRegisterOrLoginPage = isLoginPage || isRegisterPage
+export function Header({ hasAccount = false }: { hasAccount?: boolean }) {
+  const route = useRoutes()
   const isSearchOrMoreOrProfilePage =
-    isMorePage || isSearchPage || isProfilePage
+    route.isMorePage || route.isSearchPage || route.isProfilePage
   const isHomeOrLoginOrRegisterPage =
-    isRegisterPage || isLoginPage || isHomePage
-  const { user, setUserState } = useContext(UserContext)
+    route.isRegisterPage || route.isLoginPage || route.isHomePage
 
   function handleRedirectMainPage() {
-    if (!user) return NavigateToRegisterPage()
-
-    NavigateToHomePage(user.id)
+    route.NavigateToHomePage()
     TopResetScroll()
   }
 
   function handleNavigateToProfile() {
-    if (!user) return NavigateToRegisterPage()
-
-    NavigateToProfilePage(user.id)
+    route.NavigateToProfilePage()
   }
 
-  async function AutoLoginUser() {
-    if (user) return
-
-    const data = await getUserProfile()
-    if (!data) {
-      cookies.remove(JWT_USER_TOKEN)
-      NavigateToRegisterPage()
-      return
+  function RenderNavbarUI() {
+    if (hasAccount) {
+      return (
+        <div className='flex justify-end items-center w-full max-w-[400px] gap-4'>
+          <SearchForm />
+          <div
+            onClick={handleNavigateToProfile}
+            className='rounded-full cursor-pointer'
+          >
+            <UserAvatar />
+          </div>
+        </div>
+      )
     }
 
-    setUserState({
-      ...data.user,
-      avatar: formatter.mergeAvatarUrlWithBackUrl(data.user.avatar),
-    })
-    if (isRegisterOrLoginPage) {
-      NavigateToHomePage(data.user.id)
-    }
+    return (
+      <nav className='flex gap-8'>
+        <Link
+          className={`text-lg ${route.isRegisterPage && 'text-zinc-500'}`}
+          to={REGISTER_USER}
+        >
+          register
+        </Link>
+        <Link
+          className={`text-lg ${route.isLoginPage && 'text-zinc-500'}`}
+          to={LOGIN_USER}
+        >
+          login
+        </Link>
+      </nav>
+    )
   }
 
-  useEffect(() => {
-    const token = cookies.get(JWT_USER_TOKEN)
-
-    if (token) {
-      AutoLoginUser()
-    }
-  }, [])
-
-  return (
-    <header
-      className={`top-0 left-0 w-full p-4 flex gap-1 justify-between items-center z-50 max-sm:p-2 animate-show-header ${
-        isSearchOrMoreOrProfilePage ? 'fixed bg-zinc-950' : 'absolute'
-      }`}
-    >
-      {isHomeOrLoginOrRegisterPage ? (
+  function RenderLogoUI() {
+    if (isHomeOrLoginOrRegisterPage) {
+      return (
         <button
           aria-label='logo of site'
           onClick={handleRedirectMainPage}
@@ -87,42 +68,28 @@ export function Header() {
             Play
           </h1>
         </button>
-      ) : (
-        <button
-          aria-label='back page'
-          type='button'
-          onClick={handleRedirectMainPage}
-        >
-          <ChevronLeft className='size-8' />
-        </button>
-      )}
+      )
+    }
 
-      {user ? (
-        <div className='flex justify-end items-center w-full max-w-[400px] gap-4'>
-          <SearchForm />
-          <div
-            onClick={handleNavigateToProfile}
-            className='rounded-full cursor-pointer'
-          >
-            <UserAvatar />
-          </div>
-        </div>
-      ) : (
-        <nav className='flex gap-8'>
-          <Link
-            className={`text-lg ${isRegisterPage && 'text-zinc-500'}`}
-            to={REGISTER_USER}
-          >
-            register
-          </Link>
-          <Link
-            className={`text-lg ${isLoginPage && 'text-zinc-500'}`}
-            to={LOGIN_USER}
-          >
-            login
-          </Link>
-        </nav>
-      )}
+    return (
+      <button
+        aria-label='back page'
+        type='button'
+        onClick={handleRedirectMainPage}
+      >
+        <ChevronLeft className='size-8' />
+      </button>
+    )
+  }
+
+  return (
+    <header
+      className={`top-0 left-0 w-full p-4 flex gap-1 justify-between items-center z-50 max-sm:p-2 animate-show-header ${
+        isSearchOrMoreOrProfilePage ? 'fixed bg-zinc-950' : 'absolute'
+      }`}
+    >
+      {RenderLogoUI()}
+      {RenderNavbarUI()}
     </header>
   )
 }

@@ -1,7 +1,6 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { deleteMovieWatchLater } from '../services/delete-movie-watch-later'
-import { createMovieWatchLater } from '../services/create-movie-watch-later'
-import { getMovieWatchLater } from '../services/get-movie-watch-later'
+import { useDeleteMovieWatchLater } from '../services/use-delete-movie-watch-later'
+import { useCreateMovieWatchLater } from '../services/use-create-movie-watch-later'
+import { useGetMovieWatchLater } from '../services/use-get-movie-watch-later'
 
 type WatchLaterButtonProps = {
   MovieId: string
@@ -11,36 +10,27 @@ type WatchLaterButtonProps = {
   type: string
 }
 
-export function WatchLaterButton({
-  MovieId,
-  image,
-  release,
-  title,
-  type,
-}: WatchLaterButtonProps) {
-  const queryClient = useQueryClient()
-  const { isSuccess, isFetching } = useQuery({
-    queryFn: async () => await getMovieWatchLater(MovieId),
-    queryKey: ['watch-later', MovieId],
-    staleTime: 1000 * 60 * 60 * 24,
-  })
+export function WatchLaterButton(props: WatchLaterButtonProps) {
+  const { MovieId, image, release, title, type } = props
+  const { mutateAsync: createMovieWatchLater } =
+    useCreateMovieWatchLater(MovieId)
+  const { mutateAsync: deleteMovieWatchLater } =
+    useDeleteMovieWatchLater(MovieId)
+  const { isSuccess, isFetching } = useGetMovieWatchLater(MovieId)
 
   async function AddOrRemoveMovieFromWatchLater() {
     try {
       if (isSuccess) {
-        await deleteMovieWatchLater(MovieId)
-      } else {
-        await createMovieWatchLater({
-          image: image,
-          MovieId: MovieId,
-          release: release,
-          title: title,
-          type: type,
-        })
+        await deleteMovieWatchLater()
+        return
       }
 
-      queryClient.invalidateQueries({ queryKey: ['watch-later'] })
-      queryClient.invalidateQueries({ queryKey: ['watch-later', MovieId] })
+      await createMovieWatchLater({
+        image: image,
+        release: release,
+        title: title,
+        type: type,
+      })
     } catch (error) {
       console.log(error)
     }

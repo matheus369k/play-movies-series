@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 import { WatchMovieSeries } from '@/pages/watch'
 import { MoreMoviesSeries } from '@/pages/more'
 import { NotFound } from '@/components/not-found'
@@ -15,6 +15,7 @@ export const routes = createBrowserRouter([
     element: <RootLayout />,
     children: [
       {
+        index: true,
         path: pathRoutes.REGISTER_USER,
         element: <RegisterUser />,
       },
@@ -59,10 +60,6 @@ export const routes = createBrowserRouter([
         element: <Profile />,
       },
     ],
-  },
-  {
-    path: '/',
-    element: <Navigate to={pathRoutes.REGISTER_USER} />,
   },
   {
     path: '*',

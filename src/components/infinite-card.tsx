@@ -4,9 +4,6 @@ import { WatchContext } from '@/contexts/watch-context'
 import { useInView } from 'react-intersection-observer'
 import { TopResetScroll } from '@/util/reset-scroll'
 import { useRoutes } from '@/hooks/useRoutes'
-import { UserContext } from '@/contexts/user-context'
-import { Navigate } from 'react-router-dom'
-import { REGISTER_USER } from '@/util/consts'
 
 interface MovieCardProps {
   Poster: string
@@ -19,19 +16,14 @@ interface MovieCardProps {
 }
 
 export function InfiniteMovieCard({
-  Poster,
-  Title,
-  Year,
-  imdbID,
-  Type,
-  elementIdActiveFetch,
   handleFetchMoreData,
+  ...props
 }: MovieCardProps) {
+  const { Poster, Title, Year, imdbID, Type, elementIdActiveFetch } = props
   const { ref, inView } = useInView({ delay: 1000, triggerOnce: true })
   const { handleAddIDBMID } = useContext(WatchContext)
-  const { user } = useContext(UserContext)
   const isLastItem = imdbID === elementIdActiveFetch
-  const { NavigateToWatchPage } = useRoutes()
+  const route = useRoutes()
 
   useEffect(() => {
     if (inView && isLastItem) {
@@ -40,12 +32,10 @@ export function InfiniteMovieCard({
   }, [inView])
 
   function handleClickedPlayOnMovie() {
-    if (!user) return <Navigate to={REGISTER_USER} />
-
     TopResetScroll()
 
     handleAddIDBMID({ imdbID })
-    NavigateToWatchPage({ movieId: imdbID, userId: user.id })
+    route.NavigateToWatchPage({ movieId: imdbID })
   }
 
   return (

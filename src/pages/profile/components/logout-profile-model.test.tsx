@@ -2,33 +2,28 @@ import { render, screen } from '@testing-library/react'
 import { LogoutProfileModel } from './logout-profile-model'
 import type { ReactNode } from 'react'
 import userEvent from '@testing-library/user-event'
-import { JWT_USER_TOKEN, REGISTER_USER } from '@/util/consts'
-import cookies from 'js-cookie'
+import { REGISTER_USER } from '@/util/consts'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-const SpyClearQueryClient = jest.fn()
-jest.mock('@tanstack/react-query', () => ({
-  ...jest.requireActual('@tanstack/react-query'),
-  useQueryClient: jest.fn(() => ({
-    clear: SpyClearQueryClient,
-  })),
-}))
+import { AxiosBackApi } from '@/util/axios'
+import AxiosMockAdapter from 'axios-mock-adapter'
 
 const queryClient = new QueryClient()
-const wrapper = ({ children }: { children: ReactNode }) => {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  )
-}
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+)
 
-describe('<LogoutProfileModel />', () => {
+describe('LogoutProfileModel component', () => {
+  const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
+  const routeLogoutProfile = '/users/logout'
+  const routeToken = '/token'
   const userEvents = userEvent.setup()
 
   afterEach(() => {
-    cookies.remove(JWT_USER_TOKEN)
+    queryClient.clear()
+    MockAxiosBackApi.reset()
   })
 
-  it('should rendered component corrected', () => {
+  it('should rendered', () => {
     render(<LogoutProfileModel />, { wrapper })
 
     screen.getByLabelText(/logout/i)
@@ -55,7 +50,9 @@ describe('<LogoutProfileModel />', () => {
     expect(screen.queryByLabelText(/confirm logout/i)).toBeNull()
   })
 
-  it('should delete jwt token, redirection page and rest UserContext when is clicked in confirm in the dialog', async () => {
+  it('should redirection to register page when is clicked in confirm in the dialog', async () => {
+    MockAxiosBackApi.onDelete(routeLogoutProfile).reply(201)
+    MockAxiosBackApi.onDelete(routeToken).reply(201)
     const MockReloadPage = jest.fn()
     jest.spyOn(window, 'location', 'get').mockReturnValue({
       replace: MockReloadPage,
@@ -66,7 +63,23 @@ describe('<LogoutProfileModel />', () => {
     await userEvents.click(screen.getByLabelText(/confirm logout/i))
 
     expect(MockReloadPage).toHaveBeenCalledWith(REGISTER_USER)
-    expect(SpyClearQueryClient).toHaveBeenCalled()
-    expect(cookies.get(JWT_USER_TOKEN)).toBeFalsy()
+  })
+
+  it('should make request to logout and token request when is clicked in confirm in the dialog', async () => {
+    MockAxiosBackApi.onDelete(routeLogoutProfile).reply(201)
+    MockAxiosBackApi.onDelete(routeToken).reply(201)
+    render(<LogoutProfileModel />, { wrapper })
+
+    await userEvents.click(screen.getByLabelText(/logout/i))
+    await userEvents.click(screen.getByLabelText(/confirm logout/i))
+
+    expect(MockAxiosBackApi.history[0]).toMatchObject({
+      url: routeLogoutProfile,
+      method: /DELETE/i,
+    })
+    expect(MockAxiosBackApi.history[1]).toMatchObject({
+      url: routeToken,
+      method: /DELETE/i,
+    })
   })
 })

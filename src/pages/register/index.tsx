@@ -15,13 +15,8 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form'
-import { createUser } from './services/create-user'
-import cookie from 'js-cookie'
-import { JWT_USER_TOKEN } from '@/util/consts'
+import { useCreateUser } from './services/use-create-user'
 import { useRoutes } from '@/hooks/useRoutes'
-import { useContext } from 'react'
-import { UserContext } from '@/contexts/user-context'
-import { formatter } from '@/util/formatter'
 
 const RegisterUserSchema = z.object({
   name: z.string().min(3, 'should have min 3 letter'),
@@ -52,30 +47,21 @@ export function RegisterUser() {
     formState: { errors, isSubmitting },
   } = hookUseForm
   const { NavigateToHomePage } = useRoutes()
-  const { setUserState } = useContext(UserContext)
+  const { mutateAsync: createUser } = useCreateUser()
 
   async function handleSubmittedRegisterUser(user: RegisterUserFormType) {
     const { agree_term, email, name, password } = user
     if (!agree_term) return
 
     try {
-      const data = await createUser({
+      await createUser({
         email,
         name,
         password,
       })
 
-      if (!data) {
-        throw new Error('Error try create new user')
-      }
-
       reset()
-      cookie.set(JWT_USER_TOKEN, data.token)
-      setUserState({
-        ...data.user,
-        avatar: formatter.mergeAvatarUrlWithBackUrl(data.user.avatar),
-      })
-      NavigateToHomePage(data.user.id)
+      NavigateToHomePage()
     } catch (error) {
       console.log(error)
       setError('name', { message: 'error try register...' })

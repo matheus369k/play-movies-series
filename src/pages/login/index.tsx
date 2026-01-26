@@ -8,16 +8,11 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Form } from '@/components/ui/form'
-import { loginUser } from './services/login-user'
-import { JWT_USER_TOKEN } from '@/util/consts'
+import { useLoginUser } from './services/use-login-user'
 import { useRoutes } from '@/hooks/useRoutes'
-import { useContext } from 'react'
-import { UserContext } from '@/contexts/user-context'
-import { formatter } from '@/util/formatter'
-import cookie from 'js-cookie'
 
 const LoginUserSchema = z.object({
-  email: z.string().email('email is not valid'),
+  email: z.email('email is not valid'),
   password: z
     .string()
     .min(8, 'should have min 8 letter')
@@ -41,28 +36,16 @@ export function LoginUser() {
     formState: { errors, isSubmitting },
   } = hookUseForm
   const { NavigateToHomePage } = useRoutes()
-  const { setUserState } = useContext(UserContext)
+  const { mutateAsync: loginUser } = useLoginUser()
 
   async function handleSubmittedLoginUser(user: LoginUserFormType) {
     const { email, password } = user
 
     try {
-      const data = await loginUser({
-        email,
-        password,
-      })
-
-      if (!data) {
-        throw new Error('Error try login user')
-      }
+      await loginUser({ email, password })
 
       reset()
-      cookie.set(JWT_USER_TOKEN, data.token)
-      setUserState({
-        ...data.user,
-        avatar: formatter.mergeAvatarUrlWithBackUrl(data.user.avatar),
-      })
-      NavigateToHomePage(data.user.id)
+      NavigateToHomePage()
     } catch (error) {
       console.log(error)
       setError('email', { message: 'email or password invalid' })

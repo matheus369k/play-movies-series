@@ -4,8 +4,6 @@ import { type ReactNode } from 'react'
 import { WatchContext } from '@/contexts/watch-context'
 import { WATCH_ROUTE } from '@/util/consts'
 import userEvent from '@testing-library/user-event'
-import { UserContext } from '@/contexts/user-context'
-import { faker } from '@faker-js/faker/locale/pt_BR'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -24,34 +22,19 @@ jest.mock('react-intersection-observer', () => ({
   }),
 }))
 
-const userData = {
-  id: faker.database.mongodbObjectId(),
-  avatar: faker.image.avatar(),
-  email: faker.internet.email(),
-  name: faker.person.firstName(),
-  createAt: faker.date.past().toISOString(),
-}
 const MockHandleAddIDBMID = jest.fn()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <UserContext.Provider
+    <WatchContext.Provider
       value={{
-        resetUserState: jest.fn(),
-        setUserState: jest.fn(),
-        user: userData,
+        handleAddIDBMID: MockHandleAddIDBMID,
+        handleAddIndex: jest.fn(),
+        handleResetData: jest.fn(),
+        state: { imdbID: '', index: 0 },
       }}
     >
-      <WatchContext.Provider
-        value={{
-          handleAddIDBMID: MockHandleAddIDBMID,
-          handleAddIndex: jest.fn(),
-          handleResetData: jest.fn(),
-          state: { imdbID: '', index: 0 },
-        }}
-      >
-        {children}
-      </WatchContext.Provider>
-    </UserContext.Provider>
+      {children}
+    </WatchContext.Provider>
   )
 }
 
@@ -139,10 +122,7 @@ describe('InfiniteMovieCard', () => {
       imdbID: movie.imdbID,
     })
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':userId', userData.id).replace(
-        ':movieId',
-        movie.imdbID
-      )
+      WATCH_ROUTE.replace(':movieId', movie.imdbID)
     )
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
   })

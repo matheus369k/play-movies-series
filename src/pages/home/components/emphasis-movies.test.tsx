@@ -9,7 +9,6 @@ import { dbFocusData } from '@/data/movies-id'
 import { WatchContext, WatchContextProvider } from '@/contexts/watch-context'
 import userEvent from '@testing-library/user-event'
 import { EmphasisMovies } from './emphasis-movies'
-import { UserContext } from '@/contexts/user-context'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -21,26 +20,11 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const queryClient = new QueryClient()
-const userData = {
-  id: faker.database.mongodbObjectId(),
-  avatar: faker.image.avatar(),
-  email: faker.internet.email(),
-  name: faker.person.firstName(),
-  createAt: faker.date.past().toISOString(),
-}
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <UserContext.Provider
-      value={{
-        resetUserState: jest.fn(),
-        setUserState: jest.fn(),
-        user: userData,
-      }}
-    >
-      <QueryClientProvider client={queryClient}>
-        <WatchContextProvider>{children}</WatchContextProvider>
-      </QueryClientProvider>
-    </UserContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <WatchContextProvider>{children}</WatchContextProvider>
+    </QueryClientProvider>
   )
 }
 
@@ -48,21 +32,19 @@ describe('Home', () => {
   const user = userEvent.setup()
   jest.spyOn(Math, 'random').mockImplementation(() => 0.96)
   const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
-  const movies = Array.from({ length: dbFocusData.length }).map((_, index) => {
-    return {
-      Title: faker.book.title(),
-      Year: faker.music.album(),
-      imdbRating: faker.number.float({ min: 0, max: 10 }),
-      Released: faker.date.recent().toString(),
-      Runtime: faker.number.int({ min: 70, max: 180 }) + 'minutes',
-      Genre: `${faker.book.genre()}, ${faker.book.genre()} and ${faker.book.genre()}`,
-      Poster: faker.image.url(),
-      imdbID: dbFocusData[index].imdbid,
-      Plot: faker.lorem.paragraph(1),
-      Type: 'movie',
-      totalSeasons: faker.number.int({ max: 34 }),
-    }
-  })
+  const movies = Array.from({ length: dbFocusData.length }).map((_, index) => ({
+    Title: faker.book.title(),
+    Year: faker.music.album(),
+    imdbRating: faker.number.float({ min: 0, max: 10 }),
+    Released: faker.date.recent().toString(),
+    Runtime: faker.number.int({ min: 70, max: 180 }) + 'minutes',
+    Genre: `${faker.book.genre()}, ${faker.book.genre()} and ${faker.book.genre()}`,
+    Poster: faker.image.url(),
+    imdbID: dbFocusData[index].imdbid,
+    Plot: faker.lorem.paragraph(1),
+    Type: 'movie',
+    totalSeasons: faker.number.int({ max: 34 }),
+  }))
 
   afterEach(() => {
     MockAxiosOmbdapi.reset()
@@ -122,10 +104,7 @@ describe('Home', () => {
     await user.click(screen.getByRole('img').parentElement!)
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':userId', userData.id).replace(
-        ':movieId',
-        movies[0].imdbID
-      )
+      WATCH_ROUTE.replace(':movieId', movies[0].imdbID)
     )
     expect(MockHandleAddIDBMID).toHaveBeenCalledWith({
       imdbID: movies[0].imdbID,
@@ -155,10 +134,7 @@ describe('Home', () => {
     await user.click(screen.getAllByRole('button')[1].parentElement!)
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':userId', userData.id).replace(
-        ':movieId',
-        movies[0].imdbID
-      )
+      WATCH_ROUTE.replace(':movieId', movies[0].imdbID)
     )
     expect(MockHandleAddIDBMID).toHaveBeenCalledWith({
       imdbID: movies[0].imdbID,

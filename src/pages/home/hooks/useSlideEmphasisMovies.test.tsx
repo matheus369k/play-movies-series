@@ -8,7 +8,6 @@ import AxiosMockAdapter from 'axios-mock-adapter'
 import { act, type ReactNode } from 'react'
 import { useSlideEmphasisMovies } from './useSlideEmphasisMovies'
 import { WATCH_ROUTE } from '@/util/consts'
-import { UserContext } from '@/contexts/user-context'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -19,27 +18,12 @@ jest.mock('react-router-dom', () => ({
   }),
 }))
 
-const userData = {
-  id: faker.database.mongodbObjectId(),
-  avatar: faker.image.avatar(),
-  email: faker.internet.email(),
-  name: faker.person.firstName(),
-  createAt: faker.date.past().toISOString(),
-}
 const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <UserContext.Provider
-      value={{
-        resetUserState: jest.fn(),
-        setUserState: jest.fn(),
-        user: userData,
-      }}
-    >
-      <QueryClientProvider client={queryClient}>
-        <WatchContextProvider>{children}</WatchContextProvider>
-      </QueryClientProvider>
-    </UserContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <WatchContextProvider>{children}</WatchContextProvider>
+    </QueryClientProvider>
   )
 }
 
@@ -94,10 +78,7 @@ describe('useSlideEmphasisMovies', () => {
     })
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':userId', userData.id).replace(
-        ':movieId',
-        movies[0].imdbID
-      )
+      WATCH_ROUTE.replace(':movieId', movies[0].imdbID)
     )
     expect(result.current.state).toEqual({
       imdbID: movies[0].imdbID,

@@ -1,197 +1,158 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { EditProfileModel } from './edit-profile-model'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { act, type ReactNode } from 'react'
-import { UserContext } from '@/contexts/user-context'
+import { type ReactNode } from 'react'
 import userEvent from '@testing-library/user-event'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosBackApi } from '@/util/axios'
-import cookies from 'js-cookie'
-import { HOME_ROUTE, JWT_USER_TOKEN } from '@/util/consts'
-import { env } from '@/util/env'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 jest.mock('@/components/ui/avatar.tsx', () => ({
   ...jest.requireActual('@/components/ui/avatar.tsx'),
   AvatarImage: ({ ...props }) => <img {...props} />,
 }))
 
-const MockNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => MockNavigate,
-  useLocation: jest.fn(() => {
-    return {
-      pathname: window.location.toString(),
-    }
-  }),
-}))
-
-const userData = {
+const userProfile = {
   id: faker.database.mongodbObjectId(),
-  avatar: faker.image.avatar(),
+  avatar: faker.image
+    .avatar()
+    .split('https://avatars.githubusercontent.com/')[1],
   email: faker.internet.email(),
   name: faker.person.firstName(),
   createAt: faker.date.past().toISOString(),
 }
-const MockSetUserState = jest.fn()
-const wrapper = ({
-  children,
-  user,
-}: {
-  children: ReactNode
-  user: typeof userData | null
-}) => {
-  return (
-    <UserContext.Provider
-      value={{
-        resetUserState: jest.fn(),
-        setUserState: MockSetUserState,
-        user,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  )
-}
+const queryClient = new QueryClient()
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+)
 
-describe('<EditProfileModel />', () => {
+describe('EditProfileModel component', () => {
   const userEvents = userEvent.setup()
+  const routeUpdateProfile = '/users/update'
+  const routeUserProfile = '/users/profile'
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
-  const jwtToken = '2791133fn84c84r4v57t5nc48m4c'
   const testFile = new File(['(dummy content)'], 'avatar.png', {
     type: 'image/png',
   })
+  const testFileURL = 'data:image/png;base64,KGR1bW15IGNvbnRlbnQp'
 
   beforeEach(() => {
-    MockAxiosBackApi.onPatch('/users/update').reply(200, { user: userData })
-    cookies.set(JWT_USER_TOKEN, jwtToken)
+    MockAxiosBackApi.onGet(routeUserProfile).reply(200, { user: userProfile })
+    MockAxiosBackApi.onPatch(routeUpdateProfile).reply(201)
   })
 
   afterEach(() => {
     MockAxiosBackApi.reset()
+    queryClient.clear()
   })
 
-  it('should render corrected component', async () => {
-    render(<EditProfileModel />, {
-      wrapper: ({ children }) => wrapper({ children, user: userData }),
-    })
+  it('should rended', async () => {
+    render(<EditProfileModel />, { wrapper })
 
     screen.getByRole('button', { name: /edit profile/i })
     expect(
-      screen.queryByRole('heading', { level: 2, name: /edit profile/i })
+      screen.queryByRole('heading', { level: 2, name: /edit profile/i }),
     ).toBeNull()
   })
 
   it('should open dialog when is clicked in edit profile', async () => {
-    render(<EditProfileModel />, {
-      wrapper: ({ children }) => wrapper({ children, user: userData }),
-    })
+    render(<EditProfileModel name={userProfile.name} />, { wrapper })
 
     await userEvents.click(screen.getByRole('button'))
 
     screen.getByRole('heading', { level: 2, name: /edit profile/i })
+    expect(screen.getByLabelText(/name/i)).toHaveValue(userProfile.name)
   })
 
   it('should closed dialog when is clicked on the button write close', async () => {
-    render(<EditProfileModel />, {
-      wrapper: ({ children }) => wrapper({ children, user: userData }),
+    render(<EditProfileModel />, { wrapper })
+
+    const toggleModelButton = screen.getByRole('button', {
+      name: /edit profile/i,
     })
-
-    await userEvents.click(screen.getByRole('button'))
-
-    screen.getByRole('heading', { level: 2, name: /edit profile/i })
-
-    await userEvent.click(screen.getByRole('button', { name: /closed/i }))
+    await userEvents.click(toggleModelButton)
+    const closeModelButton = screen.getByRole('button', { name: /closed/i })
+    await userEvent.click(closeModelButton)
 
     expect(
-      screen.queryByRole('heading', { level: 2, name: /edit profile/i })
+      screen.queryByRole('heading', { level: 2, name: /edit profile/i }),
     ).toBeNull()
   })
 
   it('should not submitted form when is clicked in submit button and field name is empty', async () => {
-    render(<EditProfileModel />, {
-      wrapper: ({ children }) => wrapper({ children, user: userData }),
+    render(<EditProfileModel />, { wrapper })
+
+    const toggleModelButton = screen.getByRole('button', {
+      name: /edit profile/i,
     })
-
-    await userEvents.click(screen.getByRole('button'))
-
-    screen.getByRole('heading', { level: 2, name: /edit profile/i })
-
+    await userEvents.click(toggleModelButton)
     const fieldName = screen.getByRole('textbox', { name: /name/i })
-
     await userEvents.clear(fieldName)
-    await userEvents.click(screen.getByRole('button', { name: /save/i }))
+    const submittedFormButton = screen.getByRole('button', { name: /save/i })
+    await userEvents.click(submittedFormButton)
 
-    await waitFor(() => {
-      expect(MockAxiosBackApi.history).toHaveLength(0)
-    })
+    await screen.findByRole('button', { name: /save/i })
+    expect(MockAxiosBackApi.history[1]).toBeUndefined()
   })
 
   it('should submitted form when file is empty but name is completed', async () => {
-    render(<EditProfileModel />, {
-      wrapper: ({ children }) => wrapper({ children, user: userData }),
+    render(<EditProfileModel name={userProfile.name} />, { wrapper })
+
+    const toggleModelButton = screen.getByRole('button', {
+      name: /edit profile/i,
     })
+    await userEvents.click(toggleModelButton)
+    const submittedFormButton = screen.getByRole('button', { name: /save/i })
+    await userEvents.click(submittedFormButton)
 
-    await userEvents.click(screen.getByRole('button'))
-
-    screen.getByRole('heading', { level: 2, name: /edit profile/i })
-
-    act(() => {
-      fireEvent.click(screen.getByRole('button', { name: /save/i }))
-    })
-
-    screen.getByRole('button', { name: /saving/i })
-    await waitFor(() => {
-      expect(MockAxiosBackApi.history).toHaveLength(1)
-      expect(MockSetUserState).toHaveBeenCalled()
+    await screen.findByRole('button', { name: /save/i })
+    expect(MockAxiosBackApi.history[1]).toMatchObject({
+      url: routeUpdateProfile,
+      method: /PATCH/i,
     })
   })
 
-  it('should update userContext and redirection page when finished update user request', async () => {
-    render(<EditProfileModel />, {
-      wrapper: ({ children }) => wrapper({ children, user: userData }),
+  it('should update profile and redirection page when finished request', async () => {
+    render(<EditProfileModel name={userProfile.name} />, { wrapper })
+
+    const toggleModelButton = screen.getByRole('button', {
+      name: /edit profile/i,
     })
+    await userEvents.click(toggleModelButton)
+    const submittedFormButton = screen.getByRole('button', { name: /save/i })
+    await userEvents.click(submittedFormButton)
 
-    await userEvents.click(screen.getByRole('button'))
-
-    screen.getByRole('heading', { level: 2, name: /edit profile/i })
-
-    act(() => {
-      fireEvent.click(screen.getByRole('button', { name: /save/i }))
+    await screen.findByRole('button', { name: /save/i })
+    expect(MockAxiosBackApi.history[1]).toMatchObject({
+      url: routeUpdateProfile,
+      method: /PATCH/i,
     })
+  })
 
-    screen.getByRole('button', { name: /saving/i })
-    expect(screen.getByRole('textbox', { name: /name/i })).toHaveValue(
-      userData.name
-    )
-    await waitFor(() => {
-      expect(MockSetUserState).toHaveBeenCalledWith({
-        ...userData,
-        avatar: `${env.VITE_BACKEND_URL}/${userData.avatar}`,
-      })
-      expect(MockNavigate).toHaveBeenCalledWith(
-        HOME_ROUTE.replace(':userId', userData.id)
-      )
+  it('should switch text submit button and disabled when is submitted form', async () => {
+    render(<EditProfileModel name={userProfile.name} />, { wrapper })
+
+    const toggleModelButton = screen.getByRole('button', {
+      name: /edit profile/i,
     })
+    await userEvents.click(toggleModelButton)
+    const submittedFormButton = screen.getByRole('button', { name: /save/i })
+    fireEvent.click(submittedFormButton)
+
+    expect(screen.getByRole('button', { name: /saving/i })).toBeDisabled()
+    await screen.findByRole('button', { name: /save/i })
   })
 
   it('should showing preview of image when upload new imagem', async () => {
-    render(<EditProfileModel />, {
-      wrapper: ({ children }) => wrapper({ children, user: userData }),
+    render(<EditProfileModel />, { wrapper })
+
+    const toggleModelButton = screen.getByRole('button', {
+      name: /edit profile/i,
     })
-
-    await userEvents.click(screen.getByRole('button'))
-
-    screen.getByRole('heading', { level: 2, name: /edit profile/i })
-    expect(screen.getByRole('img')).toHaveAttribute('src', userData.avatar)
-
+    await userEvents.click(toggleModelButton)
     await userEvents.upload(screen.getByPlaceholderText(/file/i), testFile)
 
-    await waitFor(() => {
-      expect(screen.getByRole('img')).toHaveAttribute(
-        'src',
-        'data:image/png;base64,KGR1bW15IGNvbnRlbnQp'
-      )
-    })
+    const previewAvatarImage = await screen.findByLabelText(/preview avatar/i)
+    expect(previewAvatarImage).toHaveAttribute('src', testFileURL)
   })
 })

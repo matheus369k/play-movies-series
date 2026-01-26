@@ -4,8 +4,6 @@ import type { ReactNode } from 'react'
 import { WatchContext } from '@/contexts/watch-context'
 import { userEvent } from '@testing-library/user-event'
 import { WATCH_ROUTE } from '@/util/consts'
-import { UserContext } from '@/contexts/user-context'
-import { faker } from '@faker-js/faker/locale/pt_BR'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -16,34 +14,19 @@ jest.mock('react-router-dom', () => ({
   }),
 }))
 
-const userData = {
-  id: faker.database.mongodbObjectId(),
-  avatar: faker.image.avatar(),
-  email: faker.internet.email(),
-  name: faker.person.firstName(),
-  createAt: faker.date.past().toISOString(),
-}
 const MockHandleAddIDBMID = jest.fn()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <UserContext.Provider
+    <WatchContext.Provider
       value={{
-        resetUserState: jest.fn(),
-        setUserState: jest.fn(),
-        user: userData,
+        handleAddIDBMID: MockHandleAddIDBMID,
+        handleAddIndex: jest.fn(),
+        handleResetData: jest.fn(),
+        state: { imdbID: '', index: 0 },
       }}
     >
-      <WatchContext.Provider
-        value={{
-          handleAddIDBMID: MockHandleAddIDBMID,
-          handleAddIndex: jest.fn(),
-          handleResetData: jest.fn(),
-          state: { imdbID: '', index: 0 },
-        }}
-      >
-        <li>{children}</li>
-      </WatchContext.Provider>
-    </UserContext.Provider>
+      <li>{children}</li>
+    </WatchContext.Provider>
   )
 }
 
@@ -86,10 +69,7 @@ describe('MovieCard', () => {
       imdbID: movie.imdbID,
     })
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':userId', userData.id).replace(
-        ':movieId',
-        movie.imdbID
-      )
+      WATCH_ROUTE.replace(':movieId', movie.imdbID)
     )
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
   })

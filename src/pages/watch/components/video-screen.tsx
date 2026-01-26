@@ -1,50 +1,37 @@
 import { AiOutlineDislike, AiOutlineLike } from 'react-icons/ai'
 import { ButtonPlay } from '@/components/button-play'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { formatter } from '@/util/formatter'
-import { getAssessment } from '../services/get-assessment'
-import { createAssessment } from '../services/create-assessment'
-import { updateAssessment } from '../services/update-assessment'
+import { useGetAssessment } from '../services/use-get-assessment'
+import { useCreateAssessment } from '../services/use-create-assessment'
+import { useUpdateAssessment } from '../services/use-update-assessment'
 
-export function VideoScreen({
-  Title,
-  movieId,
-}: {
+type VideoScreenProps = {
   Title: string
   movieId: string
-}) {
-  const queryClient = useQueryClient()
-  const { data } = useQuery({
-    staleTime: 1000 * 60 * 60 * 24,
-    queryKey: ['liked', 'unlike', movieId],
-    queryFn: async () => await getAssessment(movieId),
-  })
+}
 
-  async function handleLikeOrUnlikeMovie({
-    liked,
-    unlike,
-  }: {
-    liked: boolean
-    unlike: boolean
-  }) {
+type HandleLikeOrUnlikeMovieProps = {
+  liked: boolean
+  unlike: boolean
+}
+
+export function VideoScreen({ Title, movieId }: VideoScreenProps) {
+  const { mutateAsync: createAssessment } = useCreateAssessment(movieId)
+  const { mutateAsync: updateAssessment } = useUpdateAssessment(movieId)
+  const { data } = useGetAssessment(movieId)
+
+  async function handleLikeOrUnlikeMovie(props: HandleLikeOrUnlikeMovieProps) {
     try {
-      if (data && !data.liked && !data.unlike) {
-        await createAssessment({
-          liked,
-          movieId,
-          unlike,
-        })
-      } else {
-        await updateAssessment({
-          liked,
-          movieId,
-          unlike,
-        })
+      const { liked, unlike } = props
+      const isLikedAndUnlikeNotExist = data && !data.liked && !data.unlike
+      const assessment = { liked, movieId, unlike }
+
+      if (isLikedAndUnlikeNotExist) {
+        await createAssessment(assessment)
+        return
       }
 
-      queryClient.invalidateQueries({
-        queryKey: ['liked', 'unlike', movieId],
-      })
+      await updateAssessment(assessment)
     } catch (error) {
       console.log(error)
     }

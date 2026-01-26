@@ -32,13 +32,12 @@ export function useRoutes() {
     navigate(REGISTER_USER)
   }
 
-  function NavigateToHomePage(userId: string) {
-    navigate(HOME_ROUTE.replace(':userId', userId))
+  function NavigateToHomePage() {
+    navigate(HOME_ROUTE)
   }
 
-  function NavigateToSearchPage(props: { search: string; userId: string }) {
-    const insertUsarId = SEARCH_ROUTE.replace(':userId', props.userId)
-    const insertSearch = insertUsarId.replace(
+  function NavigateToSearchPage(props: { search: string }) {
+    const insertSearch = SEARCH_ROUTE.replace(
       ':search',
       formatter.formatterUrl(props.search)
     )
@@ -49,10 +48,8 @@ export function useRoutes() {
     title: string
     type: string
     year: number
-    userId: string
   }) {
-    const insertUsarId = MORE_ROUTE.replace(':userId', props.userId)
-    const insertPathName = insertUsarId.concat(
+    const insertPathName = MORE_ROUTE.concat(
       `/${formatter.formatterUrl(props.title)}`
     )
     const insertQueryParams = insertPathName.concat(
@@ -61,14 +58,12 @@ export function useRoutes() {
     navigate(insertQueryParams)
   }
 
-  function NavigateToProfilePage(userId: string) {
-    const insertUserId = PROFILE_ROUTE.replace(':userId', userId)
-    navigate(insertUserId)
+  function NavigateToProfilePage() {
+    navigate(PROFILE_ROUTE)
   }
 
-  function NavigateToWatchPage(props: { movieId: string; userId: string }) {
-    const insertUsarId = WATCH_ROUTE.replace(':userId', props.userId)
-    const insertMovieId = insertUsarId.replace(':movieId', props.movieId)
+  function NavigateToWatchPage(props: { movieId: string }) {
+    const insertMovieId = WATCH_ROUTE.replace(':movieId', props.movieId)
     navigate(insertMovieId)
   }
 

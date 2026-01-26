@@ -9,7 +9,6 @@ import { WatchContext } from '@/contexts/watch-context'
 import { SearchContext } from '@/contexts/search-context'
 import { userEvent } from '@testing-library/user-event'
 import { MORE_ROUTE } from '@/util/consts'
-import { UserContext, UserContextProvider } from '@/contexts/user-context'
 
 const MockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -35,9 +34,7 @@ jest.mock('./movies-carousel', () => ({
 const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <UserContextProvider>{children}</UserContextProvider>
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   )
 }
 
@@ -142,13 +139,6 @@ describe('CategorySection', () => {
   })
 
   it('when clicked in more should: reset contexts, return scroll to initial and redirection page', async () => {
-    const userData = {
-      id: faker.database.mongodbObjectId(),
-      avatar: faker.image.avatar(),
-      email: faker.internet.email(),
-      name: faker.person.firstName(),
-      createAt: faker.date.past().toISOString(),
-    }
     const SpyScrollTo = jest
       .spyOn(window, 'scrollTo')
       .mockImplementationOnce(() => jest.fn())
@@ -159,37 +149,29 @@ describe('CategorySection', () => {
       totalResults: 10,
     })
     render(
-      <UserContext.Provider
+      <SearchContext.Provider
         value={{
-          resetUserState: jest.fn(),
-          setUserState: jest.fn(),
-          user: userData,
+          handleResetContext: MockHandleResetContext,
+          handleUpdateSearch: jest.fn(),
+          search: 'all',
         }}
       >
-        <SearchContext.Provider
+        <WatchContext.Provider
           value={{
-            handleResetContext: MockHandleResetContext,
-            handleUpdateSearch: jest.fn(),
-            search: 'all',
+            handleResetData: MockHandleResetData,
+            handleAddIndex: jest.fn(),
+            handleAddIDBMID: jest.fn(),
+            state: { imdbID: '', index: 0 },
           }}
         >
-          <WatchContext.Provider
-            value={{
-              handleResetData: MockHandleResetData,
-              handleAddIndex: jest.fn(),
-              handleAddIDBMID: jest.fn(),
-              state: { imdbID: '', index: 0 },
-            }}
-          >
-            <CategorySection
-              title='Test Title'
-              page={page}
-              type={type}
-              year={year}
-            />
-          </WatchContext.Provider>
-        </SearchContext.Provider>
-      </UserContext.Provider>,
+          <CategorySection
+            title='Test Title'
+            page={page}
+            type={type}
+            year={year}
+          />
+        </WatchContext.Provider>
+      </SearchContext.Provider>,
       {
         wrapper,
       }
@@ -202,10 +184,7 @@ describe('CategorySection', () => {
     expect(MockHandleResetContext).toHaveBeenCalledTimes(1)
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
     expect(MockNavigate).toHaveBeenCalledWith(
-      `${MORE_ROUTE.replace(
-        ':userId',
-        userData.id
-      )}/test-title?type=${type}&year=${year}`
+      `${MORE_ROUTE}/test-title?type=${type}&year=${year}`
     )
   })
 })

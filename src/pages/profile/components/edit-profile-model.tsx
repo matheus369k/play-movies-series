@@ -9,13 +9,10 @@ import { Camera, UserRound } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, FormProvider } from 'react-hook-form'
-import { useContext, useState } from 'react'
-import { updateUserProfile } from '../services/update-user-profile'
-import { useRoutes } from '@/hooks/useRoutes'
-import { UserContext } from '@/contexts/user-context'
+import { useState } from 'react'
+import { useUpdateUserProfile } from '../services/use-update-profile'
 import { z } from 'zod'
 import { UserAvatar } from '@/components/user-avatar'
-import { formatter } from '@/util/formatter'
 
 const FromUpdateProfileSchema = z.object({
   file: z.custom<FileList>().optional(),
@@ -27,14 +24,13 @@ const FromUpdateProfileSchema = z.object({
 
 type FromUpdateProfileType = z.infer<typeof FromUpdateProfileSchema>
 
-export function EditProfileModel() {
-  const { user, setUserState } = useContext(UserContext)
-  const { NavigateToHomePage } = useRoutes()
+export function EditProfileModel({ name = '' }: { name?: string }) {
+  const { mutateAsync: updateUserProfile } = useUpdateUserProfile()
   const hookUseForm = useForm({
     resolver: zodResolver(FromUpdateProfileSchema),
     defaultValues: {
       file: undefined,
-      name: user?.name || '',
+      name,
     },
   })
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
@@ -50,20 +46,12 @@ export function EditProfileModel() {
   async function handleUpdateProfile(data: FromUpdateProfileType) {
     try {
       const file: Blob | null = data.file?.[0] || null
-      const result = await updateUserProfile({
+      await updateUserProfile({
         name: data.name,
         file,
       })
 
-      if (!result) {
-        throw new Error('Error try update user datas')
-      }
-
-      setUserState({
-        ...result.user,
-        avatar: formatter.mergeAvatarUrlWithBackUrl(result.user.avatar),
-      })
-      NavigateToHomePage(result.user.id)
+      window.location.reload()
     } catch (error) {
       console.log(error)
       setError('name', {
@@ -71,10 +59,6 @@ export function EditProfileModel() {
           'Error try update profile details, please verify your data fields',
       })
     }
-  }
-
-  if (!user) {
-    return null
   }
 
   if (file) {

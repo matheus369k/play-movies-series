@@ -1,25 +1,13 @@
 import * as Dropdown from '@/components/ui/dropdown-menu'
-import { UserContext } from '@/contexts/user-context'
-import { useQuery } from '@tanstack/react-query'
-import { Settings, Shredder } from 'lucide-react'
-import { useContext } from 'react'
-import { getWatchLaterMovies } from './services/get-watch-later-movies'
-import { MovieCard } from '@/components/movie-card'
+import { Settings } from 'lucide-react'
 import { EditProfileModel } from './components/edit-profile-model'
 import { UserAvatar } from '@/components/user-avatar'
 import { LogoutProfileModel } from './components/logout-profile-model'
+import { useGetUserProfile } from '@/services/use-get-user-profile'
+import { WatchLaterMovies } from './components/watch-later-movies'
 
 export function Profile() {
-  const { user } = useContext(UserContext)
-  const { data, isFetched } = useQuery({
-    staleTime: 1000 * 60 * 60 * 24,
-    queryKey: ['watch-later'],
-    queryFn: getWatchLaterMovies,
-  })
-
-  if (!user) {
-    return null
-  }
+  const { data: userProfile } = useGetUserProfile()
 
   return (
     <section className='pt-28 flex flex-col gap-16'>
@@ -41,7 +29,7 @@ export function Profile() {
                 <Dropdown.DropdownMenuSeparator className='bg-zinc-700' />
 
                 <Dropdown.DropdownMenuItem asChild>
-                  <EditProfileModel />
+                  <EditProfileModel name={userProfile?.name} />
                 </Dropdown.DropdownMenuItem>
               </Dropdown.DropdownMenuContent>
             </Dropdown.DropdownMenu>
@@ -52,11 +40,11 @@ export function Profile() {
         <div className='text-base text-center font-normal text-zinc-200 space-y-1'>
           <p>
             <span className='font-semibold text-zinc-50'>Name: </span>
-            {user.name}
+            {userProfile?.name || 'unknown'}
           </p>
           <p>
             <span className='font-semibold text-zinc-50'>Gmail: </span>
-            {user.email}
+            {userProfile?.email || 'unknown'}
           </p>
         </div>
       </div>
@@ -68,40 +56,7 @@ export function Profile() {
           </span>
         </div>
 
-        {!data && isFetched && (
-          <div className='w-fit mx-auto' aria-label='empty watch later movies'>
-            <Shredder strokeWidth={1} className='text-zinc-900 size-56' />
-          </div>
-        )}
-
-        {!data && !isFetched && (
-          <p
-            aria-label='loading watch later movies'
-            className='capitalize text-center justify-self-normal text-zinc-500'
-          >
-            loading...
-          </p>
-        )}
-
-        {data && (
-          <div
-            aria-label='watch later movies'
-            className='flex justify-center flex-wrap gap-3 pb-6 w-auto max-sm:gap-1.5'
-          >
-            {data.watchLaterMedias.map((watchLaterMedia) => {
-              return (
-                <MovieCard
-                  Poster={watchLaterMedia.image}
-                  Title={watchLaterMedia.title}
-                  Type={watchLaterMedia.type}
-                  imdbID={watchLaterMedia.MovieId}
-                  Year={watchLaterMedia.release}
-                  key={watchLaterMedia.id}
-                />
-              )
-            })}
-          </div>
-        )}
+        <WatchLaterMovies />
       </div>
     </section>
   )

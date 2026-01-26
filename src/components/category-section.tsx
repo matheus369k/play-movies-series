@@ -9,9 +9,6 @@ import { WatchContext } from '@/contexts/watch-context'
 import { SearchContext } from '@/contexts/search-context'
 import { TopResetScroll } from '@/util/reset-scroll'
 import { useRoutes } from '@/hooks/useRoutes'
-import { UserContext } from '@/contexts/user-context'
-import { Navigate } from 'react-router-dom'
-import { REGISTER_USER } from '@/util/consts'
 
 interface CategorySectionProps {
   type: string
@@ -20,16 +17,11 @@ interface CategorySectionProps {
   year: number
 }
 
-export function CategorySection({
-  type,
-  page,
-  title,
-  year,
-}: CategorySectionProps) {
-  const { NavigateToMorePage } = useRoutes()
+export function CategorySection(props: CategorySectionProps) {
+  const route = useRoutes()
+  const { type, page, title, year } = props
   const { handleResetData } = useContext(WatchContext)
   const { handleResetContext } = useContext(SearchContext)
-  const { user } = useContext(UserContext)
   const { data, isLoading, isError } = useQuery({
     staleTime: 1000 * 60 * 60 * 24,
     queryKey: [title, type, year, page],
@@ -40,18 +32,37 @@ export function CategorySection({
   })
 
   function handleGetDataOfMovie() {
-    if (!user) return <Navigate to={REGISTER_USER} />
-
     TopResetScroll()
     handleResetContext()
     handleResetData()
 
-    NavigateToMorePage({
+    route.NavigateToMorePage({
       title,
       type,
       year,
-      userId: user.id,
     })
+  }
+
+  function RenderMoviesUI() {
+    if (isLoading) {
+      return (
+        <MoviesCarouselProvider>
+          {Array.from({ length: 10 }).map((_, index) => {
+            return <CardMovieLoading key={index} />
+          })}
+        </MoviesCarouselProvider>
+      )
+    }
+
+    return (
+      <MoviesCarouselProvider>
+        {data?.Search.map((MovieSeries) => {
+          return (
+            <MovieCard key={MovieSeries.imdbID} {...MovieSeries} onlyImage />
+          )
+        })}
+      </MoviesCarouselProvider>
+    )
   }
 
   if (isError || (!isLoading && !data)) {
@@ -72,21 +83,7 @@ export function CategorySection({
         </span>
       </span>
 
-      {isLoading ? (
-        <MoviesCarouselProvider>
-          {Array.from({ length: 10 }).map((_, index) => {
-            return <CardMovieLoading key={index} />
-          })}
-        </MoviesCarouselProvider>
-      ) : (
-        <MoviesCarouselProvider>
-          {data?.Search.map((MovieSeries) => {
-            return (
-              <MovieCard key={MovieSeries.imdbID} {...MovieSeries} onlyImage />
-            )
-          })}
-        </MoviesCarouselProvider>
-      )}
+      {RenderMoviesUI()}
     </div>
   )
 }

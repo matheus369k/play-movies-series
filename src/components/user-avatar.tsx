@@ -1,8 +1,7 @@
-import { useContext } from 'react'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import * as Avatar from './ui/avatar'
-import { UserContext } from '@/contexts/user-context'
+import { useGetUserProfile } from '@/services/use-get-user-profile'
 
 type UserAvatarProps = {
   avatarPreview?: string | null
@@ -11,11 +10,10 @@ type UserAvatarProps = {
 }
 
 export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
-  const { user } = useContext(UserContext)
+  const { data: userProfile } = useGetUserProfile()
 
-  if (!user) return null
-
-  const firstLetter = user.email.slice(0, 1)
+  const userName = userProfile?.name || 'unknown'
+  const firstLetter = (userProfile?.email || 'unknown').slice(0, 1)
   const AvatarVariants = tv({
     base: 'flex justify-center items-center border border-zinc-500 bg-zinc-900',
     variants: {
@@ -42,46 +40,48 @@ export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
       fontSize: 'sm',
     },
   })
+
+  if (avatarPreview) {
+    return (
+      <Avatar.Avatar className={AvatarVariants({ size })}>
+        <Avatar.AvatarImage
+          src={avatarPreview}
+          aria-label='preview avatar'
+          alt={`avatar from user with name ${userName}`}
+          className='object-cover'
+        />
+
+        <Avatar.AvatarFallback className={AvatarTextVariates({ fontSize })}>
+          {firstLetter}
+        </Avatar.AvatarFallback>
+      </Avatar.Avatar>
+    )
+  }
+
+  if (!userProfile || !userProfile.avatar) {
+    return (
+      <div
+        aria-label='first letter avatar'
+        className={twMerge(
+          AvatarVariants({ size }),
+          'text-zinc-50 rounded-full',
+        )}
+      >
+        <i className={AvatarTextVariates({ fontSize })}>{firstLetter}</i>
+      </div>
+    )
+  }
+
   return (
-    <>
-      {avatarPreview && (
-        <Avatar.Avatar className={AvatarVariants({ size })}>
-          <Avatar.AvatarImage
-            src={avatarPreview}
-            aria-label='preview avatar'
-            alt={`avatar from user with name ${user.name}`}
-          />
-
-          <Avatar.AvatarFallback className={AvatarTextVariates({ fontSize })}>
-            {firstLetter}
-          </Avatar.AvatarFallback>
-        </Avatar.Avatar>
-      )}
-
-      {!avatarPreview && user.avatar && (
-        <Avatar.Avatar className={AvatarVariants({ size })}>
-          <Avatar.AvatarImage
-            src={user.avatar}
-            aria-label='main avatar'
-            alt={`avatar from user with name ${user.name}`}
-          />
-          <Avatar.AvatarFallback className={AvatarTextVariates({ fontSize })}>
-            {firstLetter}
-          </Avatar.AvatarFallback>
-        </Avatar.Avatar>
-      )}
-
-      {!avatarPreview && !user.avatar && (
-        <div
-          aria-label='first letter avatar'
-          className={twMerge(
-            AvatarVariants({ size }),
-            'text-zinc-50 rounded-full'
-          )}
-        >
-          <i className={AvatarTextVariates({ fontSize })}>{firstLetter}</i>
-        </div>
-      )}
-    </>
+    <Avatar.Avatar className={AvatarVariants({ size })}>
+      <Avatar.AvatarImage
+        src={userProfile.avatar}
+        aria-label='main avatar'
+        alt={`avatar from user with name ${userName}`}
+      />
+      <Avatar.AvatarFallback className={AvatarTextVariates({ fontSize })}>
+        {firstLetter}
+      </Avatar.AvatarFallback>
+    </Avatar.Avatar>
   )
 }
