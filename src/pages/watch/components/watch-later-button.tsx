@@ -12,11 +12,13 @@ type WatchLaterButtonProps = {
 
 export function WatchLaterButton(props: WatchLaterButtonProps) {
   const { MovieId, image, release, title, type } = props
-  const { mutateAsync: createMovieWatchLater } =
+  const { mutateAsync: createMovieWatchLater, isLoading: isLoadingCreate } =
     useCreateMovieWatchLater(MovieId)
-  const { mutateAsync: deleteMovieWatchLater } =
+  const { mutateAsync: deleteMovieWatchLater, isLoading: isLoadingDelete } =
     useDeleteMovieWatchLater(MovieId)
-  const { isSuccess, isFetching } = useGetMovieWatchLater(MovieId)
+  const { isSuccess } = useGetMovieWatchLater(MovieId)
+  const isDeleteOrCreateWatchMovieLaterRequest =
+    isLoadingDelete || isLoadingCreate
 
   async function AddOrRemoveMovieFromWatchLater() {
     try {
@@ -36,15 +38,30 @@ export function WatchLaterButton(props: WatchLaterButtonProps) {
     }
   }
 
+  function buttonMessage() {
+    if (isLoadingCreate) {
+      return 'saving in list..'
+    }
+    if (isLoadingDelete) {
+      return 'removing in list..'
+    }
+
+    if (isSuccess) {
+      return 'saved in list'
+    }
+
+    return 'add in list'
+  }
+
   return (
     <button
-      disabled={isFetching}
       data-saved={isSuccess}
       onClick={AddOrRemoveMovieFromWatchLater}
-      className='text-zinc-50 font-semibold text-lg py-2 px-12 bg-transparent data-[saved=false]:border border-zinc-50 text-center rounded-lg  max-md:w-full data-[saved=true]:bg-red-600 hover:opacity-80 hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50'
-      aria-label={isSuccess ? 'saved on the list' : 'add to the list'}
+      disabled={isDeleteOrCreateWatchMovieLaterRequest}
+      className='text-zinc-50 h-12 font-semibold text-lg py-1.5 px-12 bg-transparent data-[saved=false]:border border-zinc-50 text-center rounded-lg  max-md:w-full data-[saved=true]:bg-red-600 hover:opacity-80 hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50'
+      aria-label={buttonMessage()}
     >
-      {isSuccess ? 'saved on the list' : 'add to the list'}
+      {buttonMessage()}
     </button>
   )
 }

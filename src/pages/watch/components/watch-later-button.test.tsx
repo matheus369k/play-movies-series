@@ -37,7 +37,7 @@ describe('WatchLaterButton component', () => {
     MockAxiosBackApi.onGet(routeWatchLaterMovieWithID).reply(404, undefined)
     render(<WatchLaterButton {...watchLaterMedia} />, { wrapper })
 
-    screen.getByRole('button', { name: /add to the list/i })
+    screen.getByRole('button', { name: /add in list/i })
   })
 
   it('should showing diff text when movie were saved watch later', async () => {
@@ -46,7 +46,7 @@ describe('WatchLaterButton component', () => {
     })
     render(<WatchLaterButton {...watchLaterMedia} />, { wrapper })
 
-    await screen.findByRole('button', { name: /saved on the list/i })
+    await screen.findByRole('button', { name: /saved in list/i })
   })
 
   it('call create watch later request when get watch later request fail', async () => {
@@ -54,9 +54,7 @@ describe('WatchLaterButton component', () => {
     MockAxiosBackApi.onGet(routeWatchLaterMovieWithID).reply(404)
     render(<WatchLaterButton {...watchLaterMedia} />, { wrapper })
 
-    await userEvents.click(
-      screen.getByRole('button', { name: /add to the list/i }),
-    )
+    await userEvents.click(screen.getByRole('button', { name: /add in list/i }))
 
     await waitFor(() => {
       expect(MockAxiosBackApi.history[0]).toMatchObject({
@@ -77,7 +75,7 @@ describe('WatchLaterButton component', () => {
     MockAxiosBackApi.onDelete(routeWatchLaterMovieWithID).reply(404, 'ok')
     render(<WatchLaterButton {...watchLaterMedia} />, { wrapper })
     const button = await screen.findByRole('button', {
-      name: /saved on the list/i,
+      name: /saved in list/i,
     })
 
     await userEvents.click(button)

@@ -87,7 +87,7 @@ export function WatchMovieSeries() {
 
         <div className='flex items-center gap-4 max-md:flex-col'>
           <button
-            className='text-zinc-50 font-semibold text-lg py-2 px-12 bg-red-600 text-center rounded-lg hover:bg-red-500 max-md:w-full'
+            className='text-zinc-50 h-12 font-semibold text-lg py-1.5 px-12 bg-red-600 text-center rounded-lg hover:bg-red-500 max-md:w-full'
             type='button'
           >
             watch

@@ -32,7 +32,7 @@ const wrapper = (props: { children: ReactNode; imdbID: string }) => (
   </QueryClientProvider>
 )
 
-describe('WatchMovieSeries Data Display', () => {
+describe('WatchMovieSeries page', () => {
   const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
   jest.spyOn(Math, 'random').mockImplementation(() => 0.96)
   const userProfile = {
@@ -88,7 +88,7 @@ describe('WatchMovieSeries Data Display', () => {
     })
     screen.getByText(movies[0].Title)
     screen.getByRole('button', {
-      name: /add to the list/i,
+      name: /add in list/i,
     })
   })
 
