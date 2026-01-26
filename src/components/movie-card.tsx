@@ -34,7 +34,7 @@ export function MovieCard({ onlyImage = false, ...props }: MovieCardProps) {
     >
       <div
         data-only-image={onlyImage}
-        className='relative group/play bg-zinc/50 z-50 rounded rounded-b-none cursor-pointer aspect-[3/4] overflow-hidden min-h-full data-[only-image]:rounded max-sm:rounded'
+        className='relative group/play bg-zinc/50 z-40 rounded rounded-b-none cursor-pointer aspect-[3/4] overflow-hidden min-h-full data-[only-image]:rounded max-sm:rounded'
       >
         <img
           src={Poster}
