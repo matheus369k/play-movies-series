@@ -30,7 +30,7 @@ export function MovieCard({ onlyImage = false, ...props }: MovieCardProps) {
       aria-label='movie-card'
       data-only-image={onlyImage}
       onClick={handleClickedPlayOnMovie}
-      className='grid grid-rows-[auto, 20px] grid-cols-1 w-full gap-1 justify-center bg-zinc-900 rounded border border-zinc-500 max-w-52 max-sm:w-32 max-sm:grid-rows-1 data-[only-image=true]:grid-rows-1'
+      className='grid grid-rows-[auto, 20px] grid-cols-1 w-full gap-1 justify-center bg-zinc-900 rounded border border-zinc-500 max-w-52 max-sm:w-32 max-sm:grid-rows-1 data-[only-image=true]:grid-rows-1 hover:scale-105'
     >
       <div
         data-only-image={onlyImage}

@@ -17,7 +17,7 @@ export function MoviesCarouselProvider({
       pauseOnHover
       renderArrowsWhenDisabled={false}
       renderButtonGroupOutside={false}
-      itemClass='px-1'
+      itemClass='px-1 py-2'
       shouldResetAutoplay
       slidesToSlide={3}
       swipeable

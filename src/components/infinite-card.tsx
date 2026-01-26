@@ -42,7 +42,7 @@ export function InfiniteMovieCard({
     <li
       {...(isLastItem && { id: imdbID, ref: ref })}
       onClick={handleClickedPlayOnMovie}
-      className='grid grid-rows-[auto, 20px] grid-cols-1 w-full gap-1 justify-center bg-zinc-900 rounded border border-zinc-500 max-w-52 max-sm:w-32 max-sm:grid-rows-1'
+      className='grid grid-rows-[auto, 20px] grid-cols-1 w-full gap-1 justify-center bg-zinc-900 rounded border border-zinc-500 max-w-52 max-sm:w-32 max-sm:grid-rows-1 hover:scale-105'
     >
       <div className='relative group/play bg-zinc/50 z-40 rounded rounded-b-none  cursor-pointer aspect-[3/4] overflow-hidden min-h-full max-sm:rounded'>
         <img
