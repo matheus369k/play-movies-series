@@ -10,8 +10,9 @@ type UserAvatarProps = {
 }
 
 export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
-  const { data: userProfile } = useGetUserProfile()
+  const { data: userProfile, dataUpdatedAt } = useGetUserProfile()
 
+  const userAvatar = userProfile?.avatar?.concat(`?updateAt=${dataUpdatedAt}`)
   const userName = userProfile?.name || 'unknown'
   const firstLetter = (userProfile?.email || 'unknown').slice(0, 1)
   const AvatarVariants = tv({
@@ -58,7 +59,7 @@ export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
     )
   }
 
-  if (!userProfile || !userProfile.avatar) {
+  if (!userAvatar) {
     return (
       <div
         aria-label='first letter avatar'
@@ -75,7 +76,8 @@ export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
   return (
     <Avatar.Avatar className={AvatarVariants({ size })}>
       <Avatar.AvatarImage
-        src={userProfile.avatar}
+        src={userAvatar}
+        fetchPriority='high'
         aria-label='main avatar'
         alt={`avatar from user with name ${userName}`}
       />

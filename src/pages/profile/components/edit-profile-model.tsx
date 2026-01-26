@@ -50,8 +50,6 @@ export function EditProfileModel({ name = '' }: { name?: string }) {
         name: data.name,
         file,
       })
-
-      window.location.reload()
     } catch (error) {
       console.log(error)
       setError('name', {

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosBackApi } from '@/util/axios'
 import { env } from '@/util/env'
+import { QUERY_KEYS_USER_PROFILE } from '@/util/consts'
 
 jest.mock('./ui/avatar.tsx', () => ({
   ...jest.requireActual('./ui/avatar.tsx'),
@@ -44,9 +45,12 @@ describe('UserAvatar component', () => {
     render(<UserAvatar />, { wrapper })
 
     await waitFor(() => {
+      const dataUpdatedAt = queryClient.getQueryState(
+        QUERY_KEYS_USER_PROFILE,
+      )?.dataUpdatedAt
       expect(screen.getByLabelText(/main avatar/i)).toHaveAttribute(
         'src',
-        `${env.VITE_BACKEND_URL}/${userProfile.avatar}`
+        `${env.VITE_BACKEND_URL}/${userProfile.avatar}?updateAt=${dataUpdatedAt}`,
       )
     })
   })
