@@ -6,6 +6,24 @@ export function MoviesCarouselProvider({
   children: React.ReactNode
 }) {
   const isNotMobile = window.innerWidth > 768
+  const responsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 8,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 664 },
+      items: 6,
+    },
+    mobile: {
+      breakpoint: { max: 664, min: 449 },
+      items: 4,
+    },
+    smallMobile: {
+      breakpoint: { max: 449, min: 0 },
+      items: 3,
+    },
+  }
 
   return (
     <Carousel
@@ -21,24 +39,7 @@ export function MoviesCarouselProvider({
       shouldResetAutoplay
       slidesToSlide={3}
       swipeable
-      responsive={{
-        desktop: {
-          breakpoint: { max: 3000, min: 1024 },
-          items: 8,
-        },
-        tablet: {
-          breakpoint: { max: 1024, min: 664 },
-          items: 6,
-        },
-        mobile: {
-          breakpoint: { max: 664, min: 400 },
-          items: 4,
-        },
-        smallMobile: {
-          breakpoint: { max: 400, min: 0 },
-          items: 3,
-        },
-      }}
+      responsive={responsive}
     >
       {children}
     </Carousel>
