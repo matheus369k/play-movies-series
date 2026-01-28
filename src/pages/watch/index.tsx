@@ -5,17 +5,12 @@ import { Error as ErrorComponents } from '@/components/error'
 import { WatchContext } from '@/contexts/watch-context'
 import { VideoScreen } from './components/video-screen'
 import { BsStarFill } from 'react-icons/bs'
-import { fetchOneOmbdapi } from '@/services/fetch-omdbapi'
-import { useQuery } from '@tanstack/react-query'
 import { WatchLaterButton } from './components/watch-later-button'
+import { useGetMovieOmbdapi } from '@/services/use-get-movie'
 
 export function WatchMovieSeries() {
   const { state } = useContext(WatchContext)
-  const { data, isError, isFetching } = useQuery({
-    queryFn: async () => await fetchOneOmbdapi({ id: state.imdbID }),
-    queryKey: ['movie', state.imdbID],
-    staleTime: 1000 * 60 * 60 * 24,
-  })
+  const { data, isError, isFetching } = useGetMovieOmbdapi(state.imdbID)
 
   if (isFetching || !data) {
     return null

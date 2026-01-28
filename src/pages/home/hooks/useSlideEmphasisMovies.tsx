@@ -1,20 +1,13 @@
 import { WatchContext } from '@/contexts/watch-context'
 import { dbFocusData } from '@/data/movies-id'
-import { fetchOneOmbdapi } from '@/services/fetch-omdbapi'
-import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { useRoutes } from '@/hooks/useRoutes'
+import { useGetMovieOmbdapi } from '@/services/use-get-movie'
 
 export function useSlideEmphasisMovies() {
   const { state, handleAddIndex, handleAddIDBMID } = useContext(WatchContext)
   const mainMoviesIds = dbFocusData[state?.index || 0].imdbid
-  const { data, isError, isLoading } = useQuery({
-    staleTime: 1000 * 60 * 60 * 24,
-    queryKey: ['movie', mainMoviesIds],
-    queryFn: async () => {
-      return await fetchOneOmbdapi({ id: mainMoviesIds })
-    },
-  })
+  const { data, isError, isLoading } = useGetMovieOmbdapi(mainMoviesIds)
   const route = useRoutes()
 
   function handlePassToNextMovieSeries() {
@@ -49,9 +42,9 @@ export function useSlideEmphasisMovies() {
     handlePassToPreviousMovieSeries,
     handlePassToNextMovieSeries,
     handlePassToMovieSeries,
-    data,
-    isError,
     isLoading,
+    isError,
     state,
+    data,
   }
 }

@@ -19,16 +19,16 @@ jest.mock('react-router-dom', () => ({
   }),
 }))
 
-const queryClient = new QueryClient()
-const wrapper = ({ children }: { children: ReactNode }) => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <WatchContextProvider>{children}</WatchContextProvider>
-    </QueryClientProvider>
-  )
-}
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+})
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <QueryClientProvider client={queryClient}>
+    <WatchContextProvider>{children}</WatchContextProvider>
+  </QueryClientProvider>
+)
 
-describe('Home', () => {
+describe('EmphasisMovies component ', () => {
   const user = userEvent.setup()
   jest.spyOn(Math, 'random').mockImplementation(() => 0.96)
   const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
@@ -45,14 +45,15 @@ describe('Home', () => {
     Type: 'movie',
     totalSeasons: faker.number.int({ max: 34 }),
   }))
+  const routeGetMovieQueryParam = `?i=${movies[0].imdbID}`
 
   afterEach(() => {
     MockAxiosOmbdapi.reset()
     queryClient.clear()
   })
 
-  it('should renders corrected', async () => {
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+  it('should rended', async () => {
+    MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(200, {
       ...movies[0],
     })
     render(<EmphasisMovies />, { wrapper })
@@ -61,29 +62,29 @@ describe('Home', () => {
   })
 
   it('should render ErrorComponents when is request fail or return nothing', async () => {
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(500, undefined)
+    MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(500)
     render(<EmphasisMovies />, { wrapper })
 
     await screen.findByText(
-      /During the '90s, a new faction of Transformers - the Maximals - join the Autobots as allies in the battle for Earth./i
+      /During the '90s, a new faction of Transformers - the Maximals - join the Autobots as allies in the battle for Earth./i,
     )
-    await screen.findByText(/Erro ao tentar carregar/i)
+    await screen.findByText(/Error to try loading/i)
   })
 
   it('should render LoadingEmphasis when is not complete request', () => {
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(200, {
       ...movies[0],
     })
     render(<EmphasisMovies />, { wrapper })
 
     screen.getByText(
-      /During the '90s, a new faction of Transformers - the Maximals - join the Autobots as allies in the battle for Earth./i
+      /During the '90s, a new faction of Transformers - the Maximals - join the Autobots as allies in the battle for Earth./i,
     )
   })
 
   it('should redirection to watch page from movie when is clicked in cap movie', async () => {
     const MockHandleAddIDBMID = jest.fn()
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(200, {
       ...movies[0],
     })
     render(
@@ -97,14 +98,14 @@ describe('Home', () => {
       >
         <EmphasisMovies />
       </WatchContext.Provider>,
-      { wrapper }
+      { wrapper },
     )
 
     await screen.findByText(movies[0].Plot)
     await user.click(screen.getByRole('img').parentElement!)
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':movieId', movies[0].imdbID)
+      WATCH_ROUTE.replace(':movieId', movies[0].imdbID),
     )
     expect(MockHandleAddIDBMID).toHaveBeenCalledWith({
       imdbID: movies[0].imdbID,
@@ -113,7 +114,7 @@ describe('Home', () => {
 
   it('should redirection to watch page from movie when is clicked in play button', async () => {
     const MockHandleAddIDBMID = jest.fn()
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(200, {
       ...movies[0],
     })
     render(
@@ -127,14 +128,14 @@ describe('Home', () => {
       >
         <EmphasisMovies />
       </WatchContext.Provider>,
-      { wrapper }
+      { wrapper },
     )
 
     await screen.findByText(movies[0].Plot)
     await user.click(screen.getAllByRole('button')[1].parentElement!)
 
     expect(MockNavigate).toHaveBeenCalledWith(
-      WATCH_ROUTE.replace(':movieId', movies[0].imdbID)
+      WATCH_ROUTE.replace(':movieId', movies[0].imdbID),
     )
     expect(MockHandleAddIDBMID).toHaveBeenCalledWith({
       imdbID: movies[0].imdbID,
@@ -142,7 +143,7 @@ describe('Home', () => {
   })
 
   it('should switch emphasis movie when clicked in next arrow', async () => {
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(200, {
       ...movies[0],
     })
     MockAxiosOmbdapi.onGet(`?i=${movies[1].imdbID}`).reply(200, {
@@ -157,7 +158,7 @@ describe('Home', () => {
   })
 
   it('should switch emphasis movie when clicked in previous arrow', async () => {
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(200, {
       ...movies[0],
     })
     MockAxiosOmbdapi.onGet(`?i=${movies[1].imdbID}`).reply(200, {
@@ -192,7 +193,7 @@ describe('Home', () => {
   })
 
   it('should disabled previous button when is first movie emphasis', async () => {
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(200, {
       ...movies[0],
     })
     render(<EmphasisMovies />, { wrapper })
@@ -202,7 +203,7 @@ describe('Home', () => {
   })
 
   it('should jump movie when is clicked in bar link with her', async () => {
-    MockAxiosOmbdapi.onGet(`?i=${movies[0].imdbID}`).reply(200, {
+    MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(200, {
       ...movies[0],
     })
     MockAxiosOmbdapi.onGet(`?i=${movies[4].imdbID}`).reply(200, {
