@@ -15,6 +15,10 @@ export const QUERY_KEYS_BASE_MOVIES_ASSESSMENT = [
   'liked',
   'unlike',
 ]
+export const QUERY_KEYS_BASE_MOVIES = [
+  ...QUERY_KEYS_PERMISSION.private,
+  'movies',
+]
 
 export const REGISTER_USER = '/register'
 export const LOGIN_USER = '/login'

@@ -1,9 +1,8 @@
 import { SearchContext } from '@/contexts/search-context'
-import { fetchManyOmbdapi } from '@/services/fetch-omdbapi'
-import { useQuery } from '@tanstack/react-query'
 import { useContext, useEffect, useRef } from 'react'
 import { urlParams } from '@/util/url-params'
 import { formatter } from '@/util/formatter'
+import { useGetInfiniteMoviesOmbdapi } from '@/services/use-get-infinite-movies'
 
 export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
   const { pathname } = window.location
@@ -30,35 +29,19 @@ export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
     }
   }
 
-  const { data, isFetching, refetch, remove } = useQuery({
-    staleTime: 1000 * 60 * 60 * 24,
-    queryFn: async () =>
-      await fetchManyOmbdapi({
-        params: `?s=${search}&type=${QueryRef.current.type}&y=${QueryRef.current.year}&page=${PagesRef.current.currentPage}`,
-      }),
-    queryKey: [QueryRef.current.title],
-    enabled: PagesRef.current.totalPages === 1,
-    onSuccess: (data) => {
-      PagesRef.current = {
-        currentPage: PagesRef.current.currentPage + 1,
-        totalPages: Number(data?.totalResults) ?? 1,
-      }
-    },
-    structuralSharing(oldData, newData) {
-      if (!oldData) return newData
-      if (!newData) return oldData
-
-      const oldDataLastId = oldData.Search[oldData.Search.length - 1].imdbID
-      const newDataLastId = newData.Search[newData.Search.length - 1].imdbID
-
-      if (oldDataLastId === newDataLastId) return oldData
-
-      return {
-        ...oldData,
-        Search: [...oldData.Search, ...newData.Search],
-      }
-    },
+  const { data, isFetching, refetch, remove } = useGetInfiniteMoviesOmbdapi({
+    handleUpdateVariablesPagination,
+    ...PagesRef.current,
+    ...QueryRef.current,
+    search,
   })
+
+  function handleUpdateVariablesPagination(totalResults: string) {
+    PagesRef.current = {
+      currentPage: PagesRef.current.currentPage + 1,
+      totalPages: Number(totalResults) ?? 1,
+    }
+  }
 
   function handleFetchMoreData() {
     const { currentPage, totalPages } = PagesRef.current
@@ -71,7 +54,7 @@ export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
     refetch()
   }
 
-  useEffect(() => {
+  function handleResetVariablesAndQueriesCache() {
     if (isSearchPage) {
       PagesRef.current = {
         currentPage: 1,
@@ -80,7 +63,6 @@ export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
     }
 
     const isFirstLoadPage = PagesRef.current.totalPages === 1
-
     if (isFirstLoadPage && isSearchPage && !isFetching) {
       QueryRef.current = {
         title: search,
@@ -88,10 +70,12 @@ export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
         year: '',
       }
 
-      remove()
       refetch()
+      remove()
     }
-  }, [search])
+  }
+
+  useEffect(handleResetVariablesAndQueriesCache, [search])
 
   return {
     title: QueryRef.current.title,
