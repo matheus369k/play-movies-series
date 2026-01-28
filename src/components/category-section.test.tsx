@@ -31,14 +31,14 @@ jest.mock('./movies-carousel', () => ({
   },
 }))
 
-const queryClient = new QueryClient()
-const wrapper = ({ children }: { children: ReactNode }) => {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  )
-}
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+})
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+)
 
-describe('CategorySection', () => {
+describe('CategorySection component', () => {
   const user = userEvent.setup()
   const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
   const { page, type, year } = { year: 2004, type: 'movie', page: 1 }
@@ -69,7 +69,7 @@ describe('CategorySection', () => {
   })
 
   it('should render corrected', async () => {
-    MockAxiosOmbdapi.onGet(params).replyOnce(200, {
+    MockAxiosOmbdapi.onGet(params).reply(200, {
       Search: movies,
       totalResults: 10,
     })
@@ -82,7 +82,7 @@ describe('CategorySection', () => {
       />,
       {
         wrapper,
-      }
+      },
     )
 
     await screen.findByRole('heading', {
@@ -93,7 +93,7 @@ describe('CategorySection', () => {
   })
 
   it('should render LoadingCard when is api not complete request', async () => {
-    MockAxiosOmbdapi.onGet(params).replyOnce(200, {
+    MockAxiosOmbdapi.onGet(params).reply(200, {
       Search: movies,
       totalResults: 10,
     })
@@ -106,7 +106,7 @@ describe('CategorySection', () => {
       />,
       {
         wrapper,
-      }
+      },
     )
 
     await screen.findByRole('heading', {
@@ -118,7 +118,7 @@ describe('CategorySection', () => {
   })
 
   it('should render ErrorComponent when data is not available', async () => {
-    MockAxiosOmbdapi.onGet(params).replyOnce(404, undefined)
+    MockAxiosOmbdapi.onGet(params).reply(500)
     render(
       <CategorySection
         title='Test Title'
@@ -128,14 +128,14 @@ describe('CategorySection', () => {
       />,
       {
         wrapper,
-      }
+      },
     )
 
     await screen.findByRole('heading', {
       level: 2,
       name: /Test Title/i,
     })
-    await screen.findByText(/Error ao tentar carregar/i)
+    await screen.findByText(/Error to try loading/i)
   })
 
   it('when clicked in more should: reset contexts, return scroll to initial and redirection page', async () => {
@@ -144,7 +144,7 @@ describe('CategorySection', () => {
       .mockImplementationOnce(() => jest.fn())
     const MockHandleResetData = jest.fn()
     const MockHandleResetContext = jest.fn()
-    MockAxiosOmbdapi.onGet(params).replyOnce(200, {
+    MockAxiosOmbdapi.onGet(params).reply(200, {
       Search: movies,
       totalResults: 10,
     })
@@ -174,7 +174,7 @@ describe('CategorySection', () => {
       </SearchContext.Provider>,
       {
         wrapper,
-      }
+      },
     )
 
     const linkMore = await screen.findByText(/More/i)
@@ -184,7 +184,7 @@ describe('CategorySection', () => {
     expect(MockHandleResetContext).toHaveBeenCalledTimes(1)
     expect(SpyScrollTo).toHaveBeenCalledTimes(1)
     expect(MockNavigate).toHaveBeenCalledWith(
-      `${MORE_ROUTE}/test-title?type=${type}&year=${year}`
+      `${MORE_ROUTE}/test-title?type=${type}&year=${year}`,
     )
   })
 })
