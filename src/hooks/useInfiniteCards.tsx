@@ -5,15 +5,15 @@ import { formatter } from '@/util/formatter'
 import { useGetInfiniteMoviesOmbdapi } from '@/services/use-get-infinite-movies'
 
 export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
-  const { pathname } = window.location
-  const { search } = useContext(SearchContext)
+  const { search, handleUpdateSearch } = useContext(SearchContext)
   const isSearchPage = page === 'search'
+  const { pathname } = window.location
 
   const PagesRef = useRef({
     currentPage: 1,
     totalPages: 1,
   })
-
+  
   const SearchParam = pathname.split('/search/')[1]
   const MoreParam = pathname.split('/more/')[1]
   const QueryRef = useRef({
@@ -76,6 +76,7 @@ export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
   }
 
   useEffect(handleResetVariablesAndQueriesCache, [search])
+  useEffect(() => handleUpdateSearch(SearchParam), [pathname])
 
   return {
     title: QueryRef.current.title,

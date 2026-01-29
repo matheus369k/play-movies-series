@@ -37,10 +37,10 @@ const insertSearchURLRoute = ({ title }: { title: string }) => {
 describe('useInfiniteCards custom hook', () => {
   const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
   const { page, type, year, title } = {
+    title: 'transformers the last of knight',
     year: '2004',
     type: '',
     page: 1,
-    title: 'transformers: the last of knight',
   }
   const movies = Array.from({ length: 20 }).map(() => ({
     Title: faker.book.title(),
