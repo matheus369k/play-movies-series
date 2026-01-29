@@ -14,16 +14,16 @@
 
 ## Descrição
 
-A aplicação e um site de streams de filmes se series, contendo um catalogo vasto de filmes entre os anos 2000 e 2025, divididos em filmes e series.
+A aplicação e um site de streams de filmes se series, contendo um catalogo vasto de filmes entre os anos 2000 e 2025, ele é um projeto original, desenvolvido desde do designer ao código. **O Site é puramente educativo**.
 
 Os dados vem de uma api publica chamada **[omdbapi.com](https://www.omdbapi.com/)**.
 
 As principais funções do site são:
 
-- filtro por titulo.
+- filtro de filmes por titulo.
 - Auto paginação por scroll.
-- Login, register e auto login, com validação jwt
-- sistema de likes e dislike
+- Login, register e auto login, com autenticação jwt, usando a técnica do refresh token
+- sistema de feedback likes e dislike nos filmes
 - adicionar e remover filmes da lista para assistir depois
 - atualização dos dados da conta e sair
 
@@ -31,7 +31,7 @@ Acesse o site **[Play Movies and Series](https://play-movies-series.vercel.app/)
 
 ## Iniciar
 
-E Necessário ter o Nodejs, o git instalado e a back da aplicação, acesse o repositório **[Aqui](https://github.com/matheus369k/play-movies-series-api)**.
+E Necessário ter o Nodejs, o git instalado e o back da aplicação rodando no sua maquina, para isso acesse o repositório **[play-movies-series-api](https://github.com/matheus369k/play-movies-series-api)** é siga os passo para inicia-lo.
 
 Faça clone do repositório localmente.
 
