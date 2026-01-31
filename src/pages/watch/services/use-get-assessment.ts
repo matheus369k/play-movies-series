@@ -3,7 +3,7 @@ import { AxiosBackApi } from '@/util/axios'
 import { QUERY_KEYS_BASE_MOVIES_ASSESSMENT } from '@/util/consts'
 import { useQuery } from '@tanstack/react-query'
 
-type AssessmentResponseType = {
+export type AssessmentResponseType = {
   liked: boolean
   unlike: boolean
   totalLiked: number

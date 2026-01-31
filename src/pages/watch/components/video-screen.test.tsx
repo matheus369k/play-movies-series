@@ -20,8 +20,8 @@ describe('<VideoScreen />', () => {
   const mediaAssessment = {
     liked: true,
     unlike: false,
-    totalLiked: 5167,
-    totalUnlike: 1506,
+    totalLiked: 167,
+    totalUnlike: 50,
   }
 
   afterEach(() => {
@@ -42,6 +42,78 @@ describe('<VideoScreen />', () => {
       screen.getByRole('button', { name: /play/i })
       screen.getByRole('button', { name: /unlike/i })
     })
+  })
+
+  it('update assessment queryData before completed update assessment request', async () => {
+    MockAxiosBackApi.onPatch(routeAssessment).withDelayInMs(500).reply(201)
+    MockAxiosBackApi.onGet(routeAssessment).reply(200, {
+      mediaAssessment,
+    })
+    render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
+      wrapper,
+    })
+
+    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+
+    await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
+
+    screen.getByText(`${mediaAssessment.totalUnlike + 1}`)
+  })
+
+  it('update and restore old assessment queryData when update assessment request is fail', async () => {
+    MockAxiosBackApi.onPatch(routeAssessment).withDelayInMs(500).reply(500)
+    MockAxiosBackApi.onGet(routeAssessment).reply(200, {
+      mediaAssessment,
+    })
+    render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
+      wrapper,
+    })
+
+    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+
+    await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
+
+    screen.getByText(`${mediaAssessment.totalUnlike + 1}`)
+    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+  })
+
+  it('update assessment queryData before completed create assessment request', async () => {
+    MockAxiosBackApi.onPost(routeAssessment).withDelayInMs(500).reply(201)
+    MockAxiosBackApi.onGet(routeAssessment).reply(200, {
+      mediaAssessment: {
+        ...mediaAssessment,
+        liked: false,
+      },
+    })
+    render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
+      wrapper,
+    })
+
+    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+
+    await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
+
+    screen.getByText(`${mediaAssessment.totalUnlike + 1}`)
+  })
+
+  it('update and restore old assessment queryData when create assessment request is fail', async () => {
+    MockAxiosBackApi.onPost(routeAssessment).withDelayInMs(500).reply(500)
+    MockAxiosBackApi.onGet(routeAssessment).reply(200, {
+      mediaAssessment: {
+        ...mediaAssessment,
+        liked: false,
+      },
+    })
+    render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
+      wrapper,
+    })
+
+    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+
+    await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
+
+    screen.getByText(`${mediaAssessment.totalUnlike + 1}`)
+    await screen.findByText(`${mediaAssessment.totalUnlike}`)
   })
 
   it('should call updateAssessment and recall getAssessment when liked or unlike for true', async () => {
