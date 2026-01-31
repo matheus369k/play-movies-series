@@ -34,7 +34,7 @@ export function WatchMovieSeries() {
     <section className='flex pt-[400px] flex-col gap-8 max-w-7xl mx-auto max-sm:pt-[200px]'>
       <VideoScreen movieId={data.imdbID || ''} Title={data.Title || ''} />
 
-      <div className='grid grid-rows-[auto, fit-content] grid-cols-[auto, fit-content] gap-y-6 gap-x-4 max-md:grid-rows-[repeat(3,fit-content)] max-md:grid-cols-1 px-2'>
+      <div className='grid grid-rows-[auto, fit-content] grid-cols-[auto, fit-content] justify-between gap-y-6 gap-x-4 max-md:grid-rows-[repeat(3,fit-content)] max-md:grid-cols-1 px-2'>
         <img
           className='col-start-2 row-span-2 max-h-72 min-w-36 h-full w-min mx-auto rounded border border-zinc-700 object-scale-down max-md:col-start-1 max-md:row-2'
           src={data.Poster}
