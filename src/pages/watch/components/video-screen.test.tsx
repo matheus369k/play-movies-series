@@ -7,12 +7,14 @@ import { faker } from '@faker-js/faker/locale/pt_BR'
 import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+})
 const wrapper = ({ children }: { children: ReactNode }) => (
   <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 )
 
-describe('<VideoScreen />', () => {
+describe('VideoScreen component', () => {
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const movieId = faker.database.mongodbObjectId()
   const routeAssessment = `/assessment/${movieId}`
@@ -45,7 +47,7 @@ describe('<VideoScreen />', () => {
   })
 
   it('update assessment queryData before completed update assessment request', async () => {
-    MockAxiosBackApi.onPatch(routeAssessment).withDelayInMs(500).reply(201)
+    MockAxiosBackApi.onPatch(routeAssessment).withDelayInMs(100).reply(201)
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
       mediaAssessment,
     })
@@ -61,7 +63,7 @@ describe('<VideoScreen />', () => {
   })
 
   it('update and restore old assessment queryData when update assessment request is fail', async () => {
-    MockAxiosBackApi.onPatch(routeAssessment).withDelayInMs(500).reply(500)
+    MockAxiosBackApi.onPatch(routeAssessment).withDelayInMs(100).reply(500)
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
       mediaAssessment,
     })
@@ -78,7 +80,7 @@ describe('<VideoScreen />', () => {
   })
 
   it('update assessment queryData before completed create assessment request', async () => {
-    MockAxiosBackApi.onPost(routeAssessment).withDelayInMs(500).reply(201)
+    MockAxiosBackApi.onPost(routeAssessment).withDelayInMs(100).reply(201)
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
       mediaAssessment: {
         ...mediaAssessment,
@@ -97,7 +99,7 @@ describe('<VideoScreen />', () => {
   })
 
   it('update and restore old assessment queryData when create assessment request is fail', async () => {
-    MockAxiosBackApi.onPost(routeAssessment).withDelayInMs(500).reply(500)
+    MockAxiosBackApi.onPost(routeAssessment).withDelayInMs(100).reply(500)
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
       mediaAssessment: {
         ...mediaAssessment,
@@ -108,12 +110,12 @@ describe('<VideoScreen />', () => {
       wrapper,
     })
 
-    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+    await waitFor(() => screen.getByText(`${mediaAssessment.totalUnlike}`))
 
     await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
 
     screen.getByText(`${mediaAssessment.totalUnlike + 1}`)
-    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+    await waitFor(() => screen.getByText(`${mediaAssessment.totalUnlike}`))
   })
 
   it('should call updateAssessment and recall getAssessment when liked or unlike for true', async () => {
