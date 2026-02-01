@@ -13,7 +13,7 @@ export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
     currentPage: 1,
     totalPages: 1,
   })
-  
+
   const SearchParam = pathname.split('/search/')[1]
   const MoreParam = pathname.split('/more/')[1]
   const QueryRef = useRef({
@@ -76,7 +76,7 @@ export function useInfiniteCards({ page }: { page: 'more' | 'search' }) {
   }
 
   useEffect(handleResetVariablesAndQueriesCache, [search])
-  useEffect(() => handleUpdateSearch(SearchParam), [pathname])
+  useEffect(() => handleUpdateSearch(SearchParam || 'one'), [pathname])
 
   return {
     title: QueryRef.current.title,
