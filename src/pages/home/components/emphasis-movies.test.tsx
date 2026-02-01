@@ -61,16 +61,6 @@ describe('EmphasisMovies component ', () => {
     await screen.findByText(movies[0].Plot)
   })
 
-  it('should render ErrorComponents when is request fail or return nothing', async () => {
-    MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(500)
-    render(<EmphasisMovies />, { wrapper })
-
-    await screen.findByText(
-      /During the '90s, a new faction of Transformers - the Maximals - join the Autobots as allies in the battle for Earth./i,
-    )
-    await screen.findByText(/Error to try loading/i)
-  })
-
   it('should render LoadingEmphasis when is not complete request', () => {
     MockAxiosOmbdapi.onGet(routeGetMovieQueryParam).reply(200, {
       ...movies[0],

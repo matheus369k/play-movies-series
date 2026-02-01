@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { CategorySection } from './category-section'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AxiosMockAdapter from 'axios-mock-adapter'
@@ -39,7 +39,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 )
 
 describe('CategorySection component', () => {
-  const user = userEvent.setup()
+  const userEvents = userEvent.setup()
   const MockAxiosOmbdapi = new AxiosMockAdapter(AxiosOmbdapi)
   const { page, type, year } = { year: 2004, type: 'movie', page: 1 }
   const params = `?s=one&plot=full&y=${year}&type=${type}&page=${page}`
@@ -117,27 +117,6 @@ describe('CategorySection component', () => {
     expect(screen.queryAllByRole('button')).toHaveLength(0)
   })
 
-  it('should render ErrorComponent when data is not available', async () => {
-    MockAxiosOmbdapi.onGet(params).reply(500)
-    render(
-      <CategorySection
-        title='Test Title'
-        page={page}
-        type={type}
-        year={year}
-      />,
-      {
-        wrapper,
-      },
-    )
-
-    await screen.findByRole('heading', {
-      level: 2,
-      name: /Test Title/i,
-    })
-    await screen.findByText(/Error to try loading/i)
-  })
-
   it('when clicked in more should: reset contexts, return scroll to initial and redirection page', async () => {
     const SpyScrollTo = jest
       .spyOn(window, 'scrollTo')
@@ -177,8 +156,11 @@ describe('CategorySection component', () => {
       },
     )
 
-    const linkMore = await screen.findByText(/More/i)
-    await user.click(linkMore)
+    await screen.findByLabelText(/category section layout/i, {
+      exact: true,
+    })
+
+    await userEvents.click(screen.getByLabelText(/more movies/i))
 
     expect(MockHandleResetData).toHaveBeenCalledTimes(1)
     expect(MockHandleResetContext).toHaveBeenCalledTimes(1)

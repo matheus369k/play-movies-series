@@ -43,7 +43,7 @@ export function VideoScreen({ Title, movieId }: VideoScreenProps) {
   const disabledUnlikeButton = isFetchingLikeOrUnlikeRequest || data?.unlike
   const disabledLikeButton = isFetchingLikeOrUnlikeRequest || data?.liked
   return (
-    <div className='absolute top-0 left-0 w-full h-[400px] bg-[url(@/assets/bg-play-movies.webp)] bg-cover aspect-video overflow-hidden cursor-pointer group/play max-sm:h-[200px]'>
+    <div className='absolute top-0 left-0 w-full h-[400px] bg-[url(/mobile-bg-play-movies.webp)] bg-cover aspect-video overflow-hidden cursor-pointer group/play max-sm:h-[200px] lg:bg-[url(/desktop-bg-play-movies.webp)]'>
       <div className='w-full h-full relative flex items-end bg-gradient-to-b from-[#1b1a1fa4] to-zinc-950 m-auto p-2'>
         <ButtonPlay visible />
 

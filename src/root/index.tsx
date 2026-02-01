@@ -30,7 +30,7 @@ export function RootLayout() {
       <div className='relative bg-zinc-950 text-zinc-100 min-h-screen font-inter tracking-wider max-w-[1344px] mx-auto'>
         <Header />
 
-        <main className='relative min-h-[100dvh] h-full animate-soften-render bg-[url(@/assets/bg-play-movies.webp)] bg-cover before:absolute before:left-0 before:top-0 before:w-full before:h-full before:bg-zinc-950/80 after:bg-gradient-to-t after:from-50% after:from-zinc-950 after:to-transparent after:absolute after:bottom-0 left-0 after:w-full after:h-full'>
+        <main className='relative min-h-[100dvh] h-full animate-soften-render bg-[url(/mobile-bg-play-movies.webp)] bg-cover before:absolute before:left-0 before:top-0 before:w-full before:h-full before:bg-zinc-950/80 after:bg-gradient-to-t after:from-50% after:from-zinc-950 after:to-transparent after:absolute after:bottom-0 left-0 after:w-full after:h-full lg:bg-[url(/desktop-bg-play-movies.webp)]'>
           <Outlet />
         </main>
       </div>

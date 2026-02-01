@@ -1,4 +1,4 @@
-import play from '/public/play.png'
+import play from '/play.png'
 
 export function NotFound({
   text,

@@ -1,5 +1,4 @@
 import { useContext } from 'react'
-import { CategorySection } from '../../components/category-section'
 import { randomYearNumber } from '@/util/random-year'
 import { Error as ErrorComponents } from '@/components/error'
 import { WatchContext } from '@/contexts/watch-context'
@@ -7,14 +6,13 @@ import { VideoScreen } from './components/video-screen'
 import { BsStarFill } from 'react-icons/bs'
 import { WatchLaterButton } from './components/watch-later-button'
 import { useGetMovieOmbdapi } from '@/services/use-get-movie'
+import { CategorySection } from '../../components/category-section'
 
 export function WatchMovieSeries() {
   const { state } = useContext(WatchContext)
   const { data, isError, isFetching } = useGetMovieOmbdapi(state.imdbID)
 
-  if (isFetching || !data) {
-    return null
-  }
+  if (isFetching || !data) return null
 
   if (isError) {
     return (
