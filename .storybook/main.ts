@@ -11,5 +11,11 @@ const config: StorybookConfig = {
   ],
   staticDirs: ['../public'],
   framework: '@storybook/react-vite',
+  env: (config) => ({
+    ...config,
+    VITE_API_OMDBAPI: 'https://www.mockomdbapi.com/',
+    VITE_BACKEND_URL: 'http://localhost:3333',
+    VITE_API_OMDBAPI_KEY: '12345678',
+  }),
 }
 export default config
