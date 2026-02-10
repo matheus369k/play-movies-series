@@ -10,11 +10,10 @@ import { CategorySection } from '../../components/category-section'
 
 export function WatchMovieSeries() {
   const { state } = useContext(WatchContext)
-  const { data, isError, isFetching } = useGetMovieOmbdapi(state.imdbID)
+  const { data, isFetched, isFetching } = useGetMovieOmbdapi(state.imdbID)
 
-  if (isFetching || !data) return null
-
-  if (isError) {
+  if (isFetching) return null
+  if (!(isFetched && data?.imdbID)) {
     return (
       <ErrorComponents
         message='Error ao tenta carregar a pagina...'
@@ -29,7 +28,7 @@ export function WatchMovieSeries() {
       ? data.Year
       : MovieReleasedWithDivision?.[MovieReleasedWithDivision.length - 1]
   return (
-    <section className='flex pt-[400px] flex-col gap-8 max-w-7xl mx-auto max-sm:pt-[200px]'>
+    <div className='flex pt-[400px] flex-col gap-8 max-w-7xl mx-auto max-sm:pt-[200px]'>
       <VideoScreen movieId={data.imdbID || ''} Title={data.Title || ''} />
 
       <div className='grid grid-rows-[auto, fit-content] grid-cols-[auto, fit-content] justify-between gap-y-6 gap-x-4 max-md:grid-rows-[repeat(3,fit-content)] max-md:grid-cols-1 px-2'>
@@ -104,6 +103,6 @@ export function WatchMovieSeries() {
           type=''
         />
       </div>
-    </section>
+    </div>
   )
 }
