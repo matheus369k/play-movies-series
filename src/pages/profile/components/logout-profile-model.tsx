@@ -2,15 +2,17 @@ import { Button } from '@/components/ui/button'
 import * as Dialog from '@/components/ui/dialog'
 import { REGISTER_USER } from '@/util/consts'
 import { useLogoutUser } from '../services/use-logout-profile'
+import { useNavigate } from 'react-router-dom'
 
 export function LogoutProfileModel() {
   const { mutateAsync: logoutUser } = useLogoutUser()
+  const navigate = useNavigate()
 
   async function handleLogoutUser() {
     try {
       await logoutUser()
 
-      window.location.replace(REGISTER_USER)
+      navigate(REGISTER_USER, { replace: true })
     } catch (error) {
       console.log(error)
     }

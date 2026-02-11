@@ -7,6 +7,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AxiosBackApi } from '@/util/axios'
 import AxiosMockAdapter from 'axios-mock-adapter'
 
+const MockNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => MockNavigate,
+}))
+
 const queryClient = new QueryClient()
 const wrapper = ({ children }: { children: ReactNode }) => (
   <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
@@ -53,16 +59,12 @@ describe('LogoutProfileModel component', () => {
   it('should redirection to register page when is clicked in confirm in the dialog', async () => {
     MockAxiosBackApi.onDelete(routeLogoutProfile).reply(201)
     MockAxiosBackApi.onDelete(routeToken).reply(201)
-    const MockReloadPage = jest.fn()
-    jest.spyOn(window, 'location', 'get').mockReturnValue({
-      replace: MockReloadPage,
-    } as any)
     render(<LogoutProfileModel />, { wrapper })
 
     await userEvents.click(screen.getByLabelText(/logout/i))
     await userEvents.click(screen.getByLabelText(/confirm logout/i))
 
-    expect(MockReloadPage).toHaveBeenCalledWith(REGISTER_USER)
+    expect(MockNavigate).toHaveBeenCalledWith(REGISTER_USER, { replace: true })
   })
 
   it('should make request to logout and token request when is clicked in confirm in the dialog', async () => {
