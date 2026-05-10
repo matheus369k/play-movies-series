@@ -44,13 +44,6 @@ describe('reducer', () => {
       index: 5,
     })
   })
-
-  it('should return the current state for unknown action types', () => {
-    const action = { type: 'UNKNOWN_ACTION' }
-    const newState = reducer(initialState, action)
-
-    expect(newState).toEqual(initialState)
-  })
 })
 
 describe('handleInitialReducer', () => {

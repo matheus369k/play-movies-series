@@ -1,18 +1,24 @@
 import type { ReducerStateType } from '@/contexts/watch-context'
 import { ReducerCases } from './action-types'
 
-interface ReducerActionType {
-  type: string
-  payload?: {
-    imdbID?: string
-    index?: number
-    loading?: 'loading' | 'finnish' | 'error'
-  }
-}
+type ReducerActionType =
+  | { type: 'reset/data' }
+  | {
+      type: 'add/imdbID'
+      payload: {
+        imdbID: string
+      }
+    }
+  | {
+      type: 'add/index'
+      payload: {
+        index: number
+      }
+    }
 
 export const reducer = (
   state: ReducerStateType,
-  action: ReducerActionType
+  action: ReducerActionType,
 ): ReducerStateType => {
   switch (action.type) {
     case ReducerCases.RESET_DATA:
@@ -22,15 +28,18 @@ export const reducer = (
         index: 0,
       }
     case ReducerCases.ADD_IDBM_ID:
+      const imdbID =  action.payload.imdbID || ''  
+
       return {
         ...state,
         index: 0,
-        imdbID: action.payload?.imdbID || '',
+        imdbID,
       }
     case ReducerCases.ADD_INDEX:
+      const index = action.payload.index || 0;
       return {
         ...state,
-        index: action.payload?.index || 0,
+        index,
       }
     default:
       return state
