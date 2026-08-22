@@ -1,7 +1,6 @@
 import { AxiosBackApi } from '@/util/axios'
 import { useQuery } from '@tanstack/react-query'
 import { useGetRefreshAccessToken } from './use-get-refresh-access-token'
-import { formatter } from '@/util/formatter'
 import { QUERY_KEYS_USER_PROFILE } from '@/util/consts'
 
 type UserProfileResponse = {
@@ -32,10 +31,6 @@ export function useGetUserProfile() {
       return response.data['user']
     },
     select: (data) => {
-      const avatar = formatter.mergeAvatarUrlWithBackUrl(data.avatar)
-      if (avatar) {
-        return { ...data, avatar }
-      }
       return data
     },
   })

@@ -7,9 +7,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 
 const queryClient = new QueryClient()
-const avatarBaseUrl = 'https://avatars.githubusercontent.com'
 const user = {
-  avatar: faker.image.avatarGitHub().split(`${avatarBaseUrl}/`)[1],
+  avatar: faker.image.avatarGitHub(),
   createAt: faker.date.past().toISOString(),
   id: faker.database.mongodbObjectId(),
   email: faker.internet.email(),
@@ -28,7 +27,6 @@ const EditProfileModelMeta: Meta<typeof EditProfileModel> = {
     </QueryClientProvider>
   ),
   beforeEach: () => {
-    env.VITE_BACKEND_URL = avatarBaseUrl
     queryClient.clear()
   },
   parameters: {

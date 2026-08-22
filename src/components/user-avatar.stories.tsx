@@ -25,7 +25,7 @@ const user = {
   email: faker.internet.email(),
   name: faker.person.firstName(),
   createAt: faker.date.past().toISOString(),
-  avatar: AvatarImages[0].split(`${avatarBaseUrl}/`)[1],
+  avatar: AvatarImages[0],
 }
 const routeUserProfile = `${env.VITE_BACKEND_URL}/users/profile`
 const UserAvatarMeta: Meta<typeof UserAvatar> = {
@@ -41,7 +41,6 @@ const UserAvatarMeta: Meta<typeof UserAvatar> = {
     </QueryClientProvider>
   ),
   beforeEach: () => {
-    env.VITE_BACKEND_URL = avatarBaseUrl
     queryClient.clear()
   },
   parameters: {

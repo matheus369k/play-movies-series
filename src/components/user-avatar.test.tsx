@@ -5,7 +5,6 @@ import { faker } from '@faker-js/faker/locale/pt_BR'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { AxiosBackApi } from '@/util/axios'
-import { env } from '@/util/env'
 import { QUERY_KEYS_USER_PROFILE } from '@/util/consts'
 
 jest.mock('./ui/avatar.tsx', () => ({
@@ -25,9 +24,7 @@ describe('UserAvatar component', () => {
   const routeGetUserProfile = '/users/profile'
   const userProfile = {
     id: faker.database.mongodbObjectId(),
-    avatar: faker.image
-      .avatar()
-      .split('https://avatars.githubusercontent.com/'),
+    avatar: faker.image.avatar(),
     email: faker.internet.email(),
     name: faker.person.firstName(),
     createAt: faker.date.past().toISOString(),
@@ -48,9 +45,9 @@ describe('UserAvatar component', () => {
       const dataUpdatedAt = queryClient.getQueryState(
         QUERY_KEYS_USER_PROFILE,
       )?.dataUpdatedAt
-      expect(screen.getByLabelText(/main avatar/i)).toHaveAttribute(
+      expect(screen.getByLabelText(/image avatar/i)).toHaveAttribute(
         'src',
-        `${env.VITE_BACKEND_URL}/${userProfile.avatar}?updateAt=${dataUpdatedAt}`,
+        `${userProfile.avatar}?updateAt=${dataUpdatedAt}`,
       )
     })
   })
@@ -63,9 +60,9 @@ describe('UserAvatar component', () => {
     render(<UserAvatar avatarPreview={avatarPreview} />, { wrapper })
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/preview avatar/i)).toHaveAttribute(
+      expect(screen.getByLabelText(/image avatar/i)).toHaveAttribute(
         'src',
-        avatarPreview
+        avatarPreview,
       )
     })
   })

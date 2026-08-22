@@ -14,9 +14,7 @@ jest.mock('@/components/ui/avatar.tsx', () => ({
 
 const userProfile = {
   id: faker.database.mongodbObjectId(),
-  avatar: faker.image
-    .avatar()
-    .split('https://avatars.githubusercontent.com/')[1],
+  avatar: faker.image.avatar(),
   email: faker.internet.email(),
   name: faker.person.firstName(),
   createAt: faker.date.past().toISOString(),
@@ -152,7 +150,7 @@ describe('EditProfileModel component', () => {
     await userEvents.click(toggleModelButton)
     await userEvents.upload(screen.getByPlaceholderText(/file/i), testFile)
 
-    const previewAvatarImage = await screen.findByLabelText(/preview avatar/i)
+    const previewAvatarImage = await screen.findByLabelText(/image avatar/i)
     expect(previewAvatarImage).toHaveAttribute('src', testFileURL)
   })
 })

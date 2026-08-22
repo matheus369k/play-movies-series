@@ -42,24 +42,7 @@ export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
     },
   })
 
-  if (avatarPreview) {
-    return (
-      <Avatar.Avatar className={AvatarVariants({ size })}>
-        <Avatar.AvatarImage
-          src={avatarPreview}
-          aria-label='preview avatar'
-          alt={`avatar from user with name ${userName}`}
-          className='object-cover'
-        />
-
-        <Avatar.AvatarFallback className={AvatarTextVariates({ fontSize })}>
-          {firstLetter}
-        </Avatar.AvatarFallback>
-      </Avatar.Avatar>
-    )
-  }
-
-  if (!userAvatar) {
+  if (!(avatarPreview || userAvatar)) {
     return (
       <div
         aria-label='first letter avatar'
@@ -76,10 +59,11 @@ export function UserAvatar({ avatarPreview, fontSize, size }: UserAvatarProps) {
   return (
     <Avatar.Avatar className={AvatarVariants({ size })}>
       <Avatar.AvatarImage
-        src={userAvatar}
+        src={avatarPreview || userAvatar}
         fetchPriority='high'
-        aria-label='main avatar'
+        aria-label='image avatar'
         alt={`avatar from user with name ${userName}`}
+        className='object-cover'
       />
       <Avatar.AvatarFallback className={AvatarTextVariates({ fontSize })}>
         {firstLetter}

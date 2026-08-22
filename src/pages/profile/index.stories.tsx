@@ -7,9 +7,8 @@ import { delay, http, HttpResponse } from 'msw'
 import { env } from '@/util/env'
 import { faker } from '@faker-js/faker/locale/pt_BR'
 
-const avatarBaseUrl = 'https://avatars.githubusercontent.com'
 const user = {
-  avatar: faker.image.avatarGitHub().split(`${avatarBaseUrl}/`)[1],
+  avatar: faker.image.avatarGitHub(),
   createAt: faker.date.past().toISOString(),
   id: faker.database.mongodbObjectId(),
   email: faker.internet.email(),
@@ -43,7 +42,6 @@ const ProfileMeta: Meta<typeof Profile> = {
     </QueryClientProvider>
   ),
   beforeEach: () => {
-    env.VITE_BACKEND_URL = avatarBaseUrl
     queryClient.clear()
   },
   parameters: {

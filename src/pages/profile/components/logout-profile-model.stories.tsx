@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import { delay, http, HttpResponse } from 'msw'
 import { env } from '@/util/env'
-import { mocked, fn, spyOn } from 'storybook/test'
+import { mocked } from 'storybook/test'
 
 mocked(window.location.replace, { partial: true })
 

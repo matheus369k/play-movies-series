@@ -5,7 +5,6 @@ import { faker } from '@faker-js/faker/locale/pt_BR'
 import { useGetUserProfile } from './use-get-user-profile'
 import type { ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { env } from '@/util/env'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
@@ -51,7 +50,7 @@ describe('getUserProfile request', () => {
     await waitFor(() => {
       expect(result.current.data).toMatchObject({
         ...user,
-        avatar: env.VITE_BACKEND_URL.concat('/' + user.avatar),
+        avatar: user.avatar,
       })
     })
   })

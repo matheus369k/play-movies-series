@@ -9,7 +9,6 @@ import { faker } from '@faker-js/faker/locale/pt_BR'
 import { HOME_ROUTE, PROFILE_ROUTE, SEARCH_ROUTE } from '@/util/consts'
 import { useEffect } from 'react'
 
-const avatarBaseUrl = 'https://avatars.githubusercontent.com'
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
 })
@@ -41,7 +40,6 @@ const HeaderMeta: Meta<typeof Header> = {
   },
   args: { hasAccount: false },
   beforeEach: () => {
-    env.VITE_BACKEND_URL = avatarBaseUrl
     queryClient.clear()
   },
   parameters: {
@@ -55,7 +53,7 @@ const HeaderMeta: Meta<typeof Header> = {
               email: faker.internet.email(),
               name: faker.person.firstName(),
               createAt: faker.date.past().toISOString(),
-              avatar: faker.image.avatarGitHub().split(`${avatarBaseUrl}/`)[1],
+              avatar: faker.image.avatarGitHub(),
             },
           })
         }),
