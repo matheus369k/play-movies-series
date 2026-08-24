@@ -25,7 +25,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 describe('WatchLaterMovies component', () => {
   const routeWatchMoviesLater = '/watch-later'
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
-  const watchLaterMedias = Array.from({ length: 4 }).map(() => ({
+  const watchLater = Array.from({ length: 4 }).map(() => ({
     id: faker.database.mongodbObjectId(),
     movieId: faker.database.mongodbObjectId(),
     image: faker.image.avatar(),
@@ -47,7 +47,7 @@ describe('WatchLaterMovies component', () => {
   })
 
   it('should showing list of watch later movies movies when is have', async () => {
-    MockAxiosBackApi.onGet(routeWatchMoviesLater).reply(200, { watchLaterMedias })
+    MockAxiosBackApi.onGet(routeWatchMoviesLater).reply(200, { watchLater })
     render(<WatchLaterMovies />, { wrapper })
 
     expect(await screen.findAllByLabelText(/movie-card/i)).toHaveLength(4)

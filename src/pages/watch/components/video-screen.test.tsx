@@ -19,7 +19,7 @@ describe('VideoScreen component', () => {
   const movieId = faker.database.mongodbObjectId()
   const routeAssessment = `/assessment/${movieId}`
   const userEvents = userEvent.setup()
-  const mediaAssessment = {
+  const assessment = {
     liked: true,
     unlike: false,
     totalLiked: 167,
@@ -33,7 +33,7 @@ describe('VideoScreen component', () => {
 
   it('should rended', async () => {
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
-      mediaAssessment,
+      assessment,
     })
     render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
       wrapper,
@@ -49,41 +49,41 @@ describe('VideoScreen component', () => {
   it('update assessment queryData before completed update assessment request', async () => {
     MockAxiosBackApi.onPatch(routeAssessment).withDelayInMs(100).reply(201)
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
-      mediaAssessment,
+      assessment,
     })
     render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
       wrapper,
     })
 
-    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+    await screen.findByText(`${assessment.totalUnlike}`)
 
     await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
 
-    screen.getByText(`${mediaAssessment.totalUnlike + 1}`)
+    screen.getByText(`${assessment.totalUnlike + 1}`)
   })
 
   it('update and restore old assessment queryData when update assessment request is fail', async () => {
     MockAxiosBackApi.onPatch(routeAssessment).withDelayInMs(100).reply(500)
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
-      mediaAssessment,
+      assessment,
     })
     render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
       wrapper,
     })
 
-    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+    await screen.findByText(`${assessment.totalUnlike}`)
 
     await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
 
-    screen.getByText(`${mediaAssessment.totalUnlike + 1}`)
-    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+    screen.getByText(`${assessment.totalUnlike + 1}`)
+    await screen.findByText(`${assessment.totalUnlike}`)
   })
 
   it('update assessment queryData before completed create assessment request', async () => {
     MockAxiosBackApi.onPost(routeAssessment).withDelayInMs(100).reply(201)
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
-      mediaAssessment: {
-        ...mediaAssessment,
+      assessment: {
+        ...assessment,
         liked: false,
       },
     })
@@ -91,18 +91,18 @@ describe('VideoScreen component', () => {
       wrapper,
     })
 
-    await screen.findByText(`${mediaAssessment.totalUnlike}`)
+    await screen.findByText(`${assessment.totalUnlike}`)
 
     await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
 
-    screen.getByText(`${mediaAssessment.totalUnlike + 1}`)
+    screen.getByText(`${assessment.totalUnlike + 1}`)
   })
 
   it('update and restore old assessment queryData when create assessment request is fail', async () => {
     MockAxiosBackApi.onPost(routeAssessment).withDelayInMs(100).reply(500)
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
-      mediaAssessment: {
-        ...mediaAssessment,
+      assessment: {
+        ...assessment,
         liked: false,
       },
     })
@@ -110,16 +110,16 @@ describe('VideoScreen component', () => {
       wrapper,
     })
 
-    await waitFor(() => screen.getByText(`${mediaAssessment.totalUnlike}`))
+    await waitFor(() => screen.getByText(`${assessment.totalUnlike}`))
 
     await userEvents.click(screen.getByRole('button', { name: /unlike/i }))
 
-    screen.getByText(`${mediaAssessment.totalUnlike + 1}`)
-    await waitFor(() => screen.getByText(`${mediaAssessment.totalUnlike}`))
+    screen.getByText(`${assessment.totalUnlike + 1}`)
+    await waitFor(() => screen.getByText(`${assessment.totalUnlike}`))
   })
 
   it('should call updateAssessment and recall getAssessment when liked or unlike for true', async () => {
-    MockAxiosBackApi.onPatch(routeAssessment).reply(201, mediaAssessment)
+    MockAxiosBackApi.onPatch(routeAssessment).reply(201, assessment)
     render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
       wrapper,
     })
@@ -142,8 +142,8 @@ describe('VideoScreen component', () => {
   })
 
   it('disabled updateAssessment liked button when try update using some values', async () => {
-    MockAxiosBackApi.onGet(routeAssessment).reply(200, { mediaAssessment })
-    MockAxiosBackApi.onPatch(routeAssessment).reply(201, mediaAssessment)
+    MockAxiosBackApi.onGet(routeAssessment).reply(200, { assessment })
+    MockAxiosBackApi.onPatch(routeAssessment).reply(201, assessment)
     render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
       wrapper,
     })
@@ -166,8 +166,8 @@ describe('VideoScreen component', () => {
 
   it('disabled unlike button when try update using some values', async () => {
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
-      mediaAssessment: {
-        ...mediaAssessment,
+      assessment: {
+        ...assessment,
         liked: false,
         unlike: true,
       },
@@ -195,13 +195,13 @@ describe('VideoScreen component', () => {
 
   it('should call createAssessment and recall getAssessment when liked and unlike for false', async () => {
     MockAxiosBackApi.onGet(routeAssessment).reply(200, {
-      mediaAssessment: {
-        ...mediaAssessment,
+      assessment: {
+        ...assessment,
         liked: false,
         unlike: false,
       },
     })
-    MockAxiosBackApi.onPost(routeAssessment).reply(200, mediaAssessment)
+    MockAxiosBackApi.onPost(routeAssessment).reply(200, assessment)
     render(<VideoScreen movieId={movieId} Title='Test Movie Title' />, {
       wrapper,
     })

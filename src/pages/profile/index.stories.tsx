@@ -14,7 +14,7 @@ const user = {
   email: faker.internet.email(),
   name: faker.person.firstName(),
 }
-const watchLaterMedias = Array.from({ length: 4 }).map(() => ({
+const watchLater = Array.from({ length: 4 }).map(() => ({
   id: faker.database.mongodbObjectId(),
   movieId: faker.database.mongodbObjectId(),
   image: faker.image.urlPicsumPhotos({
@@ -70,7 +70,7 @@ const ProfileMeta: Meta<typeof Profile> = {
 
         http.get(`${env.VITE_BACKEND_URL}/watch-later`, async () => {
           await delay(500)
-          return HttpResponse.json({ watchLaterMedias })
+          return HttpResponse.json({ watchLater })
         }),
       ],
     },

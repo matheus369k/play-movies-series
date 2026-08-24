@@ -14,7 +14,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 
 describe('useCreateUser request', () => {
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
-  const routeRegister = '/users/register'
+  const routeRegister = '/users/sign-up'
   const userSubmitted = {
     name: faker.person.fullName(),
     email: faker.internet.email(),

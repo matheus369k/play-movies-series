@@ -12,7 +12,7 @@ const queryClient = new QueryClient()
 const imdbID = faker.database.mongodbObjectId()
 const assessmentRequestUrl = `${env.VITE_BACKEND_URL}/assessment/:imdbID`
 const watchLaterRequestUrlWithoutID = `${env.VITE_BACKEND_URL}/watch-later`
-const watchLaterRequestUrlWithID = `${env.VITE_BACKEND_URL}/watch-later/:imdbID`
+const watchLaterRequestUrlWithID = `${env.VITE_BACKEND_URL}/watch-later?movieId=${imdbID}`
 const WatchMeta: Meta<typeof WatchMovieSeries> = {
   title: 'Pages/Watch',
   component: WatchMovieSeries,
@@ -43,7 +43,7 @@ const WatchMeta: Meta<typeof WatchMovieSeries> = {
         http.get(assessmentRequestUrl, async () => {
           await delay(500)
           return HttpResponse.json({
-            mediaAssessment: {
+            assessment: {
               liked: false,
               unlike: true,
               totalLiked: 5673,
@@ -128,6 +128,7 @@ export default WatchMeta
 export const Default: StoryObj<typeof WatchMeta> = {}
 export const Error: StoryObj<typeof WatchMeta> = {
   parameters: {
+    layout: 'screen',
     docs: { story: { inline: false } },
     msw: { handlers: [] },
   },

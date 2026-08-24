@@ -14,7 +14,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 
 describe('useLogoutUser request', () => {
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
-  const routeLogoutProfile = '/users/logout'
+  const routeLogoutProfile = '/users/sign-out'
   const routeToken = '/token'
 
   afterEach(() => {

@@ -14,7 +14,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 
 describe('useLoginUser request', () => {
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
-  const routeUserLogin = '/users/login'
+  const routeUserLogin = '/users/sign-in'
   const userLogin = {
     email: faker.internet.email(),
     password: faker.database.mongodbObjectId(),

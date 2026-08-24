@@ -27,7 +27,7 @@ export function useGetAssessment(movieId: string) {
         },
       )
 
-      return response.data['mediaAssessment']
+      return response.data['assessment']
     },
   })
 }

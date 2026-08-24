@@ -33,7 +33,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 
 describe('LoginUser component', () => {
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
-  const routeUserLogin = '/users/login'
+  const routeUserLogin = '/users/sign-in'
   const userEvents = userEvent.setup()
   const userLogin = {
     password: faker.database.mongodbObjectId().slice(0, 12),

@@ -42,7 +42,7 @@ const VideoScreenMeta: Meta<typeof VideoScreen> = {
         http.get(assessmentRequestUrl, async () => {
           await delay(500)
           return HttpResponse.json({
-            mediaAssessment: {
+            assessment: {
               liked: false,
               unlike: true,
               totalLiked: 5673,

@@ -16,7 +16,7 @@ type CreateUserProps = Pick<CreateUserRequest, 'email' | 'name'> & {
 
 export function useCreateUser() {
   const queries = useQueryClient()
-  const requestUrl = '/users/register'
+  const requestUrl = '/users/sign-up'
 
   return useMutation({
     mutationFn: async (user: CreateUserProps) => {

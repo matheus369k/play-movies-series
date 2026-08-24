@@ -20,7 +20,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 
 describe('LogoutProfileModel component', () => {
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
-  const routeLogoutProfile = '/users/logout'
+  const routeLogoutProfile = '/users/sign-out'
   const routeToken = '/token'
   const userEvents = userEvent.setup()
 

@@ -8,7 +8,7 @@ export function useLogoutUser() {
   const { mutateAsync: getRefreshAccessToken } = useGetRefreshAccessToken()
   const { mutateAsync: deleteRefreshToken } = useDeleteRefreshToken()
   const queries = useQueryClient()
-  const requestPath = '/users/logout'
+  const requestPath = '/users/sign-out'
   const requestConfig = {
     withCredentials: true,
   }

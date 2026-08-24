@@ -32,7 +32,7 @@ const WatchLaterMoviesMeta: Meta<typeof WatchLaterMovies> = {
         http.get(`${env.VITE_BACKEND_URL}/watch-later`, async () => {
           await delay(500)
           return HttpResponse.json({
-            watchLaterMedias: Array.from({ length: 4 }).map(() => ({
+            watchLater: Array.from({ length: 4 }).map(() => ({
               id: faker.database.mongodbObjectId(),
               movieId: faker.database.mongodbObjectId(),
               image: faker.image.urlPicsumPhotos({

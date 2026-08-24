@@ -16,7 +16,7 @@ type LoginUserProps = Pick<LoginUserRequest, 'email'> & {
 
 export function useLoginUser() {
   const queries = useQueryClient()
-  const requestUrl = '/users/login'
+  const requestUrl = '/users/sign-in'
 
   return useMutation({
     mutationFn: async (user: LoginUserProps) => {

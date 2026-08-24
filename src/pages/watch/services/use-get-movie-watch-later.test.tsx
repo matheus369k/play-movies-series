@@ -14,9 +14,9 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 describe('useGetMovieWatchLater request', () => {
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const MovieId = faker.database.mongodbObjectId()
-  const routeGetMovieWatchLater = `/watch-later/${MovieId}`
+  const routeGetMovieWatchLater = `/watch-later?movieId=${MovieId}`
   const routeToken = '/token'
-  const watchLaterMedia = {
+  const watchLater = {
     release: faker.date.past().getFullYear().toString(),
     image: faker.image.url(),
     title: faker.book.title(),
@@ -31,7 +31,7 @@ describe('useGetMovieWatchLater request', () => {
 
   it('configuration request', async () => {
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).reply(200, {
-      watchLaterMedia,
+      watchLater,
     })
     renderHook(() => useGetMovieWatchLater(MovieId), { wrapper })
 
@@ -46,21 +46,21 @@ describe('useGetMovieWatchLater request', () => {
 
   it('returned data', async () => {
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).reply(200, {
-      watchLaterMedia,
+      watchLater,
     })
     const { result } = renderHook(() => useGetMovieWatchLater(MovieId), {
       wrapper,
     })
 
     await waitFor(() => {
-      expect(result.current.data).toMatchObject(watchLaterMedia)
+      expect(result.current.data).toMatchObject(watchLater)
     })
   })
 
   it('call revalidate access request when getWatchLaterMovies request receive 401/authorization error', async () => {
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).replyOnce(401)
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).reply(200, {
-      watchLaterMedia,
+      watchLater,
     })
     MockAxiosBackApi.onGet(routeToken).reply(201, { status: 'ok' })
     renderHook(() => useGetMovieWatchLater(MovieId), {
@@ -84,7 +84,7 @@ describe('useGetMovieWatchLater request', () => {
   it('no call revalidate access request when getWatchLaterMovies request receive error diff 401/authorization', async () => {
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).replyOnce(500)
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).reply(200, {
-      watchLaterMedia,
+      watchLater,
     })
     MockAxiosBackApi.onGet(routeToken).reply(201, { status: 'ok' })
     renderHook(() => useGetMovieWatchLater(MovieId), {
@@ -105,7 +105,7 @@ describe('useGetMovieWatchLater request', () => {
   it('recall getWatchLaterMovies request when revalidate access request is success', async () => {
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).replyOnce(401)
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).reply(200, {
-      watchLaterMedia,
+      watchLater,
     })
     MockAxiosBackApi.onGet(routeToken).reply(201, { status: 'ok' })
     renderHook(() => useGetMovieWatchLater(MovieId), {
@@ -129,7 +129,7 @@ describe('useGetMovieWatchLater request', () => {
   it('no recall getWatchLaterMovies request when revalidate access request is reject', async () => {
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).replyOnce(401)
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).reply(200, {
-      watchLaterMedia,
+      watchLater,
     })
     MockAxiosBackApi.onGet(routeGetMovieWatchLater).reply(500)
     renderHook(() => useGetMovieWatchLater(MovieId), {

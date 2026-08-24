@@ -8,7 +8,7 @@ import { WatchContextProvider } from '@/contexts/watch-context'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import { WATCH_ROUTE } from '@/util/consts'
 
-const watchLaterMedia = {
+const watchLater = {
   release: faker.date.anytime().getFullYear().toString(),
   title: faker.book.title(),
   image: faker.image.url(),
@@ -16,8 +16,7 @@ const watchLaterMedia = {
   type: 'movie',
 }
 const queryClient = new QueryClient()
-const watchLaterRequestUrlWithoutID = `${env.VITE_BACKEND_URL}/watch-later`
-const watchLaterRequestUrlWithID = `${env.VITE_BACKEND_URL}/watch-later/:imdbID`
+const watchLaterRequestUrl = `${env.VITE_BACKEND_URL}/watch-later`
 const WatchLaterButtonMeta: Meta<typeof WatchLaterButton> = {
   title: 'Pages/Watch/Components/WatchLaterButton',
   component: WatchLaterButton,
@@ -38,25 +37,25 @@ const WatchLaterButtonMeta: Meta<typeof WatchLaterButton> = {
     queryClient.clear()
 
     const url = new URL(window.location.toString())
-    url.pathname = WATCH_ROUTE.replace(':movieId', watchLaterMedia.MovieId)
+    url.pathname = WATCH_ROUTE.replace(':movieId', watchLater.MovieId)
     window.history.pushState({}, '', url)
   },
   parameters: {
     layout: 'centered',
     msw: {
       handlers: [
-        http.post(watchLaterRequestUrlWithoutID, async () => {
+        http.post(watchLaterRequestUrl, async () => {
           await delay(500)
           return HttpResponse.json({ status: 'ok' }, { status: 201 })
         }),
-        http.delete(watchLaterRequestUrlWithID, async () => {
+        http.delete(`${watchLaterRequestUrl}/:movieId`, async () => {
           await delay(500)
           return HttpResponse.json({ status: 'ok' }, { status: 201 })
         }),
       ],
     },
   },
-  args: watchLaterMedia,
+  args: watchLater,
   argTypes: {
     MovieId: {
       description: 'movieID receive imdbID from media selected',
@@ -96,14 +95,17 @@ export const Active: StoryObj<typeof WatchLaterButtonMeta> = {
     msw: {
       handlers: [
         http.get(
-          watchLaterRequestUrlWithID,
-          async () => {
-            await delay(500)
-            return HttpResponse.json({ watchLaterMedia })
+          watchLaterRequestUrl,
+          async ({ request }) => {
+            if (request.url.split('movieId=')?.[1] === watchLater.MovieId) {
+              await delay(500)
+              return HttpResponse.json({ watchLater })
+            }
+            return
           },
           { once: false },
         ),
-        http.delete(watchLaterRequestUrlWithID, async () => {
+        http.delete(`${watchLaterRequestUrl}/:movieId`, async () => {
           await delay(500)
           return HttpResponse.json({ status: 'ok' }, { status: 201 })
         }),

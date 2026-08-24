@@ -17,7 +17,7 @@ describe('useUpdateAssessment request', () => {
   const movieId = faker.database.mongodbObjectId()
   const routeUpdateAssessment = `/assessment/${movieId}`
   const routeToken = '/token'
-  const mediaAssessment = { liked: false, unlike: true }
+  const assessment = { liked: false, unlike: true }
 
   afterEach(() => {
     MockAxiosBackApi.reset()
@@ -30,7 +30,7 @@ describe('useUpdateAssessment request', () => {
       wrapper,
     })
 
-    await result.current.mutateAsync(mediaAssessment)
+    await result.current.mutateAsync(assessment)
 
     await waitFor(() => {
       expect(MockAxiosBackApi.history[0]).toMatchObject({
@@ -53,8 +53,8 @@ describe('useUpdateAssessment request', () => {
     await waitFor(() => {
       expect(() =>
         result.current.mutateAsync({
-          ...mediaAssessment,
-          unlike: mediaAssessment.liked,
+          ...assessment,
+          unlike: assessment.liked,
         }),
       ).rejects.toThrow()
     })
@@ -72,7 +72,7 @@ describe('useUpdateAssessment request', () => {
       wrapper,
     })
 
-    await result.current.mutateAsync(mediaAssessment)
+    await result.current.mutateAsync(assessment)
 
     await waitFor(() => {
       const requestUpdateAssessment = MockAxiosBackApi.history[0]
@@ -97,9 +97,7 @@ describe('useUpdateAssessment request', () => {
     })
 
     await waitFor(() =>
-      expect(() =>
-        result.current.mutateAsync(mediaAssessment),
-      ).rejects.toThrow(),
+      expect(() => result.current.mutateAsync(assessment)).rejects.toThrow(),
     )
 
     await waitFor(() => {
@@ -121,7 +119,7 @@ describe('useUpdateAssessment request', () => {
       wrapper,
     })
 
-    await result.current.mutateAsync(mediaAssessment)
+    await result.current.mutateAsync(assessment)
 
     await waitFor(() => {
       const requestUpdateAssessment = MockAxiosBackApi.history[0]
@@ -146,9 +144,7 @@ describe('useUpdateAssessment request', () => {
     })
 
     await waitFor(() =>
-      expect(() =>
-        result.current.mutateAsync(mediaAssessment),
-      ).rejects.toThrow(),
+      expect(() => result.current.mutateAsync(assessment)).rejects.toThrow(),
     )
 
     await waitFor(() => {
@@ -172,7 +168,7 @@ describe('useUpdateAssessment request', () => {
       wrapper,
     })
 
-    await result.current.mutateAsync(mediaAssessment)
+    await result.current.mutateAsync(assessment)
 
     expect(spyInvalidateQueriesClient).toHaveBeenCalledWith({
       queryKey: [...QUERY_KEYS_BASE_MOVIES_ASSESSMENT, movieId],
@@ -190,9 +186,7 @@ describe('useUpdateAssessment request', () => {
     })
 
     await waitFor(() =>
-      expect(() =>
-        result.current.mutateAsync(mediaAssessment),
-      ).rejects.toThrow(),
+      expect(() => result.current.mutateAsync(assessment)).rejects.toThrow(),
     )
 
     await waitFor(() => {

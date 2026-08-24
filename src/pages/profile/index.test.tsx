@@ -43,7 +43,7 @@ describe('Profile page', () => {
       },
     })
     MockAxiosBackApi.onGet('/watch-later').reply(200, {
-      watchLaterMedias: Array.from({ length: 4 }).map(() => ({
+      watchLater: Array.from({ length: 4 }).map(() => ({
         id: faker.database.mongodbObjectId(),
         movieId: faker.database.mongodbObjectId(),
         image: faker.image.avatar(),

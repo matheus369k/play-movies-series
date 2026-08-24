@@ -16,7 +16,7 @@ describe('useGetAssessment request', () => {
   const movieId = faker.database.mongodbObjectId()
   const routeGetAssessment = `/assessment/${movieId}`
   const routeToken = '/token'
-  const mediaAssessment = {
+  const assessment = {
     liked: false,
     unlike: true,
     totalLiked: 5673,
@@ -30,7 +30,7 @@ describe('useGetAssessment request', () => {
 
   it('configuration request', async () => {
     MockAxiosBackApi.onGet(routeGetAssessment).reply(200, {
-      mediaAssessment,
+      assessment,
     })
     renderHook(() => useGetAssessment(movieId), { wrapper })
 
@@ -45,19 +45,19 @@ describe('useGetAssessment request', () => {
 
   it('returned datas', async () => {
     MockAxiosBackApi.onGet(routeGetAssessment).reply(200, {
-      mediaAssessment,
+      assessment,
     })
     const { result } = renderHook(() => useGetAssessment(movieId), { wrapper })
 
     await waitFor(() => {
-      expect(result.current.data).toMatchObject(mediaAssessment)
+      expect(result.current.data).toMatchObject(assessment)
     })
   })
 
   it('call revalide access request when getAssessment receive 401/authorization error', async () => {
     MockAxiosBackApi.onGet(routeGetAssessment).replyOnce(401)
     MockAxiosBackApi.onGet(routeGetAssessment).reply(200, {
-      mediaAssessment,
+      assessment,
     })
     MockAxiosBackApi.onGet(routeToken).reply(201, { status: 'ok' })
     renderHook(() => useGetAssessment(movieId), { wrapper })
@@ -79,7 +79,7 @@ describe('useGetAssessment request', () => {
   it('no call revalide access request when getAssessment receive error diff 401/authorization', async () => {
     MockAxiosBackApi.onGet(routeGetAssessment).replyOnce(500)
     MockAxiosBackApi.onGet(routeGetAssessment).reply(200, {
-      mediaAssessment,
+      assessment,
     })
     MockAxiosBackApi.onGet(routeToken).reply(201, { status: 'ok' })
     renderHook(() => useGetAssessment(movieId), { wrapper })
@@ -98,7 +98,7 @@ describe('useGetAssessment request', () => {
   it('recall getAssessment receive request when revalide access request is success', async () => {
     MockAxiosBackApi.onGet(routeGetAssessment).replyOnce(401)
     MockAxiosBackApi.onGet(routeGetAssessment).reply(200, {
-      mediaAssessment,
+      assessment,
     })
     MockAxiosBackApi.onGet(routeToken).reply(201, { status: 'ok' })
     renderHook(() => useGetAssessment(movieId), { wrapper })
@@ -120,7 +120,7 @@ describe('useGetAssessment request', () => {
   it('no recall getAssessment receive request when revalide access request is reject', async () => {
     MockAxiosBackApi.onGet(routeGetAssessment).replyOnce(401)
     MockAxiosBackApi.onGet(routeGetAssessment).reply(200, {
-      mediaAssessment,
+      assessment,
     })
     MockAxiosBackApi.onGet(routeToken).reply(401)
     renderHook(() => useGetAssessment(movieId), { wrapper })

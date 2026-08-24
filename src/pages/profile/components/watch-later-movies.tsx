@@ -3,7 +3,7 @@ import { Shredder } from 'lucide-react'
 import { MovieCard } from '@/components/movie-card'
 
 export function WatchLaterMovies() {
-  const { data: watchLaterMedias, isFetching } = useGetWatchLaterMovies()
+  const { data: watchLater, isFetching } = useGetWatchLaterMovies()
 
   if (isFetching) {
     return (
@@ -16,7 +16,7 @@ export function WatchLaterMovies() {
     )
   }
 
-  if (!watchLaterMedias) {
+  if (!watchLater) {
     return (
       <div className='w-fit mx-auto' aria-label='empty watch later movies'>
         <Shredder strokeWidth={1} className='text-zinc-900 size-56' />
@@ -29,14 +29,14 @@ export function WatchLaterMovies() {
       aria-label='watch later movies'
       className='flex justify-center flex-wrap gap-3 pb-6 w-auto max-sm:gap-1.5'
     >
-      {watchLaterMedias.map((watchLaterMedia) => (
+      {watchLater.map((watchLater) => (
         <MovieCard
-          Poster={watchLaterMedia.image}
-          Title={watchLaterMedia.title}
-          Type={watchLaterMedia.type}
-          imdbID={watchLaterMedia.MovieId}
-          Year={watchLaterMedia.release}
-          key={watchLaterMedia.id}
+          Poster={watchLater.image}
+          Title={watchLater.title}
+          Type={watchLater.type}
+          imdbID={watchLater.MovieId}
+          Year={watchLater.release}
+          key={watchLater.id}
         />
       ))}
     </div>

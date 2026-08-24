@@ -29,7 +29,7 @@ export function useGetWatchLaterMovies() {
         },
       )
 
-      return response.data['watchLaterMedias']
+      return response.data['watchLater']
     },
   })
 }

@@ -13,7 +13,7 @@ type WatchLaterResponse = {
 
 export function useGetMovieWatchLater(movieId: string) {
   const { mutateAsync: getRefreshAccessToken } = useGetRefreshAccessToken()
-  const requestPath = `/watch-later/${movieId}`
+  const requestPath = `/watch-later?movieId=${movieId}`
   const requestConfig = {
     withCredentials: true,
   }
@@ -28,7 +28,7 @@ export function useGetMovieWatchLater(movieId: string) {
         },
       )
 
-      return response.data['watchLaterMedia']
+      return response.data['watchLater']
     },
   })
 }

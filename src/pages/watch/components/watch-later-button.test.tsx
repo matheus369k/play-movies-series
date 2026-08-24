@@ -18,9 +18,10 @@ describe('WatchLaterButton component', () => {
   const userEvents = userEvent.setup()
   const MockAxiosBackApi = new AxiosMockAdapter(AxiosBackApi)
   const MovieId = faker.database.mongodbObjectId()
-  const routeWatchLaterMovie = `/watch-later`
-  const routeWatchLaterMovieWithID = `${routeWatchLaterMovie}/${MovieId}`
-  const watchLaterMedia = {
+  const routeWatchLaterMovieGet = `/watch-later`
+  const routeWatchLaterMovieDelete = `/watch-later/${MovieId}`
+  const routeWatchLaterMovieGetWithID = `/watch-later?movieId=${MovieId}`
+  const watchLater = {
     release: faker.date.past().getFullYear().toString(),
     image: faker.image.url(),
     title: faker.book.title(),
@@ -34,46 +35,48 @@ describe('WatchLaterButton component', () => {
   })
 
   it('should render corrected', () => {
-    MockAxiosBackApi.onGet(routeWatchLaterMovieWithID).reply(404, undefined)
-    render(<WatchLaterButton {...watchLaterMedia} />, { wrapper })
+    MockAxiosBackApi.onGet(routeWatchLaterMovieGetWithID).reply(404, undefined)
+    render(<WatchLaterButton {...watchLater} />, { wrapper })
 
     screen.getByRole('button', { name: /add in list/i })
   })
 
   it('should showing diff text when movie were saved watch later', async () => {
-    MockAxiosBackApi.onGet(routeWatchLaterMovieWithID).reply(200, {
-      watchLaterMedia,
+    MockAxiosBackApi.onGet(routeWatchLaterMovieGetWithID).reply(200, {
+      watchLater,
     })
-    render(<WatchLaterButton {...watchLaterMedia} />, { wrapper })
+    render(<WatchLaterButton {...watchLater} />, { wrapper })
 
     await screen.findByRole('button', { name: /saved in list/i })
   })
 
   it('call create watch later request when get watch later request fail', async () => {
-    MockAxiosBackApi.onPost(routeWatchLaterMovie).reply(201, { status: 'ok' })
-    MockAxiosBackApi.onGet(routeWatchLaterMovieWithID).reply(404)
-    render(<WatchLaterButton {...watchLaterMedia} />, { wrapper })
+    MockAxiosBackApi.onPost(routeWatchLaterMovieGet).reply(201, {
+      status: 'ok',
+    })
+    MockAxiosBackApi.onGet(routeWatchLaterMovieGetWithID).reply(404)
+    render(<WatchLaterButton {...watchLater} />, { wrapper })
 
     await userEvents.click(screen.getByRole('button', { name: /add in list/i }))
 
     await waitFor(() => {
       expect(MockAxiosBackApi.history[0]).toMatchObject({
-        url: routeWatchLaterMovieWithID,
+        url: routeWatchLaterMovieGetWithID,
         method: /GET/i,
       })
       expect(MockAxiosBackApi.history[1]).toMatchObject({
-        url: routeWatchLaterMovie,
+        url: routeWatchLaterMovieGet,
         method: /POST/i,
       })
     })
   })
 
   it('call delete watch later request when initial request success and clicked on the button', async () => {
-    MockAxiosBackApi.onGet(routeWatchLaterMovieWithID).reply(200, {
-      watchLaterMedia,
+    MockAxiosBackApi.onGet(routeWatchLaterMovieGetWithID).reply(200, {
+      watchLater,
     })
-    MockAxiosBackApi.onDelete(routeWatchLaterMovieWithID).reply(404, 'ok')
-    render(<WatchLaterButton {...watchLaterMedia} />, { wrapper })
+    MockAxiosBackApi.onDelete(routeWatchLaterMovieDelete).reply(404, 'ok')
+    render(<WatchLaterButton {...watchLater} />, { wrapper })
     const button = await screen.findByRole('button', {
       name: /saved in list/i,
     })
@@ -82,11 +85,11 @@ describe('WatchLaterButton component', () => {
 
     await waitFor(() => {
       expect(MockAxiosBackApi.history[0]).toMatchObject({
-        url: routeWatchLaterMovieWithID,
+        url: routeWatchLaterMovieGetWithID,
         method: /GET/i,
       })
       expect(MockAxiosBackApi.history[1]).toMatchObject({
-        url: routeWatchLaterMovieWithID,
+        url: routeWatchLaterMovieDelete,
         method: /Delete/i,
       })
     })

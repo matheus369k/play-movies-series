@@ -17,7 +17,7 @@ describe('useCreateAssessment request', () => {
   const movieId = faker.database.mongodbObjectId()
   const routeCreateAssessment = `/assessment/${movieId}`
   const routeToken = `/token`
-  const mediaAssessment = {
+  const assessment = {
     liked: false,
     unlike: true,
   }
@@ -28,12 +28,12 @@ describe('useCreateAssessment request', () => {
   })
 
   it('configuration request', async () => {
-    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, mediaAssessment)
+    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, assessment)
     const { result } = renderHook(() => useCreateAssessment(movieId), {
       wrapper,
     })
 
-    await result.current.mutateAsync(mediaAssessment)
+    await result.current.mutateAsync(assessment)
 
     expect(MockAxiosBackApi.history[0]).toMatchObject({
       withCredentials: true,
@@ -44,19 +44,19 @@ describe('useCreateAssessment request', () => {
       'Content-Type': 'application/json',
     })
     expect(JSON.parse(MockAxiosBackApi.history[0].data)).toMatchObject({
-      liked: mediaAssessment.liked,
-      unlike: mediaAssessment.unlike,
+      liked: assessment.liked,
+      unlike: assessment.unlike,
     })
   })
 
   it('no call request when value from liked and unlike is equal', async () => {
-    const mediaAssessmentEqualValue = {
-      liked: mediaAssessment.liked,
-      unlike: mediaAssessment.liked,
+    const assessmentEqualValue = {
+      liked: assessment.liked,
+      unlike: assessment.liked,
     }
     MockAxiosBackApi.onPost(routeCreateAssessment).reply(
       201,
-      mediaAssessmentEqualValue,
+      assessmentEqualValue,
     )
     const { result } = renderHook(() => useCreateAssessment(movieId), {
       wrapper,
@@ -64,7 +64,7 @@ describe('useCreateAssessment request', () => {
 
     await waitFor(() =>
       expect(
-        result.current.mutateAsync(mediaAssessmentEqualValue),
+        result.current.mutateAsync(assessmentEqualValue),
       ).rejects.toThrow(),
     )
 
@@ -75,13 +75,13 @@ describe('useCreateAssessment request', () => {
 
   it('call revalidate access request when create assessment receive 401/authorization error', async () => {
     MockAxiosBackApi.onPost(routeCreateAssessment).replyOnce(401)
-    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, mediaAssessment)
+    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, assessment)
     MockAxiosBackApi.onGet(routeToken).reply(201, { status: 'ok' })
     const { result } = renderHook(() => useCreateAssessment(movieId), {
       wrapper,
     })
 
-    await result.current.mutateAsync(mediaAssessment)
+    await result.current.mutateAsync(assessment)
 
     const requestCreateAssessment = MockAxiosBackApi.history[0]
     expect(requestCreateAssessment).toMatchObject({
@@ -98,16 +98,14 @@ describe('useCreateAssessment request', () => {
 
   it('no call revalidate access request when create assessment receive diff error than 401/authorization', async () => {
     MockAxiosBackApi.onPost(routeCreateAssessment).replyOnce(500)
-    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, mediaAssessment)
+    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, assessment)
     MockAxiosBackApi.onGet(routeToken).reply(201, { status: 'ok' })
     const { result } = renderHook(() => useCreateAssessment(movieId), {
       wrapper,
     })
 
     await waitFor(() =>
-      expect(() =>
-        result.current.mutateAsync(mediaAssessment),
-      ).rejects.toThrow(),
+      expect(() => result.current.mutateAsync(assessment)).rejects.toThrow(),
     )
 
     const requestCreateAssessment = MockAxiosBackApi.history[0]
@@ -122,13 +120,13 @@ describe('useCreateAssessment request', () => {
 
   it('recall create assessment request when revalidate access request is success', async () => {
     MockAxiosBackApi.onPost(routeCreateAssessment).replyOnce(401)
-    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, mediaAssessment)
+    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, assessment)
     MockAxiosBackApi.onGet(routeToken).reply(201, { status: 'ok' })
     const { result } = renderHook(() => useCreateAssessment(movieId), {
       wrapper,
     })
 
-    await result.current.mutateAsync(mediaAssessment)
+    await result.current.mutateAsync(assessment)
 
     const requestCreateAssessment = MockAxiosBackApi.history[0]
     expect(requestCreateAssessment).toMatchObject({
@@ -145,16 +143,14 @@ describe('useCreateAssessment request', () => {
 
   it('no recall create assessment request when revalidate access request is reject', async () => {
     MockAxiosBackApi.onPost(routeCreateAssessment).replyOnce(401)
-    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, mediaAssessment)
+    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, assessment)
     MockAxiosBackApi.onGet(routeToken).reply(500)
     const { result } = renderHook(() => useCreateAssessment(movieId), {
       wrapper,
     })
 
     await waitFor(() =>
-      expect(() =>
-        result.current.mutateAsync(mediaAssessment),
-      ).rejects.toThrow(),
+      expect(() => result.current.mutateAsync(assessment)).rejects.toThrow(),
     )
 
     const requestCreateAssessment = MockAxiosBackApi.history[0]
@@ -168,13 +164,13 @@ describe('useCreateAssessment request', () => {
   })
 
   it('refresh queries cache when revalidate create assessment is success', async () => {
-    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, mediaAssessment)
+    MockAxiosBackApi.onPost(routeCreateAssessment).reply(201, assessment)
     const spyRefreshQueriesClient = jest.spyOn(queryClient, 'refetchQueries')
     const { result } = renderHook(() => useCreateAssessment(movieId), {
       wrapper,
     })
 
-    await result.current.mutateAsync(mediaAssessment)
+    await result.current.mutateAsync(assessment)
 
     expect(spyRefreshQueriesClient).toHaveBeenCalledWith({
       queryKey: [...QUERY_KEYS_BASE_MOVIES_ASSESSMENT, movieId],
@@ -189,9 +185,7 @@ describe('useCreateAssessment request', () => {
     })
 
     await waitFor(() =>
-      expect(() =>
-        result.current.mutateAsync(mediaAssessment),
-      ).rejects.toThrow(),
+      expect(() => result.current.mutateAsync(assessment)).rejects.toThrow(),
     )
 
     expect(spyRefreshQueriesClient).not.toHaveBeenCalled()
